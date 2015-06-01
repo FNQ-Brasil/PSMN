@@ -1,0 +1,67 @@
+<?php
+/*$this->headScript()
+  ->appendFile($this->baseUrl('js/management/avaliacao.js'));
+*/
+$addressEnterprise = $this->enterprise->findAddressEnterprise()->current();
+$enterpriseState = $addressEnterprise->findParentState();
+?>
+<h1 class="title"><a name="report"></a>Relato da Candidata</h1>
+
+<form action="" id="" method="POST" class="avaliacao">
+
+  <fieldset>
+    <input type="hidden" id="" name="" value="" />
+  </fieldset>
+  <fieldset>
+    <div class="list-table-20">
+      <label class="label-control">CNPJ</label>
+      <span class="label-value"><?php echo $this->enterprise->getFormattedCnpj(); ?></span>
+    </div>
+
+    <div class="list-table-20">
+      <label class="label-control">Candidata</label>
+      <span class="label-value"><?php echo $this->president->getName(); ?></span>
+    </div>
+
+    <div class="list-table-20">
+      <label class="label-control">Estado</label>
+      <span class="label-value"><?php echo $enterpriseState->getUf(); ?></span>
+    </div>
+
+    <div class="list-table-20">
+      <label class="label-control">Categoria</label>
+      <span class="label-value"><?php if ($this->enterprise->getCategoryAwardId()) echo Vtx_Util_Array::categoriaPsmn($this->enterprise->getCategoryAwardId()) ?></span>
+    </div>
+
+  </fieldset>
+
+    <!--iframe  src="http://translate.google.com/translate_tts?ie=utf-8&tl=pt-BR&q=<?php echo urlencode($this->escape($this->report->getTitle())); ?>"></iframe-->
+
+    <div class="inner-content">
+        <ul id="avaliacaoRelato">
+            <li style="float: left; min-height: 100px; width: auto; height: 100px; overflow: hidden;  border-right: 3px solid #F5F6F7;">
+                <?php
+                    for ($index = 1; $index < 1000; $index++) {
+                        echo '<span style="line-height: 22px;  text-align: right; border-bottom: 1px solid #F5F6F7;  font: italic 14px/22px \'Lato\'; color: #ACACAC; width: 35px; display:block;">' . $index . ' &nbsp; <br></span>';
+                    }
+                ?>
+            </li>
+            <li style="padding-left: 10px; width: 730px; float: left; font: 14px/23px 'Lato'; color: rgb(0, 0, 0);"> <?php // rgb(237, 124, 76) ?>
+                <strong><?php echo $this->escape($this->report->getTitle()); ?></strong><br>   
+                <?php echo str_replace('&lt;br /&gt;', '<br>', $this->escape(nl2br($this->report->getReport()))); ?>
+            </li>
+        </ul>
+<hr style="clear:both;opacity:0">
+<fieldset>
+    <input type="hidden" value="x" name="x" id="xx">
+  </fieldset>
+    </div>
+</form>
+<?php $this->headScript()->captureStart() ?>
+    $(document).ready(function() {
+        setTimeout(function(){
+            cols = $('#avaliacaoRelato li');
+            cols.eq(0).height(cols.eq(1).height());
+        }, 100);
+    });
+<?php $this->headScript()->captureEnd() ?>

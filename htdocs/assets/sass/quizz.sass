@@ -1,0 +1,416 @@
+@import _base
+
+#tabs-container
+  height: 500px
+  width: 100%
+  clear: both
+  overflow: hidden
+  #tabs-list
+    height: 500px
+    width: 9999em
+    .tab-item
+      float: left
+      height: 500px
+      width: 832px
+
+.progress
+  background: url("../images/bg_progress.png") 0 0 no-repeat
+  height: 26px
+  margin: 0 auto
+  padding: 5px 6px 0 3px
+  width: 100%
+  .status
+    background: url("../images/bg_status.jpg") 0 0 repeat
+    border-radius: 5px
+    height: 16px
+    margin: 0 0 0 2px    
+    width: 0%
+    max-width: 99%
+    position: relative
+    .tooltip-percent
+      +fontLato(13px)
+      +box-shadow(1px 1px 1px #999)
+      +border-radius(5px)
+      position: absolute
+      top: 30px
+      right: 0
+      padding: 5px 10px
+      margin: 0 -25px 0 0
+      text-align: center
+      width: 53px
+      height: 23px
+      background-color: #f3f3f3
+      &:before
+        content: ""
+        position: absolute
+        top: -15px
+        margin: 0 0 0 -7px
+        left: 50%
+        border: 8px solid transparent
+        border-color: transparent transparent #f3f3f3 transparent
+      span
+        font-size: 11px
+
+.bt-nav-quiz-vert
+  width: 100%
+  line-height: 50px
+  border: none
+  background-color: transparent
+  cursor: pointer
+  background: url("../images/arro-nav-vertical.png") center 0 no-repeat
+  text-indent: -999em
+  &.prev
+    background-position: bottom center
+  &.next
+    background-position: top center
+
+.description-quizz
+  +fontLato(16px)
+  color: #999
+  line-height: 20px
+  display: inline-block
+  margin: 0 0 10px 0
+
+#tituloDevolutiva
+  padding: 0
+  margin: 0 0 10px 0
+  font-family: "Lato"
+  color: #666
+  font-size: 24px
+
+#msgDownloadDevolutiva a
+  font-family: "Lato"
+  color: #d0561e
+  font-size: 18px
+
+
+.title.tquiz
+  padding: 0
+  margin: 0 0 10px 0
+
+.subtitle.tquiz
+  padding: 0
+  margin: 0 0 10px 0
+
+.inner-content
+  border-top: 1px solid #ccc
+  border-bottom: 1px solid #ccc
+  margin: 20px 0
+  padding: 15px 0
+
+  ol
+    counter-reset: nr 0
+    li
+      +fontLato(39px)
+      border-bottom: 1px solid #ccc
+      //font-style: italic
+      //list-style: decimal
+      //list-style-position: inside
+      //margin: 0 0 15px 0
+      min-height: 50px
+      //padding: 0 0 15px 0      
+      position: relative
+      &:before
+        counter-increment: nr 1
+        content: counter(nr, decimal) "."
+        display: inline-block
+        width: 50px
+      div
+        display: inline-block
+        min-height: 76px
+      .tip_resposta
+        display: none
+
+    .texto
+      +fontBase(14px)
+      border-right: 1px solid #ccc
+      font-style: normal
+      line-height: 1.4em
+      padding: 0 15px
+      width: 380px
+      margin: 10px 0
+
+    [class*="answer"]
+      +fontLato(13px)
+      border-right: 1px solid #ccc
+      font-style: normal
+      line-height: 1.4em
+      text-align: center
+      vertical-align: top
+      width: 115px
+      position: relative
+      margin: 10px 0
+      .radio-focus
+        +single-box-shadow()
+        +border-radius(5px)
+      input[type="radio"]
+        +opacity(0)
+        display: block
+        height: 72px
+        width: 83px
+        position: absolute
+        top: 0
+        left: 0
+        cursor: pointer
+      .radio-buutton
+        clear: both
+
+    .answer-1
+      padding: 0 13px 0 0
+
+    .answer-2
+      margin: 0 1px 0 13px      
+      width: 95px
+
+    .answer-3
+      border-right: 0 none
+
+  .sem-resposta
+    color: #ff9933
+
+    .texto
+      color: #ff9933
+
+    .answer-1 label,.answer-2 label,.answer-3 label
+      color: #ff9933 
+
+  .sem-resposta
+    [class*="answer"]      
+      input[type="radio"] + label span
+        background: url('../images/checkbox_sem_resposta.png') 0 0 no-repeat
+        cursor: pointer
+        display: inline-block
+        height: 23px
+        width: 23px
+    .tip_resposta
+      +fontBase(12px)
+      background: #f6f6f6
+      border-radius: 20px
+      display: block
+      font-style: normal
+      line-height: 32px
+      left: 60px
+      min-height: 0
+      padding: 0 15px
+      position: absolute
+      top: -33px
+      white-space: nowrap
+  
+/* questionario 1 */
+.quizz
+  .error-required
+    +fontLato(13px)
+    +border-radius(10px)
+    color: #900
+    position: absolute
+    top: 35px
+    left: 0px
+    background-color: rgb(231, 196, 196)
+    padding: 10px
+    
+  ul
+    background: url("../images/barra-questionario.png") 0 16px no-repeat
+    height: 54px
+    padding: 20px 0 0
+
+    li
+      +fontLato(18px)
+      float: left
+      margin: 0 30px
+      text-align: center
+      width: 15px
+
+      a 
+        color: #dadad9
+        text-decoration: none      
+        font-style: italic
+        outline: none
+
+      span
+        +fontLato(18px)
+        background: #e6e6e6
+        border-radius: 20px
+        border: 1px solid #d6d5d4
+        clear: both
+        display: block
+        height: 15px
+        margin: 0px auto 10px auto
+        width: 15px
+
+    .ui-state-default
+      margin: 3px 28px 0 40px
+
+    .ui-state-active
+      margin: 0px 28px 0 40px
+      a 
+        color: #7a5773
+        outline: none
+
+      span
+        background: #7a5775
+        border: 1px solid #7a4f66
+        border-radius: 20px
+        display: block
+        clear: both
+        height: 15px
+        margin: 0 auto 10px
+        width: 15px
+  .label 
+    +fontBase(16px)
+    clear: both
+    padding: 40px 0 0
+
+    .number
+      +fontLato(39px)      
+      display: block
+      float: left
+      font-style: italic
+      height: 40px
+      margin: -20px 20px 0 0
+
+  .answers
+    clear: both
+    height: 160px
+    margin: 20px 0 0 
+    padding: 0 0 0 43px
+    position: relative
+    
+    #dis-totalemente:hover
+      .face
+        background-position: 0 -30px 
+    
+    #dis-totalemente.checked
+      .face
+        background-position: 0 -60px    
+
+    #discordo
+      .face
+        background-position: -29px 0
+
+    #discordo:hover
+      .face
+        background-position: -29px -30px 
+    
+    #discordo.checked
+      .face
+        background-position: -29px -60px 
+    
+    #discordo.checked
+      .face
+        background-position: -29px -60px 
+    
+    #nao-sei
+      .face
+        background-position: -58px 0
+
+    #nao-sei:hover
+      .face
+        background-position: -58px -30px 
+    
+    #nao-sei.checked
+      .face
+        background-position: -58px -60px 
+    
+    #concordo
+      .face
+        background-position: -87px 0
+
+    #concordo:hover
+      .face
+        background-position: -87px -30px 
+
+    #concordo.checked
+      .face
+        background-position: -87px -60px 
+    
+    #con-plenament
+      .face
+        background-position: -116px 0
+
+    #con-plenament:hover
+      .face
+        background-position: -116px -30px 
+
+    #con-plenament.checked
+      .face
+        background-position: -116px -60px 
+
+    .label-inline
+      cursor: pointer
+      
+    .answer
+      background: url("../images/bg_answer.png")  0 0 no-repeat
+      float: left
+      height: 106px
+      margin: 0 40px 0 2px
+      position: relative
+      width: 110px
+      cursor: pointer
+    input[type="radio"]
+      position: absolute
+      top: 40px
+      left: 47px
+      width: 10px
+    .face
+      background: url("../images/icon_faces.png") 0 0 no-repeat
+      display: block
+      height: 30px
+      left: 43px
+      position: absolute
+      top: 10px
+      width: 29px
+      cursor: pointer
+
+    .fill
+      background: url("../images/bg_fill.png") 0 0 no-repeat
+      height: 10px
+      position: absolute
+      top: 70px
+      width: 723px
+
+      .status-fill
+        background: url("../images/bg_status_fill.png") 0 0 repeat
+        border-radius: 15px
+        height: 10px
+        margin: -1px 0 0 1px
+        width: 0%
+
+    input[type="radio"] + label span
+      background: url('../images/checked.png') -50px 0 no-repeat
+      cursor: pointer
+      clear: both
+      display: block
+      height: 43px
+      width: 36px
+
+    input[type="radio"]:checked + label span 
+      background: url('../images/checked.png') 0 0 no-repeat    
+      clear: both
+      display: block
+      margin: 0 auto
+
+  .label-inline
+    height: 107px
+    padding: 52px 0 0
+    position: absolute
+    text-align: center
+    top: 7px
+    width: 110px
+    z-index: 5
+  .complement
+    clear: both
+    width: 716px
+    margin: 0 auto
+    position: relative
+
+    label
+      +fontBase(17px)
+      clear: both
+      display: block
+
+    textarea
+      height: 100px
+      margin: 10px 0
+      width: 100%
+.ie .texto
+  margin: 0 0 0 -30px      

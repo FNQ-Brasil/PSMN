@@ -1,0 +1,83 @@
+<?php //echo $this->headScript()->appendFile($this->baseUrl('js/question/add.js')); ?>
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="">
+    <h1 class="center">Questões</h1>
+    <a title="Voltar" id="back" href="<?php echo $this->baseUrl('management/'); ?>">Voltar</a>
+    <?php if ($this->questionInsertSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Questão inserida com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->questionUpdateSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Questão atualizada com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->questionDeleteSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Questão deletada com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+    
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+
+    <?php if ($this->loggedAllowed('insert')): ?>
+        <a href="<?php echo $this->baseUrl('management/question/insert'); ?>" title="Criar questão" class="link"><span class="ico new large">Novo</span>Criar questão</a>
+    <?php endif; ?>
+
+<hr />
+    <table class="striped " border="0" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Ordem</th>
+                <th>Tipo</th>
+                <th>Questão</th>
+                <th>Ações</th>
+                <th class="lastTd">Mover</th>
+            </tr>
+        </thead>
+    <tbody>
+        <?php
+        if($this->getAllQuestions) :
+            foreach ($this->getAllQuestions as $key => $value) :
+            ?>
+                <tr>
+                    <td><?php echo $value->findParentCriterion()->getValue();?></td>
+                    <td><?php echo ($this->dataRow and $this->dataRow->getId() == $value->getId())? 'NOVO ' : ''; echo $value->getDesignation();?></td>
+                    <td><?php echo $value->findParentQuestionType()->getDescription();?></td>
+                    <td><?php echo $value->getValue();?></td>
+                    <td> 
+                        <?php if ($this->loggedAllowed('edit', 'management:privilege')): ?>
+                            <a href="<?php echo $this->baseUrl('management/question/edit/id/'.$value->getId()); ?>" alt="editar"><span class="ico edit">Editar</span></a>
+                        <?php endif; ?>
+                        <?php if ($this->loggedAllowed('delete', 'management:privilege')): ?>
+                            <a href="<?php echo $this->baseUrl('management/question/delete/id/'.$value->getId()); ?>"><span class="ico delete">Excluir</span></a>
+                        <?php endif; ?>
+                    </td>
+                    <td><a href="<?php echo $this->baseUrl('management/question/move/id/'.$value->getId()); ?>"><span class="ico insert">Mover</span></a></td>
+                </tr>
+            <?php
+            endforeach;
+        endif;
+        ?>
+    </tbody>
+</table>
+
+</div>

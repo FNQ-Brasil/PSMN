@@ -1,0 +1,85 @@
+<table class="table">
+  <caption></caption>
+  <thead>
+    <tr>
+        <th style="height: 100px">Classificada</th>
+      <th>Empresa</th>
+      <th>UF</th>
+      <th>RAA</th>
+      <th>Relat.<br>Interno</th>
+      <th>Verificar</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+<?php
+if (count($this->getAllEnterprise) >= 1):
+?>
+  <tbody>
+<?php
+$userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
+  foreach ($this->getAllEnterprise as $index => $enterprise) :
+
+    $raa = $enterprise->getDevolutivePath();
+    $scoreGestao = '';//$enterprise->getProgressGestao();
+    $fantasyName = $enterprise->getFantasyName();
+    $socialName = $enterprise->getSocialName();
+    $avaliacaoStatus = $enterprise->getCheckerStatus();
+
+    $CNPJ = trim($enterprise->getCnpj());
+    $CPF = trim($enterprise->getCpfUser());
+    $enterpriseType = $CPF; //($enterpriseTypeId == '1')?$CNPJ:$CPF;
+    $UF = trim($enterprise->getUf());
+
+    $survey = $this->baseUrl('/management/verificacao/index/enterprise-id-key/' 
+        . $enterprise->getIdKey());
+        
+?>
+    <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
+      <td>
+          <dl style="text-align: left; margin-left: 5px">
+          <dt title="<?php echo $fantasyName; ?>"><b><?php echo (($enterprise->getNameUser() != '') ? substr($enterprise->getNameUser(), 0, 60) : '--'); ?></b></dt>
+          <dd class="identity" title="<?php echo $enterpriseType; ?>"><?php echo $enterprise->getCpfUser(); ?></dd>
+        </dl>
+
+      </td>
+      
+        <td style="width: 300px; height: 45px;" title="<?php echo $socialName; ?>">
+          <dl style="text-align: left; margin-left: 5px">
+            <dt><b><?php echo (($fantasyName != '') ? substr($fantasyName, 0, 60) : '--'); ?></b></dt>
+            <dd class="identity"><?php echo $CNPJ; ?></dd>
+          </dl>
+        </td>
+        
+      <td class="middle"><i><?php echo $UF; ?></i></td>
+      <td class="middle">
+        <dl>
+          <dt>
+            <a href="<?php echo $raa; ?>" title="Baixar RAA" class="download-raa" target="blank">Baixar RAA</a>
+          </dt>
+        </dl>
+      </td>
+      <td class="middle">
+        <dl>
+          <dt>
+            <a href="<?php echo $this->baseUrl("management/verificacao/report/enterprise-id-key/{$enterprise->getIdKey()}"); ?>#report" title="Relatório Interno" class="download-raa" target="blank">Interno</a>
+          </dt>
+        </dl>
+      </td>
+      <td class="middle">
+        <dl>
+            <dt>
+                <a href="<?php echo $survey; ?>" title="Avaliar" 
+                   class="answer-survey" >Avaliar</a>
+            </dt>
+        </dl>
+      </td>
+            <td>
+          <?php
+            echo Vtx_Util_PsmnAvaliacao::statusReport($avaliacaoStatus);
+          ?>
+      </td>
+    </tr>
+<?php endforeach; ?>
+  </tbody>
+<?php endif; ?>
+</table>

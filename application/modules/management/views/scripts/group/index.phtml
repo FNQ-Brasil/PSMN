@@ -1,0 +1,107 @@
+<?php //echo $this->headScript()->appendFile($this->baseUrl('js/questiontip/add.js')); ?>
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="">
+    <h1 class="center">Grupo</h1>
+
+
+    <?php if ($this->itemInsertSuccess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Grupo adicionado com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->itemUpdateSuccess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Grupo atualizado com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->itemDeleteSuccess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Grupo excluído com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+    
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+
+
+ <form action="<?php echo $this->url(array('page' => $this->pageCount, 'format' => 'html')) ?>" id="frm" method="GET">
+        <fieldset>
+            <input type="hidden" id="orderByValue" name="orderBy" value="" />
+            <select class="sortBy hide">
+                <option value="">Nome &nbsp;</option>
+            </select>
+
+            <label for="name">Nome:</label>
+            <input tabindex="1" id="term" type="text" name="filter[name]" value="<?php if(isset($this->filter['name'])) echo $this->filter['name'];?>" size="18" value="" />
+
+            <button tabindex="16" style="float: right" type="submit" class="green small">
+                <span class="icon small" style="left: 3px; top: -2px;" data-icon="s"></span>
+            </button>
+        </fieldset>
+    </form>
+    
+        
+
+    <?php
+        echo $this->paginationControl(
+            $this->getAllGroups, null, null, array(/*'link' => $this->baseUrl('/xx')*/ )
+        );
+    ?>
+    <div class="clear"></div>
+    <table class="striped " border="0" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th style="width: 200px">Título</th>
+               <th>Descrição</th>
+               <th>Qtd</th>
+                <th class="lastTd">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <input type="hidden" name="id" value="<?php if($this->groupId) echo $this->groupId;?>">
+        <?php
+        if($this->getAllGroups) :
+            foreach ($this->getAllGroups as $group) :
+            ?>
+                <tr>
+                    <th><?php echo $group->getName();?></th>
+                    <td><?php echo $group->getDescription();?></td>
+                    <td><?php echo $group->getGroupToEnterprise();?></td>
+                    <td>
+                        <?php if ($this->loggedAllowed('edit', 'management:privilege')): ?>
+                            <a href="<?php echo $this->baseUrl('management/group/edit/id/'.$group->getId()); ?>" alt="editar"><span class="ico edit">Editar</span></a>
+                        <?php endif; ?>
+                        <?php if ($this->loggedAllowed('delete', 'management:privilege')): ?>
+                            <a href="<?php echo $this->baseUrl('management/group/delete/id/'.$group->getId()); ?>"><span class="ico delete">Excluir</span></a>
+                        <?php endif; ?>
+                        <?php if ($this->loggedAllowed('edit', 'management:privilege')): ?>
+                            <a href="<?php echo $this->baseUrl('management/group/connect/id/'.$group->getId()); ?>" alt="editar"><span class="ico small blue">Associar Grupo à Empresas</span></a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php
+            endforeach;
+        endif;
+        ?>
+        </tbody>
+    </table>
+    
+    <div class="clear"></div>
+    <?php echo $this->paginationControl($this->getAllGroups, null, null); ?>
+    <hr class="clear" />
+</div>

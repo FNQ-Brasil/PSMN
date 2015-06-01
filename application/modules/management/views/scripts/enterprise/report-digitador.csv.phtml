@@ -1,0 +1,80 @@
+<?php
+//$this->setEncoding('UTF-8');
+echo "\xEF\xBB\xBF";
+
+function rr ($value)
+{
+    return str_replace(',','',str_replace(';', '', $value)); 
+}
+function rr2 ($value)
+{
+    return str_replace(',','.',$value); 
+}
+
+/**
+view usada para gerar conteudo do fetchall em .CSV
+*/
+//CONFIGURACOES
+$separador = ";";
+$novalinha = "\n";
+
+
+echo "Estado {$separador}Digitador{$separador}Inscrições{$separador}Alterou Inscrições{$separador}Candidatas (Devolutiva){$separador}Alterou (Devolutiva){$separador}";
+echo $novalinha;
+
+$i = 1;
+if (count($this->dataReport) >= 1) :
+    
+    $inscricoesTotal=0;
+    $alterouDevolutivaTotal=0;
+    $alterouInscricoesTotal=0;
+    $candidatasDevolutivaTotal=0;
+    
+   foreach ($this->dataReport as $dataRow) :
+    
+        $estado = rr2($dataRow->getUfDigitador());
+        $digitador = rr2($dataRow->getFirstName() . ' ' . $dataRow->getSurName());
+        $inscricoes = $dataRow->getAceiteQt();
+        $alterouInscricoes = $dataRow->getEdicaoCompletaQt();
+        $candidatasDevolutiva = $dataRow->getDevolutivaQt();
+        $alterouDevolutiva = $dataRow->getDevolutivaRegeradaQt(); 
+        
+        $inscricoesTotal += $inscricoes;
+        $alterouInscricoesTotal += $alterouInscricoes;
+        $candidatasDevolutivaTotal += $candidatasDevolutiva;
+        $alterouDevolutivaTotal += $alterouDevolutiva; 
+    
+        echo $estado;
+        echo $separador;
+        echo $digitador;
+        echo $separador;
+        echo $inscricoes;
+        echo $separador;
+        echo $alterouInscricoes;
+        echo $separador;
+        echo $candidatasDevolutiva;
+        echo $separador;
+        echo $alterouDevolutiva;
+        echo $separador;
+
+        echo $novalinha; 
+        $i = $i + 1;
+    endforeach;
+    
+        echo 'Todas UF';
+        echo $separador;
+        echo 'Todos digitadores';
+        echo $separador;
+        echo $inscricoesTotal;
+        echo $separador;
+        echo $alterouInscricoesTotal;
+        echo $separador;
+        echo $candidatasDevolutivaTotal;
+        echo $separador;
+        echo $alterouDevolutivaTotal;
+        echo $separador;
+    
+        echo $novalinha;
+
+endif;
+

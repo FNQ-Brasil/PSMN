@@ -1,0 +1,39 @@
+<?php
+echo "\xEF\xBB\xBF";
+/**
+view usada para gerar conteudo do fetchall em .CSV
+*/
+//CONFIGURACOES
+$separador = ";";
+$novalinha = "\n";
+// FIM CONFIGURACOES
+echo "Avaliador{$separador}Empresa{$separador}Status{$separador}";
+echo $novalinha;
+
+function rr ($value)
+{
+    return str_replace(',','',str_replace(';', '', $value)); 
+}
+function rr2 ($value)
+{
+    return str_replace(',','.',$value); 
+}
+$statusReport = Vtx_Util_PsmnAvaliacao::statusReport();
+$i = 1;
+if (count($this->getAllEnterprise) >= 1) :
+   foreach ($this->getAllEnterprise as $enterprise) {
+       
+        $avaliador = rr ( $enterprise->getNameAvaliador() );
+        $empresa = rr ( $enterprise->getSocialName() );
+        $status =  $statusReport[$enterprise->getStatus()];
+        
+        echo $avaliador.$separador;
+        echo $empresa.$separador;
+        echo $status.$separador;  
+        
+        echo $novalinha; 
+        $i = $i + 1;
+   }
+   echo $novalinha; 
+endif;
+

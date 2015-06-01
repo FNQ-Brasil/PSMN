@@ -1,0 +1,181 @@
+<?php
+$this->headScript()
+  ->appendFile($this->baseUrl('js/management/avaliacao.js?xxxe1'));
+
+$addressEnterprise = $this->enterprise->findAddressEnterprise()->current();
+$enterpriseState = $addressEnterprise->findParentState();
+
+$blocoAnterior = ''; 
+$criterioAnterior = '';
+$qsts = array();
+$blocos = array();
+$criterios = array();  
+//Questoes
+foreach ($this->questoes as $k => $questao):
+    $bloco = $questao->getBloco();
+    $criterio = $questao->getCriterio();
+    if ($bloco != $blocoAnterior) {
+        $qsts[$bloco] = array(
+            'BlockName' => Vtx_Util_PsmnAvaliacao::BlocosAvaliacao($bloco), 'Criterions' => array()
+        );
+    }
+    if ($criterio != $criterioAnterior) {
+        $qsts[$bloco]['Criterions'][$criterio] = array(
+            'CriterionValue' => Vtx_Util_PsmnAvaliacao::CriteriosAvaliacao($bloco, $criterio),
+            'Questions' => array()
+        );
+    }
+    $qsts[$bloco]['Criterions'][$criterio]['Questions'][$questao->getId()] = $questao;
+    $blocoAnterior = $bloco;
+    $criterioAnterior = $criterio;
+endforeach;
+
+?>
+
+<h1 class="title"><a name="anchor"></a>Avaliação</h1>
+  <?php if ($this->finalizacaoErro): ?>
+        <h3 style="color: #ED7C4C; font: bold 19px 'Lato'; margin-bottom: 22px; margin-top: 28px; background-color: #FCFC8D">Avaliação salva, porém não foi possível finalizá-la. Faltam respostas em '4. Avaliação' ou comentários, verifique.</h3>
+  <?php elseif ($this->conclusaoErro): ?>
+        <h3 style="color: #ED7C4C; font: bold 19px 'Lato'; margin-bottom: 22px; margin-top: 28px; background-color: #FCFC8D">Avaliação salva, porém não foi possível finalizá-la. Uma observação é obrigatória no final da página.</h3>
+  <?php endif; ?>
+<form action="" method="POST" id="frmAvaliacao" class="avaliacao">
+
+  <fieldset>
+    <input type="hidden" id="" name="" value="" />
+  </fieldset>
+  <fieldset>
+    <div class="list-table-20">
+      <label class="label-control">CNPJ</label>
+      <span class="label-value"><?php echo $this->enterprise->getFormattedCnpj(); ?></span>
+    </div>
+
+    <div class="list-table-20">
+      <label class="label-control">Candidata</label>
+      <span class="label-value"><?php echo $this->president->getName(); ?></span>
+    </div>
+
+    <div class="list-table-20">
+      <label class="label-control">Estado</label>
+      <span class="label-value"><?php echo $enterpriseState->getUf(); ?></span>
+    </div>
+
+    <div class="list-table-20">
+      <label class="label-control">Categoria</label>
+      <span class="label-value"><?php if ($this->enterprise->getCategoryAwardId()) echo Vtx_Util_Array::categoriaPsmn($this->enterprise->getCategoryAwardId()) ?></span>
+    </div>
+
+  </fieldset>
+    <a id="verRelato" href="<?php echo $this->baseUrl('management/verificacao/report/enterprise-id-key/' . $this->enterprise->getIdKey()); ?>#report" target="_blank" title="Ver relato"><span>Ver<i> relatório interno</i></span></a>
+    
+  <h2 class="subtitle" style="">Critérios, requisitos e itens     <span>Necessário salvar os dados no final da página.</span></h2>
+
+
+    <div id="avaliacaoRelato"class="inner-content" style="margin-top: 0">
+    <ul class="root">
+<?php foreach ($qsts as $blockId => $bloco): ?>
+        
+      <li class="macro closed">
+        <p class="title">
+          <b class="topic" style="<?php echo (isset($this->criteriosError[$blockId])? 'background-color: #FCFC8D"' : ''); ?>"><?php echo $bloco['BlockName']; ?></b>
+          <a href="" class="help" title="<?php echo Vtx_Util_PsmnAvaliacao::CriteriosInfo($blockId, 0 ); ?>">Saiba mais</a>
+          <span class="score" style="visibility: hidden">Nota: <i class="total">0</i></span>
+          <a href="" class="toggle" title="Alternar">Alternar</a>
+        </p>
+
+        <ul>
+        <?php foreach ( $qsts[$blockId]['Criterions'] as $criterioId => $criterio): ?>
+          <li class="micro closed">
+            <p class="title">
+              <b class="topic" style="<?php echo (isset($this->criteriosError[$blockId][$criterioId])? 'background-color: #FCFC8D"' : ''); ?>"><?php echo $criterio['CriterionValue']; ?></b>
+              <a href="" class="help" title="<?php echo Vtx_Util_PsmnAvaliacao::CriteriosInfo($blockId, $criterioId); ?>">Saiba mais</a>
+              <span class="score" style="visibility: hidden">Nota: <i class="total">0</i></span>
+              <a href="" class="toggle" title="Alternar">Alternar</a>
+            </p>
+
+            <ol class="answers">
+                <?php
+                $letras = array('A','B','C','D','E','F','G','H','I');
+                $ii = 0;
+                foreach ( $qsts[$blockId]['Criterions'][$criterioId]['Questions'] as $questaoId => $questao):
+
+                    ?>
+                  <li class="question" id="question-<?php echo $questaoId; ?>" data-weight="<?php echo $questao->getPeso(); ?>">
+                    <div class="texto" style="<?php echo (isset($this->questionsError[$blockId][$criterioId][$letras[$ii]])? 'background-color: #FCFC8D"' : ''); $ii++; ?>"><?php echo $questao->getQuestao(); ?></div>
+                    <div class="answer-option" style="font-size: 12px; text-align: left; border-right: none; width: 473px;">
+                        <?php echo nl2br($questao->getTopico()); ?>
+                    </div>
+
+                  </li>
+                <?php endforeach; ?>
+                  <li class="">
+
+                    <div class="answer-option" style="text-align: left; border-right: none; width: 473px; background-color: #fff;  font-size: 17px; font-weight: bold;
+                        font-style: italic;
+                        text-align: left;
+                        width: 100%;"
+                    >
+                        <b style=" padding-left: 10px; width: 100%/* color: rgb(237, 118, 69);*/"> Comentários (<?php echo $criterio['CriterionValue']; ?>)</b>
+                        <div class="texto" style="background-color: #fff;  width: 100%; margin-left: 0; border-right: none; ">
+                            <textarea name="comments[<?php echo "$blockId$criterioId"; ?>]" style="width: 100%; height: 90px"><?php echo  (isset($this->commentAnswers["$blockId$criterioId"]['Comment'])? $this->commentAnswers["$blockId$criterioId"]['Comment'] : ''); ?></textarea>
+                        </div>
+                    </div>                    
+                      </li>
+            </ol>
+          </li>
+        <?php endforeach; ?>
+
+<?php endforeach; ?>
+          
+      <li class="macro">
+        <p class="title">
+          <b  style="margin-top: 15px"class="topic">Verificação</b>
+        </p>
+        <ul>
+            <li class="micro">
+                <ol class="answers">
+                    <?php foreach ($this->questionsAvaliacao as $questionAvaliacao): ?>
+                      <li data-weight="20" id="question-1" class="question">
+                          <div style="width: 410px;min-height: 54px; <?php echo (isset($this->evaluationQuestionsError[$questionAvaliacao->getId()])? 'background-color: #FCFC8D"' : ''); ?>" class="texto">
+                                <?php echo $questionAvaliacao->getValue(); ?>
+                          </div>
+                          <div class="answer-option" style="min-height: 54px; width: 110px;">
+                                <?php
+                                    $checked = (isset($this->respostas[$questionAvaliacao->getId()]) and $this->respostas[$questionAvaliacao->getId()]['Resposta'] == 'F')? ' checked' : '';
+                                ?>
+                              <input <?php echo $checked; ?> type="radio" data-percentage="0" class="option radio" id="ansAvaliacao-<?php echo $questionAvaliacao->getId(); ?>-F" name="ansAvaliacao[<?php echo $questionAvaliacao->getId(); ?>]" value="F">
+                            <label class="label-inline radio checked" for="ansAvaliacao-<?php echo $questionAvaliacao->getId(); ?>-F" style="background: none !important;">
+                              Ponto forte
+                            </label>
+                            </div>
+                          <div class="answer-option" style="min-height: 54px;width: 170px; border-right: none">
+                                <?php
+                                    $checked = (isset($this->respostas[$questionAvaliacao->getId()]) and $this->respostas[$questionAvaliacao->getId()]['Resposta'] == 'M')? ' checked' : '';
+                                ?>
+                              <input <?php echo $checked; ?> type="radio" data-percentage="50" class="option radio" id="ansAvaliacao-<?php echo $questionAvaliacao->getId(); ?>-M" name="ansAvaliacao[<?php echo $questionAvaliacao->getId(); ?>]" value="M">
+                            <label class="label-inline radio" for="ansAvaliacao-<?php echo $questionAvaliacao->getId(); ?>-M">
+                              Oportunidade de melhoria
+                            </label>
+                           </div>
+
+                       </li>
+                   <?php endforeach; ?>
+                </ol>
+            </li>
+
+          </ul>
+      </li>
+      
+        </ul>
+      </li>
+</ul>    
+        <div class="complement" style="margin-top: 15px">
+            <h2 class="subtitle"><label for="conclusao" style="font: bold 18px 'Lato'; margin-bottom: 22px; margin-top: 28px;<?php if ($this->conclusaoErro): ?>  background-color: #FCFC8D<?php endif; ?>">Comentários gerais</label></h2>
+            <textarea id="conclusao" name="conclusao" style="width: 100%; height: 135px"><?php echo isset($this->conclusao)? $this->conclusao : ''; ?></textarea>
+        </div>
+        <div class="complement">
+            <input id="finalizar" type="hidden" name="finalizar" value="0" />
+            <button class="large btn-submit" type="none" onclick="$('#finalizar').val('1');$('#frmAvaliacao').submit();return false;"><b>Finalizar e enviar ao gestor</b></button>  
+            <button class="large btn-submit" type="submit" style="background-color: #7D5977; margin-right: 10px"><b>Salvar e continuar depois</b></button>     
+        </div>
+    </div>
+</form>

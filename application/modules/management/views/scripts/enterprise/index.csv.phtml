@@ -1,0 +1,297 @@
+<?php
+//$this->setEncoding('UTF-8');
+echo "\xEF\xBB\xBF";
+
+function rr ($value)
+{
+    return str_replace(',','',str_replace(';', '', $value)); 
+}
+function rr2 ($value)
+{
+    return str_replace(',','.',$value); 
+}
+
+if ($this->request()->getActionName() == 'classificadas') {
+    include 'classificadas.csv.phtml';
+    return;
+}
+if ($this->request()->getActionName() == 'finalistas') {
+    include 'finalistas.csv.phtml';
+    return;
+}
+if ($this->request()->getActionName() == 'candidatas-nacional') {
+    include 'candidatas-nacional.csv.phtml';
+    return;
+}
+
+$competitionId = (isset($this->filter['competition_id']))? $this->filter['competition_id'] : $this->competitionId;
+
+/**
+view usada para gerar conteudo do fetchall em .CSV
+*/
+//CONFIGURACOES
+$separador = ";";
+$novalinha = "\n";
+// FIM CONFIGURACOES
+//var_dump ( 'getAllEnterprise: ',$this->getAllEnterprise ); exit;
+//var_dump ('getAllRegional: ', $this->getAllRegional);
+//var_dump ('regionalOption',            $this->regionalOption);
+echo "Razão Social{$separador}CPF{$separador}Nome Fantasia{$separador}CNPJ{$separador}Email{$separador}";
+echo "Telefone Fixo{$separador}";
+//Data de Cadastro da Empresa no Prêmio{$separador}
+echo "Data de Abertura da Empresa{$separador}Número de colaboradores{$separador}";
+echo "Endereço{$separador}Número{$separador}Complemento{$separador}";
+echo "Bairro{$separador}Cidade{$separador}Estado{$separador}";
+echo "CEP{$separador}Tipo de Empresa{$separador}";
+echo "Porte da Empresa{$separador}";
+echo "Categoria{$separador}";
+echo "Setor{$separador}";
+echo "Atividade Econômica{$separador}"; // CNAE
+echo "Principal Atividade{$separador}"; // Descrição do CNAE
+echo "Nome Completo{$separador}";
+echo "Cargo{$separador}";
+echo "Nível Escoladidade{$separador}";
+echo "CPF Contato{$separador}";
+echo "Endereço Contato{$separador}Número Contato{$separador}";
+echo "Complemento Contato{$separador}Bairro Contato{$separador}Cidade Contato{$separador}Estado Contato{$separador}";
+echo "CEP Contato{$separador}";
+echo "Site{$separador}";
+echo "Telefone Fixo Contato{$separador}Celular{$separador}E-mail{$separador}Data de Nascimento{$separador}";
+echo "Sexo{$separador}";
+//echo "Nivel de Escolaridade{$separador}";
+    //Faixa Etária{$separador}Digitador responsável pelo Cadastro{$separador}
+//echo "Digitador Responsável pelo Questionário{$separador}";
+//echo "Status da Inscrição{$separador}";
+
+//echo "Relação com a melhor da Seleção{$separador}";
+
+if ($this->isRanking) {
+    echo "Pts. Negócios{$separador}";
+    
+    if ($competitionId == 2013) {
+        echo "Pts. Empreend.{$separador}";
+    }
+    
+} else {
+    echo "Gerou Inscrição{$separador}";
+    //echo "Gerou Inscrição{$separador}";data
+    echo "Gerou Devolutiva{$separador}";
+}
+//echo "Gerou Devolutiva{$separador}"; data
+//echo "SocialName{$separador}Cnpj{$separador}EmailDefault{$separador}City{$separador}";
+//echo "Bairro{$separador}Telefone{$separador}DataInscrição";
+
+echo "Como você tomou conhecimento do Prêmio SEBRAE Mulher de Negócios? {$separador}";
+/*
+echo "Já participou de algum destes programas?{$separador}";
+echo "Empretec{$separador}";
+echo "Negócio a Negócio{$separador}";
+echo "Sebrae Mais{$separador}";
+echo "SEI{$separador}";
+echo "ALI{$separador}";
+echo "Sebrae Tec{$separador}";
+echo "Na Medida{$separador}";
+*/
+echo "Regional{$separador}";
+echo "Resumo da Empresa{$separador}";
+echo "Confirmada{$separador}";
+echo $novalinha;
+
+$arrFaturamento = Vtx_Util_Array::annualRevenue();
+$arrStatus = Vtx_Util_Array::status();
+$categoria = Vtx_Util_Array::categoriaMpe();
+$tipoEmpresa = Vtx_Util_Array::categoriaPsmn();
+$genderArray = Vtx_Util_Array::gender();
+$findUsArray = Vtx_Util_Array::howFindUsPsmn();
+
+//$escolaridadeArray = $this->getAllEducations; // esta vindo NULL
+//$cargoArray = $this->getAllPosition->toArray(); // esta vindo NULL
+
+
+$i = 1;
+if (count($this->getAllEnterprise) >= 1) :
+   foreach ($this->getAllEnterprise as $enterprise) {
+       
+        $socialName = rr ( $enterprise->getSocialName() );
+        $inscricaoEstadual = ''; //rr2 ( $enterprise->getInscricaoEstadual() );
+        $fantasyName = rr ( $enterprise->getFantasyName() );
+        $enterpriseTypeId = $enterprise->getCategoryAwardId(); // 2; //
+        $CNPJ = trim($enterprise->getCnpj());
+        $CPF = trim($enterprise->getCpfUser());
+        $enterpriseType = ($enterpriseTypeId == '1')?$CNPJ:$CPF;
+        
+        $tipoEmpresaString = $tipoEmpresa[$enterpriseTypeId]; // '';//
+        
+        $email = trim($enterprise->getEmailDefault());
+        $telefoneFixo = $enterprise->getTelefone();
+        $creationDate = Vtx_Util_Date::format_dma(trim($enterprise->getCreationDate()));
+        $numeroEmpregados = $enterprise->getEmployeesQuantity();
+        $enderecoRua =  rr ( $enterprise->getStreetNameFull() );
+        $enderecoNumero =  rr ( $enterprise->getStreetNumber() );
+        $enderecoComplemento = rr (  $enterprise->getStreetCompletion() );
+        $enderecoBairro = rr ( $enterprise->getNeighName() );
+        $enderecoCidade = $enterprise->getCityName();
+        $enderecoEstado = $enterprise->getUf();
+        $enderecoCEP = rr ( $enterprise->getCep() );
+        
+        $faturamento = $arrFaturamento[$enterprise->getAnnualRevenue()];
+        $categoria = $enterprise->getDescriptionEca();
+        $setor = Vtx_Util_Array::categoriaStringMpe($enterprise->getCategoriaId());
+        $cnae = rr ( $enterprise->getCnae() );
+        $cnaeDescricao = '';// rr ( $enterprise->getCnaeDescricao() );
+        $nomeCompleto = $enterprise->getNomeCompletoUser();
+        $cargo = ($enterprise->getCargoPresident())?$enterprise->getCargoPresident():'--';
+        
+        $enderecoContatoRua =rr ( $enterprise->getUsStreetNameFull() );
+        $enderecoContatoNumero =rr ( $enterprise->getUsStreetNumber() );
+        $enderecoContatoComplemento =rr ( $enterprise->getUsStreetCompletion() );
+        $enderecoContatoBairro =rr ( $enterprise->getUsNeighName() );
+        $enderecoContatoCidade =rr ( $enterprise->getUsCityName() );
+        $enderecoContatoEstado =rr ( $enterprise->getUsUf() );
+        $enderecoContatoCEP =rr ( $enterprise->getUsCep() );
+        
+        $website = $enterprise->getSite();
+        $telefoneFixoContato = $enterprise->getTelefoneContato();
+        $celularContato = $enterprise->getCelularUser();
+        $emailContato = $enterprise->getEmailUser();
+        $dataNascimento = Vtx_Util_Date::format_dma($enterprise->getDataNascimentoUser());
+        $sexo = $genderArray[$enterprise->getSexoUser()];
+        $nivelEscoladidade = ($enterprise->getEducation())?$enterprise->getEducation():'--';
+        
+        $enterpriseUserId = $enterprise->getIdUser();
+        $userLogInscricao = ($enterpriseUserId == $enterprise->getDigitadorLogInscricaoUserIdLog())?true:false;
+        $userDigitadorLogGerouDevolutiva = ($enterpriseUserId == $enterprise->getDigitadorLogGerouDevolutivaUserIdLog())?true:false;
+        
+        $digitadorLogInscricao = ($userLogInscricao)?'':rr($enterprise->getDigitadorLogInscricao());
+        //$logInscricao = rr($enterprise->getLogInscricao());
+        
+        $digitadorLogGerouDevolutiva = ($userDigitadorLogGerouDevolutiva)?'':rr($enterprise->getDigitadorLogGerouDevolutiva());
+        //$logGerouDevolutiva = rr($enterprise->getLogGerouDevolutiva());
+        
+        //if (!$enterprise->getCurrentStatus()) echo 'INATIVA: ';
+        //echo Vtx_Util_Date::format_dma($enterprise->getDataInscricao()); //Data de cadastro da empresa no Premio  
+
+        $companyHistory =rr ( $enterprise->getCompanyHistoryString() );
+        $verified = $enterprise->getSubscriptionVerified() == 1 ? 'Sim' : 'Não';
+        
+        $empretec=(true)?'Sim':'Não';
+        $negocioanegocio=(true)?'Sim':'Não';
+        $sebraeMais=(true)?'Sim':'Não';
+        $sei=(true)?'Sim':'Não';
+        $ali=(true)?'Sim':'Não';
+        $sebraetec=(true)?'Sim':'Não';
+        $namedida=(true)?'Sim':'Não';
+        /*
+        */
+        $regionalState = $enterprise->getRegionalState();
+        $regionalCity = $enterprise->getRegionalCity();
+        $regionalNeighborhood = $enterprise->getRegionalNeighborhood();
+
+        $regional = '';
+        if($regionalNeighborhood){
+            $regional = $regionalNeighborhood;
+        } elseif($regionalCity){
+            $regional = $regionalCity;
+        } elseif($regionalState){
+            $regional = $regionalState;
+        }
+        
+        $findUs = $findUsArray[$enterprise->getFindUsId()];
+        
+        echo $socialName ? $socialName : $enterpriseType; //Razao Social
+        echo $separador;
+        echo $CPF.$separador;
+        echo $fantasyName.$separador; //Nome Fantasia
+        echo $CNPJ.$separador; //CPF/CNPJ
+        echo $email.$separador;
+        echo $telefoneFixo.$separador;
+        
+        echo $creationDate.$separador; //Data de cadastro da empresa 
+        echo $numeroEmpregados.$separador; //Número de Empregados
+        echo $enderecoRua.$separador;
+        echo $enderecoNumero.$separador; 
+        echo $enderecoComplemento.$separador;
+        echo $enderecoBairro.$separador;
+        echo $enderecoCidade.$separador;
+        echo $enderecoEstado.$separador;
+        echo $enderecoCEP.$separador;
+        
+        
+        echo $tipoEmpresaString.$separador; // em branco, verificar
+        
+        
+        echo $faturamento.$separador;
+        echo $categoria.$separador;
+        echo $setor.$separador;
+        echo $cnae.$separador;
+        echo $cnaeDescricao.$separador;
+        echo $nomeCompleto.$separador;
+        echo $cargo.$separador;
+        echo $nivelEscoladidade.$separador;
+        
+        echo $CPF.$separador;
+        echo $enderecoContatoRua.$separador;
+        echo $enderecoContatoNumero.$separador;
+        echo $enderecoContatoComplemento.$separador;
+        echo $enderecoContatoBairro.$separador;
+        echo $enderecoContatoCidade.$separador;
+        echo $enderecoContatoEstado.$separador;
+        echo $enderecoContatoCEP.$separador;
+        
+        echo $website.$separador;
+        echo $telefoneFixoContato.$separador;
+        echo $celularContato.$separador;
+        echo $emailContato.$separador;
+        echo $dataNascimento.$separador;
+        echo $sexo.$separador;
+       // echo $nivelEscoladidade.$separador;
+
+        if ($this->isRanking) {
+            
+            $negocios = ($enterprise->getNegociosTotal()?$enterprise->getNegociosTotal():0);
+            $negocios = rr2(number_format($negocios,2,',','.')).'';
+            //$empree = ($enterprise->getPontosEmpreendedorismo()?$enterprise->getPontosEmpreendedorismo():0);
+            $empree = rr2(number_format($negocios,2,',','.')).'';
+            
+            echo $negocios."";
+            echo $separador; 
+            
+            if ($competitionId == 2013) {
+                echo $enterprise->getPontosEmpreendedorismo()."";
+                echo $separador; 
+            }
+            /*
+            */
+        } else {
+
+            echo $digitadorLogInscricao.$separador;
+            //echo $logInscricao.$separador;
+            echo $digitadorLogGerouDevolutiva.$separador;
+            
+        }
+        
+        echo $findUs.$separador;
+        /*
+        echo '--'.$separador;
+        echo $empretec.$separador;
+        echo $negocioanegocio.$separador;
+        echo $sebraeMais.$separador;
+        echo $sei.$separador;
+        echo $ali.$separador;
+        echo $sebraetec.$separador;
+        echo $namedida.$separador;
+        */
+        
+        echo $regional.$separador;
+        echo $companyHistory.$separador;
+        echo $verified.$separador;
+        
+        //echo $logGerouDevolutiva.$separador;
+        echo $novalinha; 
+        $i = $i + 1;
+   }
+   
+   echo $novalinha; 
+   
+   endif;
+

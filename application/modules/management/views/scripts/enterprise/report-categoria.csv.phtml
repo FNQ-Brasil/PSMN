@@ -1,0 +1,69 @@
+<?php
+//$this->setEncoding('UTF-8');
+echo "\xEF\xBB\xBF";
+
+function rr ($value)
+{
+    return str_replace(',','',str_replace(';', '', $value)); 
+}
+function rr2 ($value)
+{
+    return str_replace(',','.',$value); 
+}
+
+if ($this->request()->getActionName() == 'classificadas') {
+   // include 'classificadas.csv.phtml';
+  //  return;
+}
+
+/**
+view usada para gerar conteudo do fetchall em .CSV
+*/
+//CONFIGURACOES
+$separador = ";";
+$novalinha = "\n";
+
+
+echo "Categoria {$separador}Inscritas{$separador}Candidatas{$separador}Verificadas{$separador}Vencedora Bronze{$separador}Vencedora Prata{$separador}Vencedora Ouro{$separador}";
+echo $novalinha;
+
+$totalInscritas = $totalCandidatas = 0;
+    $categoriaMpe = array(
+            '1' => 'Agronegócio',
+            '2' => 'Artesanato',
+            '3' => 'Comércio',
+            '4' => 'Indústria',
+            '5' => 'Serviços'
+        );
+    
+$i = 1;
+if (count($this->dataReport) >= 1) :
+   foreach ($this->dataReport as $enterprise) :
+    
+        $totalInscritas += $inscritas = $enterprise->getInscritas();
+        $totalCandidatas += $candidatas = $enterprise->getCandidatas();
+                
+        echo $categoriaMpe[$enterprise->getCategoriaId()];
+        echo $separador;
+        echo $inscritas;
+        echo $separador;
+        echo $candidatas;
+        echo $separador;
+        echo '0';
+        echo $separador;
+        echo '0';
+        echo $separador;
+        echo '0';
+        echo $separador;
+        echo '0';
+        echo $separador;
+        echo $novalinha; 
+        $i = $i + 1;
+    endforeach;
+    
+
+   echo "Total das Categorias{$separador}$totalInscritas{$separador}$totalCandidatas{$separador}0{$separador}0{$separador}0{$separador}0{$separador}";
+   echo $novalinha;
+
+endif;
+

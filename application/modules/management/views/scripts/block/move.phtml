@@ -1,0 +1,53 @@
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="">
+    <h1 class="center">Bloco :: Trocar ordem</h1>
+    <a title="Voltar" id="back" href="<?php echo $this->baseUrl('management/block/'); ?>">Voltar</a>
+
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+    
+    <?php if ($this->blockMoveSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Bloco Movido com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+    
+    <form class="normal" method="POST" action="<?php echo $this->baseUrl('management/block/move/id/'. $this->blockRow->getId()); ?>">
+
+        <fieldset>
+
+            <label for="id">questionario / posição / Bloco Atual: </label>
+                <?php echo $this->blockRow->getQuestionnaireId().' - '.$this->blockRow->getDesignation().' - '.$this->blockRow->getValue(); ?>
+            <input  type="hidden" name="id" id="id" readonly="readonly" id="old_position" value="<?php echo $this->blockRow->getId(); ?>">
+            <br class="clear" />
+            <hr />
+            <label for="block_id_new_position">questionario / posição / Trocar com Bloco: </label>
+                <select name="block_id_new_position" id="block_id_new_position" class="w300 fancy">
+                    <?php foreach ($this->getAllBlock as $block) : ?>
+                        <?php if($block->getId() != $this->blockRow->getId() ) :?>
+                            <?php if($block->getQuestionnaireId() == $this->blockRow->getQuestionnaireId() ) : ?>
+                                <option value="<?php echo $block->getId(); ?>">
+                                    <?php echo $block->getQuestionnaireId().' - '. $block->getDesignation().' - '. $block->getValue(); ?>
+                                </option>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
+            <br class="clear" />
+
+        </fieldset>
+
+        <div class="clear"> </div>
+        <button type="submit" class="save">Finalizar</button>
+        <div class="clear"> </div>
+	</form>
+</div>

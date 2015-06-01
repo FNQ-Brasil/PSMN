@@ -1,0 +1,101 @@
+<?php //echo $this->headScript()->appendFile($this->baseUrl('js/questiontip/add.js')); ?>
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="">
+    <h1 class="center">Glossário</h1>
+
+
+    <?php if ($this->glossaryInsertSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Glossário adicionado com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->glossaryUpdateSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Glossário atualizado com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->glossaryDeleteSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Glossário excluído com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+    
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+
+
+ <form action="<?php echo $this->url(array('page' => $this->pageCount, 'format' => 'html')) ?>" id="frm" method="GET">
+        <fieldset>
+            <input type="hidden" id="orderByValue" name="orderBy" value="" />
+            <select class="sortBy hide">
+                <option value="">Termo &nbsp;</option>
+            </select>
+
+            <label for="name">Termo:</label>
+            <input tabindex="1" id="term" type="text" name="filter[term]" value="<?php if(isset($this->filter['term'])) echo $this->filter['term'];?>" size="18" value="" />
+
+            <button tabindex="16" style="float: right" type="submit" class="green small">
+                <span class="icon small" style="left: 3px; top: -2px;" data-icon="s"></span>
+            </button>
+        </fieldset>
+    </form>
+    
+        
+
+    <?php
+        echo $this->paginationControl(
+            $this->getAllGlossaries, null, null, array(/*'link' => $this->baseUrl('/xx')*/ )
+        );
+    ?>
+    <div class="clear"></div>
+    <table class="striped " border="0" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th style="width: 200px">Termo</th>
+               <!-- <th>Descrição</th> -->
+                <th class="lastTd">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <input type="hidden" name="id" value="<?php if($this->glossaryId) echo $this->glossaryId;?>">
+        <?php
+        if($this->getAllGlossaries) :
+            foreach ($this->getAllGlossaries as $key => $value) :
+            ?>
+                <tr>
+                    <th><?php echo $value->getTerm();?></th>
+                    <!--<td><?php //echo $value->getDescription();?></td> -->
+                    <td>
+                        <?php if ($this->loggedAllowed('edit', 'management:privilege')): ?>
+                            <a href="<?php echo $this->baseUrl('management/glossary/edit/id/'.$value->getId()); ?>" alt="editar"><span class="ico edit">Editar</span></a>
+                        <?php endif; ?>
+                        <?php if ($this->loggedAllowed('delete', 'management:privilege')): ?>
+                            <a href="<?php echo $this->baseUrl('management/glossary/delete/id/'.$value->getId()); ?>"><span class="ico delete">Excluir</span></a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php
+            endforeach;
+        endif;
+        ?>
+        </tbody>
+    </table>
+    <div class="clear"></div>
+    <?php echo $this->paginationControl($this->getAllGlossaries, null, null); ?>
+    <hr class="clear" />
+</div>

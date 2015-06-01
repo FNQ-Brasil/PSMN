@@ -1,0 +1,36 @@
+
+<hr />
+<div id="welcome">
+    <h3>Este é um teste</h3>
+    
+    <form method="POST" action="<?php echo $this->baseUrl() ?>">
+        <label><input type="text" name="description"></label>
+        <label><input type="text" name="plus"></label>
+        <label><input type="text" name="validation"></label>
+        <label><input type="hidden" value="1" name="contact_type_id"></label>
+        <label><input type="hidden" value="1" name="cooperative_id"></label>
+        <label><input type="hidden" value="1" name="user_id"></label>
+        <button type="submit" value="salvar">Adicionar Contato</button>
+    </form>
+
+</div>
+<hr />
+<?php if ($this->dataRow): ?>
+    Sucesso novo: [<?php echo $this->dataRow->getId() ?>] <?php echo $this->dataRow->getDescription() ?>
+<?php endif; ?>
+<hr />
+    <table>
+    <?php foreach ($this->geral as $linha): ?>
+        <tr style="border: 1px solid #000">
+            <td><?php echo ($this->dataRow and $this->dataRow->getId() == $linha->getId())? 'NOVO' : '-'; ?></td>
+            <td><?php echo $linha->getId(); ?></td>
+            <td><?php echo $linha->getDescription(); ?></td>
+            <td><?php echo $linha->getPlus(); ?></td>
+            <td><?php echo $linha->getValidation(); ?></td>
+            <td><?php echo $linha->getContactTypeId(); ?></td>
+            <td><?php echo $linha->getCooperativeId(); ?></td>
+            <td><?php echo $linha->getUserId(); ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </table>
+<hr />

@@ -1,0 +1,663 @@
+<?php
+if (!Zend_Auth::getInstance()->hasIdentity()
+      or  $this->userAuth()->getRoleId() == $this->configRegistry()->acl->roleEnterpriseId) {
+    // echo '<h1 class="title 22x">Fim das inscrições.</h1>';
+    // return;
+}
+
+$request = $this->request();
+$action = $request->getActionName();
+
+$this->headScript()
+    ->appendFile($this->baseUrl('js/address/capital.js'))
+    ->appendFile($this->baseUrl('js/questionnarie/register.js?v2222'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.metadata.js'))
+    ->prependFile($this->baseUrl('js/validation/jquery.validate.min.js'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.form322.min.js'));
+
+if ($request->getParam('controller') == 'enterprise') {
+    include APPLICATION_PATH . '/modules/management/views/scripts/menus/admin_menu.phtml';
+}
+
+$currentBlockIdEmpreendedorismo = Zend_Registry::get('configDb')->qstn->currentBlockIdEmpreendedorismo;
+$currentBlockIdNegocios = Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios;
+
+?>
+  <h1 class="title">
+    <?php echo  ($request->getActionName() == 'index')? 'Inscrição' : 'Edição de dados'; ?>
+  </h1>
+
+<?php
+//$enterprise->getHasEligibility()=='0'
+if ($this->hasEligibility != 0) {
+?>
+        <fieldset style="border: 1px solid #ccc; margin-top: 4px; width: 470px;" class="fontMeta">
+            <legend class=""></legend>
+<?php
+    switch ($this->hasEligibility) {
+        case 1:
+            echo '<br />';
+            ?>
+            <?php 
+              // <div style="height: 16px; width: 16px; float: left;" class="ineligibility1"></div> Faturamento e Data de abertura inválidos <br />
+            echo '<div style="width: 465px;" class="ineligibility1">Empresa não poderá participar deste ciclo, por ter sua data de abertura posterior, e seu faturamento superior, ao que dita o Regulamento do Prêmio. Seu cadastro, no entanto, foi realizado com sucesso. Caso deseje receber uma devolutiva sobre a Gestão, você precisará responder as questões que se seguem e redigir o Relato.</div>';
+            //echo '<br /><h2>A data de abertura e o faturamento da empresa não atende aos critérios conforme o regulamento.</h2>';
+            break;
+        case 2:
+            echo '<br />';
+            ?>
+            <?php 
+              //<div style="height: 16px; width: 16px; float: left;" class="ineligibility2"></div> Data de abertura inválida <br />
+            echo '<div style="width: 465px;" class="ineligibility2">Empresa não poderá participar deste ciclo, por ter sua data de abertura posterior ao que dita o Regulamento do Prêmio. Seu cadastro, no entanto, foi realizado com sucesso. Caso deseje receber uma devolutiva sobre a Gestão, você precisará responder as questões que se seguem e redigir o Relato.</div>';
+            //echo '<br /><h2>A data de abertura não atende aos critérios conforme o regulamento.</h2>';
+            break;
+        case 3:
+            echo '<br />';
+            ?>
+            <?php 
+              //<div style="height: 16px; width: 16px; float: left;" class="ineligibility3"></div> Faturamento inválido
+            echo '<div style="width: 465px;" class="ineligibility3">Empresa não poderá participar deste ciclo, por ter seu faturamento superior ao que dita o Regulamento do Prêmio. Seu cadastro, no entanto, foi realizado com sucesso. Caso deseje receber uma devolutiva sobre a Gestão, você precisará responder as questões que se seguem e redigir o Relato.</div>';
+            //echo '<br /><h2>O faturamento da empresa não atende aos critérios conforme o regulamento.</h2>';
+            break;
+        default:
+            break;
+    }
+?>
+        </fieldset>
+<?php
+}
+?>
+
+<?php if (!$this->editByAdmin) : ?>
+  <h4 class="subtitle">
+    <?php if ($action == 'index'): ?>
+        Esta área permite que a candidata realize o cadastro dos dados da Empresa e da Candidata.
+    <?php elseif (!$this->hasECAC): ?>
+        Complete seu cadastro, corrija-os caso ache necessário. 
+        É obrigatório o aceite do termo de participação.
+    <?php else: ?>
+        Verique seu cadastro, corrija-os caso ache necessário ou 
+        <a href="<?php echo $this->baseUrl('questionnaire/respond/index/block/' . $currentBlockIdNegocios); ?>" style="color: #999">
+            clique aqui para responder o <strong>Questionário Negócios</strong></a>.
+        <?php /* ?>
+            <?php */ ?>
+    <?php endif; ?>
+    <?php if ($this->logCadastroEmpresa and $this->editStatus) : ?>
+        <br />Cadastrado pelo: <strong><?php echo $this->logCadastroEmpresa['NomeCadastro']; ?>
+        </strong> ás 
+        <strong>
+            <?php 
+                if (isset($this->logCadastroEmpresa['CriadoEm'])) {
+                    echo Vtx_Util_Date::format_hora($this->logCadastroEmpresa['CriadoEm'],'HH:mm').'h'; 
+                }
+            ?>
+        </strong>
+    <?php endif; ?>
+  </h4>
+<?php endif; ?>
+
+  <?php if($this->subscriptionPeriodIsClosed and $action == 'index'): ?>
+    <div class="notice success">
+      <span data-icon="C" class="icon medium"></span>
+      Não é possível cadastrar uma nova candidata: As inscrições foram encerradas.
+      <a data-icon="x" class="icon close" href="#close"></a>
+    </div>
+  <?php else : ?>
+
+  <h5 class="campos-obrigatorios">(*) Campos com preenchimento obrigatório.</h5>
+  <?php if ($this->itemSucess): ?>
+      <div class="notice success">
+          <span data-icon="C" class="icon medium"></span>
+                  <?php echo 'Empresa inserida com sucesso.'; ?>
+          <a data-icon="x" class="icon close" href="#close"></a>
+      </div>
+  <?php endif; ?>
+
+  <div id="tabs">
+    <ul>
+      <li><a href="#tabs-1" tabindex="1" >1. Dados da Empresa</a></li>
+      <li style="width: 250px"><a href="#tabs-2" tabindex="2">2. Dados da Candidata</a></li>
+    </ul>
+    <form method="POST" class="normal" autocomplete="off" name="frmRegister"  id="frmRegister"
+        action="<?php echo $this->baseUrl( ($action == 'index')?
+            'questionnaire/register/index/format/json' :
+            'questionnaire/register/edit/id_key/'.$this->enterpriseIdKey.'/format/json'); ?>" >
+      <?php if ($this->editStatus) : ?>
+        <label class="label-control" for="Status">Status: </label>
+        <select tabindex="3" data-placeholder="Escolha" id="Status" class="fancy" style="width:140px;" name="enterprise[status]">
+            <option value=""></option>
+            <?php foreach (Vtx_Util_Array::status() as $key => $status) : ?>
+                <?php if ($this->registerEnterpriseData['status'] == $key): ?>
+                    <option value="<?php echo $key;?>" selected="selected">
+                        <?php echo $status;?>
+                    </option>
+                <?php else:?>
+                    <option value="<?php echo $key;?>"><?php echo $status;?></option>
+                <?php endif;?>
+             <?php endforeach;?>
+        </select>
+      <?php endif; ?>
+
+      <div id="tabs-1">
+        <fieldset>
+          <div class="help-block">Esta área permite que a candidata realize o cadastro dos dados da Empresa.</div>
+          <div class="error-box autoScroll" id="errors-tab-1" data-name-scroll="msgError2"></div>
+          <label class="label-control" for="CategoryAwardId">Categoria do premio: *</label>
+
+          <div class="line-radios">
+            <?php
+            $vazio = array('check' => '', 'classInput' => '','classSpan' => '');
+            $categoria = array('1' => $vazio,'2' => $vazio,'3' => $vazio);
+            if (isset($this->registerEnterpriseData['category_award_id'])) {
+                $categoria[$this->registerEnterpriseData['category_award_id']] = array(
+                    'check' => 'checked',
+                    'classInput' => 'selected',
+                    'classSpan' => 'checkedRadio'
+                );
+            }
+            ?>
+
+            <input tabindex="4" type="radio"
+                   class="category radio required <?php echo $categoria['1']['classInput'];?>"
+                <?php echo $categoria['1']['check'];?>
+                name="enterprise[category_award_id]" id="CategoryAwardId1" value="1" />
+            <label class="label-inline" for="CategoryAwardId1">
+                <span class="radio-button <?php echo $categoria['1']['classSpan'];?>"></span>
+              Pequenos neg&oacute;cios
+            </label>
+
+            <input tabindex="5" type="radio" class="category radio <?php echo $categoria['2']['classInput'];?>"
+                <?php echo $categoria['2']['check'];?>
+                name="enterprise[category_award_id]" id="CategoryAwardId2" value="2" />
+            <label class="label-inline" for="CategoryAwardId2">
+                <span class="radio-button <?php echo $categoria['2']['classSpan'];?>"></span>
+              Produtora Rural
+            </label>
+
+            <input tabindex="6" type="radio" class="category radio <?php echo $categoria['3']['classInput'];?>"
+                <?php echo $categoria['3']['check'];?>
+                name="enterprise[category_award_id]" id="CategoryAwardId3" value="3" />
+            <label class="label-inline" for="CategoryAwardId3">
+              <span class="radio-button <?php echo $categoria['3']['classSpan'];?>"></span>
+                Microempreendedora individual
+            </label>
+
+
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-45">
+            <label class="label-control" for="SocialName">Razão social: *</label>
+            <input tabindex="7" id="SocialName" type="text" maxlength="120" name="enterprise[social_name]"  class="w300 {required:true} input list-table-100"
+                value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['social_name']; } ?>"/>
+          </div>
+          <div class="list-table-45">
+            <label class="label-control" for="FantasyName">Nome fantasia: *</label>
+            <input tabindex="8" id="FantasyName" type="text" maxlength="80" name="enterprise[fantasy_name]" class="w300 {required:true} input list-table-100"
+                   value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['fantasy_name']; } ?>"/>
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="help-block other-data">
+              Produtora Rural, fornecer pelo menos 1 op&ccedil;&atilde;o dentre os registros (
+              CNPJ, Registro no Ministério da Pesca, Inscrição Estadual, NIRF ou DAP)</div>
+          <div class="list-table-30">
+            <label class="label-control">CNPJ</label>
+            <input tabindex="9" id="Cnpj" type="text" name="enterprise[cnpj]" size="18"  class="w140 input list-table-95 input-cnpj"
+                <?php // echo ($action == 'edit')?'readonly="readonly"':'' ?>
+                value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['cnpj']; } ?>"/>
+          </div>
+
+          <div class="list-table-30">
+            <label class="label-control" for="CreationDate">Data da abertura da empresa: *</label>
+            <input tabindex="10" id="CreationDate" type="text" size="10" maxlength="10" name="enterprise[creation_date]"  class="w140 datepicker {required:true} input input-date list-table-95" alt="date"
+                value="<?php if ($this->registerEnterpriseData) { echo Vtx_Util_Date::format_dma($this->registerEnterpriseData['creation_date']); } ?>"/>
+          </div>
+          <div class="list-table-30">
+            <label class="label-control" for="EmployeesQuantity">Número de empregados: *</label>
+            <input tabindex="11" id="EmployeesQuantity" type="text" size="10" maxlength="10" name="enterprise[employees_quantity]" class="w140 {required:true} input list-table-95"
+                value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['employees_quantity']; } ?>"/>
+          </div>
+        </fieldset>
+        <fieldset class="other-data">
+          <div class="list-table-30">
+            <label class="label-control" for="RegisterMinistryFisher">Registro no Ministério da Pesca:</label>
+            <input tabindex="12" id="RegisterMinistryFisher" type="text" maxlength="40" name="enterprise[register_ministry_fisher]" class="w300 input input-text list-table-95"
+                   value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['register_ministry_fisher']; } ?>"/>
+          </div>
+
+          <div class="list-table-30">
+            <label class="label-control">Inscri&ccedil;&atilde;o Estadual</label>
+            <input tabindex="13" id="StateRegistration" type="text" maxlength="20" name="enterprise[state_registration]" class="w300 input list-table-95 input-inscricao"
+                value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['state_registration']; } ?>"/>
+          </div>
+          <div class="list-table-30">
+            <label class="label-control">DAP</label>
+            <input tabindex="14" id="Dap" type="text" maxlength="40" name="enterprise[dap]" class="w300 input list-table-95 input-text"
+                value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['dap']; } ?>"/>
+          </div>
+        </fieldset>
+        <fieldset class="other-data">
+          <div class="list-table-45">
+            <label class="label-control">NIRF</label>
+            <input tabindex="15" id="Nirf" type="text" maxlength="50" name="enterprise[nirf]" class="w300 input list-table-95 input-text"
+                value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['nirf']; } ?>"/>
+          </div>
+          <div class="list-table-45">
+            <label class="label-control">Tamanho da Propriedade (Hectares)</label>
+            <input tabindex="16" id="FarmSize" type="text" maxlength="12" name="enterprise[farm_size]" class="w300 input list-table-95 input-text"
+                value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['farm_size']; } ?>"/>
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-20">
+            <label class="label-control" for="Cep">CEP: *</label>
+            <input tabindex="17" id="Cep" type="text" size="9" name="addressEnterprise[cep]" maxlength="9" size="9" class="w80 {required:true} input input-cep list-table-100"
+                value="<?php if ($this->registerAddressEnterpriseData) { echo $this->registerAddressEnterpriseData['cep']; } ?>" />
+          </div>
+          <div class="list-table-30">
+            <label class="label-control" for="NameFullLog">Endereço: *</label>
+            <input tabindex="18" id="NameFullLog" type="text" size="50" maxlength="200" name="addressEnterprise[name_full_log]" class="w300 input list-table-100 {required:true}" value="<?php if ($this->registerAddressEnterpriseData) { echo $this->registerAddressEnterpriseData['name_full_log']; } ?>" />
+          </div>
+          <div class="list-table-15">
+            <label class="label-control" for="StreetNumber" class="">Número: *</label>
+            <input tabindex="19" id="StreetNumber" type="text" size="10" maxlength="10" name="addressEnterprise[street_number]" class="w140 {required:true} input list-table-100" value="<?php if ($this->registerAddressEnterpriseData) { echo $this->registerAddressEnterpriseData['street_number']; } ?>" />
+          </div>
+          <div class="list-table-20">
+            <label class="label-control" for="StreetCompletion">Complemento:</label>
+            <input tabindex="20" id="StreetCompletion" type="text" maxlength="70" name="addressEnterprise[street_completion]" class="w300 input list-table-100" value="<?php if ($this->registerAddressEnterpriseData) { echo $this->registerAddressEnterpriseData['street_completion']; } ?>"  />
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-30">
+            <label class="label-control" for="Uf">Estado: *</label>
+            <select data-placeholder="Escolha" tabindex="21" id="Uf" class="fanc2y {required:true}" required="required" style="width:240px;" name="addressEnterprise[state_id]">
+                <option value=""></option>
+                <?php foreach ($this->getAllStates as $states) : ?>
+                    <?php if ($states->getId() == $this->registerAddressEnterpriseData['state_id']) : ?>
+                        <option value="<?php echo $states->getId();?>" selected="selected"><?php echo $states->getName();?></option>
+                    <?php else : ?>
+                        <option value="<?php echo $states->getId();?>"><?php echo $states->getName();?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="list-table-30">
+            <label class="label-control" for="CityId">Cidade: *</label>
+            <select data-placeholder="Escolha o estado" tabindex="22" id="CityId" class="fancy {required:true}" style="width:240px;" name="addressEnterprise[city_id]">
+                <option value=""></option>
+                <?php if (isset($this->getAllCities)) : ?>
+                <?php $currentCityEnt = isset($this->registerAddressEnterpriseData['city_id'])? $this->registerAddressEnterpriseData['city_id']:null; ?>
+                    <?php foreach ($this->getAllCities as $cities) : ?>
+
+                        <?php if ($cities->getId() == $currentCityEnt) : ?>
+                            <option value="<?php echo $cities->getId();?>" selected="selected"><?php echo $cities->getName();?></option>
+                        <?php else : ?>
+                            <option value="<?php echo $cities->getId();?>"><?php echo $cities->getName();?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+          </div>
+          <div class="list-table-30">
+            <label class="label-control" for="NeighborhoodId" class="xnoWidth">Bairro: *</label>
+            <select data-placeholder="Escolha a cidade" tabindex="23" id="NeighborhoodId" class="fancy {required:true}" style="width:240px;" name="addressEnterprise[neighborhood_id]">
+                <option value=""></option>
+                    <?php if (isset($this->getAllNeighborhoods)) : ?>
+                <?php $currentNeighborhoodEnt = (isset($this->registerAddressEnterpriseData['neighborhood_id'])? $this->registerAddressEnterpriseData['neighborhood_id']:null); ?>
+                        <?php foreach ($this->getAllNeighborhoods as $neighborhood) : ?>
+                            <?php if ($neighborhood->getId() == $currentNeighborhoodEnt) : ?>
+                                <option value="<?php echo $neighborhood->getId();?>" selected="selected"><?php echo $neighborhood->getName();?></option>
+                            <?php else : ?>
+                                <option value="<?php echo $neighborhood->getId();?>"><?php echo $neighborhood->getName();?></option>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+            </select>
+            <?php //<input tabindex="22" id="Neighborhood" type="text" size="200" maxlength="200" name="addressEnterprise[neighborhood]" class="w300 {required:true}" value="<?php if ($this->registerAddressEnterpriseData) { echo $this->registerAddressEnterpriseData['neighborhood']; } ? >" /> ?>
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-45">
+            <label class="label-control" for="Phone">Telefone: *</label>
+            <input tabindex="24" id="Phone" type="text" size="20" maxlength="20" name="enterprise[phone]" value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['phone']; } ?>" class="w140 {required:true} input input-phone list-table-100" />
+          </div>
+          <div class="list-table-45">
+            <label class="label-control" for="Site">Site:</label>
+            <input tabindex="25" id="Site" type="text" name="enterprise[site]" class="w300 input list-table-100" value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['site']; } ?>" />
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-45">
+            <label class="label-inline" for="hasntEmail">Não possuo e-mail:</label>
+            <input tabindex="26" type="checkbox" id="hasntEmail" class="hasntEmail checkbox"  value="1"  name="enterprise[hasnt_email]" <?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['hasnt_email'] == 1 ? 'checked="checked"': ''; } ?> />
+          </div>
+          <div class="emailField list-table-45">
+            <label class="label-control" for="EmailDefault" class="xnoWidth">E-mail da empresa: *</label>
+            <input tabindex="27" id="EmailDefault" type="text" size="80" maxlength="120" name="enterprise[email_default]" value="<?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['email_default']; } ?>" class="input input-email list-table-100 w300 {required:true, email:true, messages:{email:'Entre com endereço de e-mail válido.'}}" />
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-45">
+            <label class="label-control" for="AnnualRevenue">Porte da Empresa em 2014 (R$): *</label>
+            <select tabindex="28" data-placeholder="Escolha" id="AnnualRevenue" class="fancy {required:true}" style="width:350px;" name="enterprise[annual_revenue]">
+              <option value=""></option>
+              <?php foreach (Vtx_Util_Array::annualRevenuePsmn() as $key => $annualRevenue) : ?>
+                <?php if ($this->registerEnterpriseData['annual_revenue'] == $key): ?>
+                  <option value="<?php echo $key;?>" selected="selected"><?php echo $annualRevenue;?></option>
+                <?php else:?>
+                  <option value="<?php echo $key;?>"><?php echo $annualRevenue;?></option>
+                <?php endif;?>
+               <?php endforeach;?>
+            </select>
+          </div>
+          <div class="list-table-45">
+            <label class="label-control" for="CategorySectorId">Setor: *</label>
+            <select tabindex="29" data-placeholder="Escolha" id="CategorySectorId" class="fancy {required:true}"  style="width:390px;" name="enterprise[category_sector_id]">
+              <option value=""></option>
+              <?php foreach (Vtx_Util_Array::categorySector() as $key => $categorySector) : ?>
+                <?php if ($key == $this->registerEnterpriseData['category_sector_id']) : ?>
+                  <option value="<?php echo $key;?>" selected="selected"><?php echo $categorySector;?></option>
+                <?php else : ?>
+                  <option value="<?php echo $key;?>"><?php echo $categorySector;?></option>
+                <?php endif; ?>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </fieldset>
+        <fieldset>
+          <label class="label-inline" for="Cnae">Atividade Econômica (Código CNAE):</label>
+          <input tabindex="-1" id="Cnae" type="text" readonly="true" name="enterprise[cnae]" class="{required:true} w300 input input-text list-table-35" value="<?php if ($this->registerEnterpriseData['cnae']) { echo $this->registerEnterpriseData['cnae']; } ?>" />
+          <button tabindex="30" type="button" id="bt-search-cnae" rel="psmn_modal" name="Busca CNAE" href="#search-cnae">Buscar CNAE</button>
+        </fieldset>
+
+        <fieldset>
+
+          <label class="label-control" for="CompanyHistory">Descreva, de forma resumida, quais os principais
+            produtos e/ou serviços de sua empresa e seus principais clientes:</label>
+            <textarea tabindex="31" id="CompanyHistory" name="enterprise[company_history]" class="{required:true} w300 list-table-100"><?php if ($this->registerEnterpriseData['company_history']) { echo $this->registerEnterpriseData['company_history']; }  ?></textarea>
+        </fieldset>
+
+        <a href="#tabs-2"  tabindex="32" class="form-button-tab-nav btn-submit" style="font-size: 16px"><span class="icon" data-icon=""></span> <b>Próximo</b></a>
+     <p>&nbsp;</p>
+      </div>
+      <div id="tabs-2">
+        <div class="help-block">Esta área permite que a candidata realize o cadastro dos dados pessoais.</div>
+        <div class="error-box autoScroll" id="errors-tab-2" data-name-scroll="msgError"></div>
+        <fieldset>
+          <div class="list-table-30">
+            <label class="label-control" for="Name">Nome Completo: *</label>
+            <input tabindex="33" id="Name" type="text" name="president[name]" maxlength="80" class="w300 {required:true} input list-table-100" value="<?php if (isset($this->registerPresidentData['name'])) { echo $this->registerPresidentData['name']; } ?>" />
+          </div>
+          <div class="list-table-30">
+              <input  id="NickName" type="hidden" name="president[nick_name]"  value="" />
+              <!--<label class="label-control" for="NickName">Nome para tratamento: *</label>
+               <input tabindex="32" id="NickName" type="text" name="president[nick_name]" maxlength="80" class="w300 input list-table-100" value="<?php if (isset($this->registerPresidentData['nick_name'])) { echo $this->registerPresidentData['nick_name']; } ?>" />
+             -->
+            </div>
+          <div class="list-table-30">
+            <label class="label-control" for="BornDate">Data de nascimento: *</label>
+            <input tabindex="33" id="BornDate" type="text" name="president[born_date]" maxlength="10" class="w140 datepicker list-table-100 {required:true} input input-date" value="<?php if (isset($this->registerPresidentData['born_date'])) { echo Vtx_Util_Date::format_dma($this->registerPresidentData['born_date']); } ?>" />
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-30">
+            <label class="label-control" for="Cpf">CPF: *</label>
+            <input tabindex="34" id="Cpf" type="text" name="president[cpf]" size="14" maxlength="14" <?php echo ($action == 'edit')?'readonly="readonly"':'' ?> class="w140 {required:true} input list-table-100 input-cpf" value="<?php if (isset($this->registerPresidentData['cpf'])) { echo $this->registerPresidentData['cpf']; } ?>" />
+          </div>
+          <div class="list-table-30">
+            <label class="label-control" for="PositionId">Cargo: *</label>
+            <select tabindex="35" data-placeholder="Escolha" id="PositionId" class="fancy {required:true} list-table-100" style="width:240px" name="president[position_id]">
+              <option value=""></option>
+              <?php foreach ($this->getAllPositions as $position) : ?>
+                  <?php $position_id = isset($this->registerPresidentData['position_id'])?$this->registerPresidentData['position_id']:null; ?>
+                  <?php if ($position->getId() == $position_id): ?>
+                      <option value="<?php echo $position->getId();?>" selected="selected"><?php echo $position->getDescription();?></option>
+                  <?php else:?>
+                      <option value="<?php echo $position->getId();?>"><?php echo $position->getDescription();?></option>
+                  <?php endif;?>
+               <?php endforeach;?>
+            </select>
+          </div>
+          <div class="list-table-30">
+            <label  class="label-control" for="EducationId">Nível de escolaridade: *</label>
+            <select tabindex="36" data-placeholder="Escolha" id="EducationId" class="fancy" style="width:240px;" name="president[education_id]">
+              <option value=""></option>
+              <?php foreach ($this->getAllEducations as $education) : ?>
+                    <?php $education_id = (isset($this->registerPresidentData['education_id'])?$this->registerPresidentData['education_id']:null); ?>
+                  <?php if ($education_id == $education->getId()): ?>
+                    <option value="<?php echo $education->getId();?>" selected="selected"><?php echo $education->getDescription();?></option>
+                  <?php else:?>
+                    <option value="<?php echo $education->getId();?>"><?php echo $education->getDescription();?></option>
+                  <?php endif;?>
+               <?php endforeach;?>
+            </select>
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-20">
+            <label class="label-control" for="CepPresident">CEP: *</label>
+            <input tabindex="37" id="CepPresident" type="text" size="9" name="addressPresident[cep]" maxlength="9" size="9" value="<?php if ($this->registerAddressPresidentData) { echo $this->registerAddressPresidentData['cep']; } ?>" class="w80 {required:true} input input-cep list-table-100" />
+          </div>
+          <div class="list-table-30">
+            <label class="label-control" for="NameFullLogPresident">Endereço: *</label>
+            <input tabindex="38" id="NameFullLogPresident" type="text" maxlength="200" class="w300 {required:true} input list-table-100" name="addressPresident[name_full_log]" value="<?php if ($this->registerAddressPresidentData) { echo $this->registerAddressPresidentData['name_full_log']; } ?>" />
+          </div>
+          <div class="list-table-15">
+            <label class="label-control" for="StreetNumberPresident" class="">Número: *</label>
+            <input tabindex="39" id="StreetNumberPresident" type="text" size="10" maxlength="10" name="addressPresident[street_number]" class="w140 {required:true} input list-table-100" value="<?php if ($this->registerAddressPresidentData) { echo $this->registerAddressPresidentData['street_number']; } ?>" />
+          </div>
+          <div class="list-table-20">
+            <label class="label-control" for="StreetCompletionPresident">Complemento:</label>
+            <input tabindex="40" id="StreetCompletionPresident" type="text" maxlength="70" name="addressPresident[street_completion]" class="w300 input list-table-100" value="<?php if ($this->registerAddressPresidentData) { echo $this->registerAddressPresidentData['street_completion']; } ?>"  />
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-30">
+            <label class="label-control" for="UfPresident" class="">Estado: *</label>
+            <select data-placeholder="Escolha" tabindex="41" id="UfPresident" class="fancy {required:true}" style="width:240px;" name="addressPresident[state_id]">
+              <option value=""></option>
+              <?php foreach ($this->getAllStates as $states) : ?>
+                <?php if ($states->getId() == $this->registerAddressPresidentData['state_id']) : ?>
+                  <option value="<?php echo $states->getId();?>" selected="selected"><?php echo $states->getName();?></option>
+                <?php else : ?>
+                  <option value="<?php echo $states->getId();?>"><?php echo $states->getName();?></option>
+                <?php endif; ?>
+              <?php endforeach; ?>
+            </select>
+            </div>
+            <div class="list-table-30">
+              <label class="label-control" for="CityIdPresident">Cidade: *</label>
+              <select data-placeholder="Escolha o estado" tabindex="42" id="CityIdPresident" class="fancy {required:true}" style="width:240px;" name="addressPresident[city_id]">
+                <option value=""></option>
+                <?php if (isset($this->getAllCitiesPresident)) : ?>
+                  <?php foreach ($this->getAllCitiesPresident as $cities) : ?>
+                    <?php if ($cities->getId() == (isset($this->registerAddressPresidentData['city_id'])?$this->registerAddressPresidentData['city_id']:null) ) : ?>
+
+                       <option value="<?php echo $cities->getId();?>" selected="selected"><?php echo $cities->getName();?></option>
+                    <?php else : ?>
+
+                      <option value="<?php echo $cities->getId();?>"><?php echo $cities->getName();?></option>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+              </select>
+            </div>
+          <div class="list-table-30">
+            <label class="label-control" for="NeighborhoodIdPresident" class="xnoWidth">Bairro: *</label>
+            <select data-placeholder="Escolha a cidade" tabindex="43" id="NeighborhoodIdPresident" class="fancy {required:true}" style="width:240px;" name="addressPresident[neighborhood_id]">
+                <option value=""></option>
+                <?php if (isset($this->getAllNeighborhoodsPresident)) : ?>
+                  <?php foreach ($this->getAllNeighborhoodsPresident as $neighborhood) : ?>
+                    <?php if ($neighborhood->getId() == (isset($this->registerAddressPresidentData['neighborhood_id'])?$this->registerAddressPresidentData['neighborhood_id']:null )) : ?>
+                      <option value="<?php echo $neighborhood->getId();?>" selected="selected"><?php echo $neighborhood->getName();?></option>
+                    <?php else : ?>
+                      <option value="<?php echo $neighborhood->getId();?>"><?php echo $neighborhood->getName();?></option>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+          </div>
+        </fieldset>
+        <fieldset>
+          <div class="list-table-45">
+            <label class="label-control" for="presidentPhone">Telefone Fixo: *</label>
+            <input tabindex="44" id="presidentPhone" type="text" name="president[phone]" maxlength="20" class="w140 {required:true} input input-phone list-table-100" value="<?php if (isset($this->registerPresidentData['phone'])) { echo $this->registerPresidentData['phone']; } ?>" />
+          </div>
+          <div class="list-table-45">
+            <label class="label-control" for="presidentCellPhone">Celular: *</label>
+            <input tabindex="45" id="presidentCellPhone" type="text" name="president[cellphone]" maxlength="20" class="w140 {required:true} input input-phone list-table-100" value="<?php if (isset($this->registerPresidentData['cellphone'])) { echo $this->registerPresidentData['cellphone']; } ?>" />
+          </div>
+        </fieldset>
+        <fieldset>
+         <div class="list-table-45">
+            <label class="label-inline" for="hasntEmail">Não possuo e-mail:</label>
+            <input tabindex="47" type="checkbox" id="hasntEmail" class="hasntEmail checkbox"  value="1"  name="enterprise[hasnt_email]" <?php if ($this->registerEnterpriseData) { echo $this->registerEnterpriseData['hasnt_email'] == 1 ? 'checked="checked"': ''; } ?>/>
+          </div>
+        <div class="emailField list-table-45">
+            <label class="label-control" for="Email">E-mail: *</label>
+            <input tabindex="46" id="Email" type="text" name="president[email]" maxlength="60" class="w300 {required:true, email:true, messages:{email:'Entre com endereço de e-mail válido.'}}  input list-table-100" value="<?php if (isset($this->registerPresidentData['email'])) { echo $this->registerPresidentData['email']; } ?>" />
+         </div>
+
+        </fieldset>
+        <fieldset>
+          <div class="list-table-100">
+            <label class="label-control" for="FindUsId">Como você tomou conhecimento do Prêmio SEBRAE Mulher de Negócios? *</label>
+            <select tabindex="48" data-placeholder="Escolha" id="FindUsId" class="fancy w300 {required:true}" style="width: 300px" name="president[find_us_id]">
+              <option value=""></option>
+              <?php foreach (Vtx_Util_Array::howFindUsPsmn() as $key => $findUs) : ?>
+                <?php $find_us_id = isset($this->registerPresidentData['find_us_id'])?$this->registerPresidentData['find_us_id']:null;?>
+                <?php if ($find_us_id == $key): ?>
+                  <option value="<?php echo $key;?>" selected="selected"><?php echo $findUs;?></option>
+                <?php else:?>
+                  <option value="<?php echo $key;?>"><?php echo $findUs;?></option>
+                <?php endif;?>
+              <?php endforeach;?>
+            </select>
+          </div>
+        </fieldset>
+        <fieldset>
+          <label class="label-control" for="Programas" class="inline">Já participou de algum destes programas?</label>
+          <?php foreach ($this->getAllPresidentProgramType as $programType) : ?>
+          <label class="label-inline">
+            <span class="label-checkbox"><?php echo $programType->getDescription(); ?></span>
+            <input tabindex="49" type="checkbox" name="presidentProgram[<?php echo $programType->getElementName(); ?>]"
+              value="<?php echo Zend_Registry::get('configDb')->competitionId; ?>" class="checkbox"
+              <?php if (isset($this->registerPresidentProgramData)) : ?>
+                <?php foreach ($this->registerPresidentProgramData as $regPresidentProgram) : ?>
+                  <?php if($regPresidentProgram->getPresidentProgramTypeId() == $programType->getId()) : ?>
+                    <?php echo ($regPresidentProgram->getCompetitionId() == Zend_Registry::get('configDb')->competitionId)?'checked="checked"':''; ?>
+                  <?php endif; ?>
+                  <?php endforeach; ?>
+              <?php endif; ?>
+            />
+
+          </label>
+
+          <?php endforeach; ?>
+        </fieldset>
+        <fieldset>
+           <?php if ($action == 'edit') : ?>
+            <div class="list-table-30">
+              <label class="label-inline" for="changePassword">Deseja mudar a senha ?</label>
+              <input tabindex="50" type="checkbox" id="changePassword" class="changePassword checkbox"  value="1"  name="user[change_password]"/>
+            </div>
+            <div class="list-table-30">
+              <label class="label-control" for="Keypass">Senha: *</label>
+              <input tabindex="51" id="Keypass" class="w187 qual input list-table-100 disabled" disabled="disabled" type="password" name="user[keypass]" size="128" maxlength="128"  value="" />
+            </div>
+            <div class="list-table-30">
+              <label class="label-control" for="KeypassConfirm">Confirmação de senha: *</label>
+              <input tabindex="52" id="KeypassConfirm" class="w187 qual input list-table-100 disabled" disabled="disabled" type="password" name="user[keypass_confirm]" size="128" maxlength="128"  value="" />
+            </div>
+          <?php else : ?>
+            <div class="list-table-45">
+              <label class="label-control" for="Keypass">Senha: *</label>
+              <input tabindex="53" id="Keypass" type="password" required="required" name="user[keypass]" size="128" maxlength="128" class="w187 input list-table-100 {required:true}" value="<?php if ($this->registerUserData) { echo $this->registerUserData['keypass']; } ?>" />
+            </div>
+            <div class="list-table-45">
+              <label class="label-control" for="Keypass">Confirmação de senha: *</label>
+              <input tabindex="54" id="Keypass" type="password" name="user[keypass_confirm]" size="128" maxlength="128" class="w187 input list-table-100 {required:true}" value="<?php if ($this->registerUserData) { echo $this->registerUserData['keypass_confirm']; } ?>" />
+            </div>
+          <?php endif; ?>
+        <?php
+        $password_hint = isset($this->registerUserData['password_hint'])?$this->registerUserData['password_hint']:null;
+        ?>
+        <div class="list-table-100">
+            <label class="label-control" for="PasswordHint">Dica de senha:
+                <input tabindex="55" type="text" name="user[password_hint]" class="input list-table-100 valid"
+                       id="PasswordHint" value="<?php echo $password_hint; ?>"/>
+            </label>
+        </div>
+        </fieldset>
+        <fieldset>
+          <div class="line-radios">
+          <label class="label-control" for="Newsletter">Deseja receber informações do SEBRAE ?</label>
+          <?php
+            $yes_no = array('checkedS'=>'','checkedN'=>'checked="checked"','disabled'=>'disabled="disabled"','disabledClass'=>'disabled');
+            $no_yes = array('checkedS'=>'checked="checked"','checkedN'=>'','disabled'=>'','disabledClass'=>'');
+            $arrayNewsletter = $yes_no;
+            if (
+              (isset($this->registerPresidentData['newsletter_email']) and $this->registerPresidentData['newsletter_email'] == '1') or
+              (isset($this->registerPresidentData['newsletter_mail']) and $this->registerPresidentData['newsletter_mail'] == '1') or
+              (isset($this->registerPresidentData['newsletter_sms']) and $this->registerPresidentData['newsletter_sms'] == '1')
+              ) {
+              $arrayNewsletter = $no_yes;
+            }
+          ?>
+          <input tabindex="56" name="newsletter" type="radio" value="1" id="NewsletterS" <?php echo $arrayNewsletter['checkedS']; ?> />
+          <label class="label-inline" for="NewsletterS">              <!--/<span class="radio-button"></span>-->
+                <span style="display: block; margin-left: 10px; margin-top: 6px; background: none !important;"></span><br />Sim</label>
+          <input tabindex="57" name="newsletter" type="radio" value="0" id="NewsletterN" <?php echo $arrayNewsletter['checkedN']; ?> />
+          <label class="label-inline" for="NewsletterN">              <!--/<span class="radio-button"></span>-->
+                <span style="display: block; margin-left: 10px; margin-top: 6px; background: none !important;"></span><br />Não</label>
+
+          </div>
+          <div id="newsTypes" class="list-table-100 pt15 <?php echo $arrayNewsletter['disabledClass']; ?>">
+            <label for="NewsletterType" class="label-control inline">Caso afirmativo, selecione o seu meio de contato preferido:</label>
+            <div class="list-table-30">
+
+              <label class="label-inline" for="NewsletterEmail">
+                Email
+                <input tabindex="58" type="checkbox" name="president[newsletter_email]" class="qual" id="NewsletterEmail" value="1" <?php echo (isset($this->registerPresidentData['newsletter_email']) and $this->registerPresidentData['newsletter_email'] == '1')?'checked="checked"':''; ?> />
+              </label>
+
+            </div>
+            <div class="list-table-30">
+              <label class="label-inline" for="NewsletterMail">
+                Mala direta
+                <input tabindex="59" type="checkbox" name="president[newsletter_mail]" class="qual" id="NewsletterMail" value="1" <?php echo (isset($this->registerPresidentData['newsletter_mail']) and $this->registerPresidentData['newsletter_mail'] == '1')?'checked="checked"':''; ?> />
+              </label>
+            </div>
+            <div class="list-table-30">
+              <label class="label-inline" for="NewsletterSms">
+                SMS
+                <input tabindex="60" type="checkbox" name="president[newsletter_sms]" class="qual" id="NewsletterSms" value="1" <?php echo (isset($this->registerPresidentData['newsletter_sms']) and $this->registerPresidentData['newsletter_sms'] == '1')?'checked="checked"':''; ?> />
+              </label>
+            </div>
+          </div>
+
+        </fieldset>
+
+          <?php if (!$this->hasECAC) : ?>
+            <fieldset>
+                <label class="label-inline term-participation" for="Agree" class="inline" style="font-weight: bold; margin-right: 50px; ">
+                <?php /* ?>
+                    Inscrições encerradas ciclo 2015.
+                <?php */ ?>
+                </label>
+                <input tabindex="61" type="checkbox" name="president[agree] fleft" id="Agree" value="1" class="checkbox {required:true}" checked="checked" />
+                <label class="label-inline term-participation" for="Agree" class="inline" style="font-weight: bold; margin-right: 50px; ">Aceito participar do Prêmio SEBRAE Mulher de Negócios, conforme regulamento do Prêmio, ciclo 2015</label>
+            </fieldset>
+          <?php endif; ?>
+
+        <?php  ?>
+        <button class="large btn-submit" type="submit" style="float: right; font-size: 16px;"><span class="icon" data-icon=""></span> <b>Salvar</b></button>
+        <?php if ($this->loggedAllowed('edit', 'questionnaire:register')): ?>
+         <?php endif; ?>
+      <p>&nbsp;</p>
+      </div>
+  </form>
+  </div>
+
+  <?php endif; ?>

@@ -1,0 +1,57 @@
+<?php
+//$this->setEncoding('UTF-8');
+echo "\xEF\xBB\xBF";
+
+function rr ($value)
+{
+    return str_replace(',','',str_replace(';', '', $value)); 
+}
+function rr2 ($value)
+{
+    return str_replace(',','.',$value); 
+}
+
+if ($this->request()->getActionName() == 'classificadas') {
+   // include 'classificadas.csv.phtml';
+  //  return;
+}
+
+/**
+view usada para gerar conteudo do fetchall em .CSV
+*/
+//CONFIGURACOES
+$separador = ";";
+$novalinha = "\n";
+
+
+echo "Categoria do Prêmio{$separador}Inscritas{$separador}Candidatas{$separador}Verificadas{$separador}";
+echo $novalinha;
+
+$categoriaPremio = Vtx_Util_Array::categoryAward();
+$totalInscritas = $totalCandidatas = 0;
+
+$i = 1;
+if (count($this->dataReport) >= 1) :
+   foreach ($this->dataReport as $enterprise) :
+    
+        $totalInscritas += $inscritas = $enterprise->getInscritas();
+        $totalCandidatas += $candidatas = $enterprise->getCandidatas();
+                
+        echo $categoriaPremio[$enterprise->getCategoryAwardId()];
+        echo $separador;
+        echo $inscritas;
+        echo $separador;
+        echo $candidatas;
+        echo $separador;
+        echo '0';
+        echo $separador;
+        echo $novalinha; 
+        $i = $i + 1;
+    endforeach;
+    
+
+   echo "Total das Categorias do Prêmio{$separador}$totalInscritas{$separador}$totalCandidatas{$separador}0{$separador}";
+   echo $novalinha;
+
+endif;
+

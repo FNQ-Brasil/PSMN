@@ -1,0 +1,133 @@
+<?php
+
+/**
+view usada para gerar conteudo do fetchall em .CSV
+*/
+//CONFIGURACOES
+$separador = ";";
+$novalinha = "\n";
+// FIM CONFIGURACOES
+
+$competitionId = (isset($this->filter['competition_id']))? $this->filter['competition_id'] : $this->competitionId;
+
+echo "Razão Social{$separador}CPF{$separador}Nome Fantasia{$separador}CNPJ{$separador}Email{$separador}UF{$separador}";
+echo "Pts. Geral{$separador}";
+echo "Pts. Negócios{$separador}";
+echo "Média Relato{$separador}";
+if ($competitionId == 2013) {
+    echo "Pts. Empreend.{$separador}";
+}
+echo "Prêmio{$separador}";
+echo "Avaliador 1{$separador}";
+echo "Login 1{$separador}";
+echo "Status 1{$separador}";
+echo "Avaliador 2{$separador}";
+echo "Login 2{$separador}";
+echo "Status 2{$separador}";
+echo "Avaliador 3{$separador}";
+echo "Login 3{$separador}";
+echo "Status 3{$separador}";
+echo $novalinha;
+
+$i = 1;
+if (count($this->getAllEnterprise) >= 1) :
+   foreach ($this->getAllEnterprise as $enterprise) {
+       
+        $socialName = rr ( $enterprise->getSocialName() );
+        $inscricaoEstadual = ''; //rr2 ( $enterprise->getInscricaoEstadual() );
+        $fantasyName = rr ( $enterprise->getFantasyName() );
+        $enterpriseTypeId = 2; //$enterprise->getEnterpriseTypeId();
+        $CNPJ = trim($enterprise->getCnpj());
+        $CPF = trim($enterprise->getCpfUser());
+        $enterpriseType = ($enterpriseTypeId == '1')?$CNPJ:$CPF;
+
+        $email = trim($enterprise->getEmailDefault());
+        echo $socialName ? $socialName : $enterpriseType; //Razao Social
+        echo $separador;
+        echo $CPF.$separador;
+        echo $fantasyName.$separador; //Nome Fantasia
+        echo $CNPJ.$separador; //CPF/CNPJ
+        echo $email.$separador;
+        echo rr2($enterprise->getUf()).$separador;
+
+        $negocios = rr2(number_format($enterprise->getNegociosTotal()*10, 1 , ',', '.').'%').'';
+        if ($competitionId == 2013 ) {
+            $empree = rr2(number_format($enterprise->getPontosEmpreendedorismo(), 2 , ',', '.')).'';
+        }
+
+        if ($enterprise->getPontosGeral() != '-') {
+            echo rr2(number_format($enterprise->getPontosGeral()*100, 1 , ',', '.') . '%');
+        }
+        echo $separador;
+        echo $negocios."";
+
+        echo $separador; 
+        echo rr2(number_format($enterprise->getMediaPontos(), 1 , ',', '.'));
+        echo $separador; 
+        if ($competitionId == 2013) {
+            echo $empree;
+            echo $separador;
+        }
+        /*     
+        */
+        echo str_replace('Microempreendedora', 'Microemp.', $enterprise->getDescriptionEca());
+        echo $separador;
+        $avaliador = $enterprise->getFirstNameAvaliadorPri();
+        if ($avaliador) {
+            echo $avaliador . $separador . $enterprise->getLoginAvaliadorPri();
+            echo $separador;      
+            if ($enterprise->getAppraiserStatus() == 'C') {
+               echo number_format($enterprise->getPontos(), 1, ',', '.')  . "pts";
+            } elseif ($enterprise->getAppraiserStatus() == 'I') {
+                echo "Iniciado";
+            } elseif ($enterprise->getAppraiserStatus() == 'N') {
+                echo "Não iniciado";
+            }
+            //echo $separador; 
+        } else {
+            echo $separador;echo $separador;
+        }
+        echo $separador;
+        
+        $avaliador = $enterprise->getFirstNameAvaliadorSec();
+        if ($avaliador) {
+            echo $avaliador . $separador . $enterprise->getLoginAvaliadorSec();
+  echo $separador;
+                if ($enterprise->getAppraiserStatusSec() == 'C') {
+                   echo number_format($enterprise->getPontosSec(), 1, ',', '.')  . "pts";
+                } elseif ($enterprise->getAppraiserStatusSec() == 'I') {
+                    echo "Iniciado";
+                } elseif ($enterprise->getAppraiserStatusSec() == 'N') {
+                    echo "Não iniciado";
+                }
+               // echo $separador; 
+            } else {
+                echo $separador.$separador;
+            }
+            echo $separador;
+            $avaliador = $enterprise->getFirstNameAvaliadorTer();
+            if ($avaliador) {
+                echo $avaliador . $separador . $enterprise->getLoginAvaliadorTer();
+                
+                  echo $separador;
+                if ($enterprise->getAppraiserStatusTer() == 'C') {
+                   echo number_format($enterprise->getPontosTer(), 1, ',', '.')  . "pts";
+                } elseif ($enterprise->getAppraiserStatusTer() == 'I') {
+                    echo "Iniciado";
+                } elseif ($enterprise->getAppraiserStatusTer() == 'N') {
+                    echo "Não iniciado";
+                }
+                //echo $separador; 
+            } else {
+                echo $separador.$separador;
+            }
+            echo $separador;
+        //echo $logGerouDevolutiva.$separador;
+        echo $novalinha; 
+        $i = $i + 1;
+   }
+   
+   echo $novalinha; 
+   
+endif;
+

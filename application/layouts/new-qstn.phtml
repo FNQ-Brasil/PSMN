@@ -1,0 +1,14 @@
+<?php
+include_once 'includes/new-head.phtml';
+$request = $this->request();
+$controller = $request->getControllerName();
+
+if (!isset($this->isViewAdmin)) {
+    include_once 'menus/qstn-not-logged.phtml';
+}
+?>
+    <div class="content">
+        <?php echo $this->layout()->content ?>
+    </div>
+
+<?php include_once 'includes/new-footer.phtml'; ?>

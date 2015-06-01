@@ -1,0 +1,58 @@
+<?php
+$i = 0;
+?> 
+<div style="display: table; width:100%">
+    <div class="table-menu header">
+          <hgroup><a name="lista"></a><h2><?php echo $titulo; ?>
+
+              </h2>
+          </hgroup>
+         <?php if ($buttonExport): ?>
+          <div class="nav tools">
+            <p>Ferramentas:</p>
+            <ul>
+              <li>
+                  <a href="<?php echo $this->baseUrl('management/enterprise/report-status-verificador/?' . $this->urlParaGerarCsv); ?>" target="_blank" title="Exportar relatório">
+                      <span>Exportar <i>relatório</i></span>
+                  </a>
+              </li>
+            </ul>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="table-container <?php echo ($fluid  ? 'fluid' : ''); ?>">
+        <table class="table" style="min-width: inherit; width: 635px;">
+          <thead>
+            <tr>
+              <th>Verificador</th>
+              <th>Empresa</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+            <?php
+            if (count($this->dataReport) >= 1) : 
+                $statusReport = Vtx_Util_PsmnAvaliacao::statusReport();
+                ?>
+              <tbody>
+                <?php foreach ($this->dataReport as $index => $dataRow): ?>
+                    <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="">
+                        
+                        <td class="middle">
+                            <?php echo $dataRow->getCheckerName(); ?>
+                            
+                        </td>
+                        <td>
+                            <span class="left" >
+                                <?php echo $dataRow->getSocialName(); ?>
+                            </span>
+                        </td>
+                        <td class="middle"><span><?php echo $statusReport[$dataRow->getStatus()]; ?></span></td>
+                        
+                    </tr>
+                <?php endforeach; ?>
+              </tbody>
+            <?php endif; ?>
+        </table>
+    </div>
+</div>

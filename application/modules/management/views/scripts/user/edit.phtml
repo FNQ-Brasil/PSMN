@@ -1,0 +1,272 @@
+<?php 
+$this->headScript()
+    ->appendFile($this->baseUrl('js/user/edit.js'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.metadata.js'))
+    ->prependFile($this->baseUrl('js/validation/jquery.validate.min.js'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.form.js'));
+
+//$this->headLink()->prependStylesheet($this->baseUrl('css/custom-theme/jquery-ui-1.8.23.custom.css'));
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+
+<div id="content" class="pag_role_index">
+    
+    <h1 class="title">
+        Usuários
+    </h1>
+<!--a title="Voltar" id="back" href="<?php echo $this->baseUrl('/management/user/'); ?>">Voltar</a-->
+    <?php if (isset($this->messageError)):?>
+        <?php if ($this->messageError):?>
+            <div class="notice error">
+                <span data-icon="C" class="icon medium"></span>
+                        <?php echo $this->messageError; ?>
+                <a data-icon="x" class="icon close" href="#close"></a>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+    <!--p style="float: right; font-weight: bold">Todos os campos são obrigatórios.</p-->
+    <form id="frmUser" class="normal" novalidate="novalidate" action="<?php echo $this->baseUrl( ($this->request()->getActionName() == 'insert')? 
+                  'management/user/insert/format/json' : 
+                  'management/user/edit/id/'.$this->userId.'/format/json'); ?>" method="POST" class="normal" autocomplete="off">
+        
+         <div id="msgError" class="notice error autoScroll" style="margin-left: 26px; z-index: 9999">
+             <span class="icon small" data-icon="X"></span>
+             <b></b><a href="#close" class="icon close" data-icon="x"></a>
+         </div>
+
+        <fieldset>
+            
+          <div class="list-table-100">
+              <label class="label-control" for="StatusId" class="list-table-100" style="width: 200px;">Status:</label>
+              <?php 
+              $statusArray = Vtx_Util_Array::status();
+               //print_r($statusArray);
+              ?>
+            <select tabindex="1" name="user[status]" id="StatusId" class="fancy" style="width: 100px;">
+                    <?php foreach ($statusArray as $key => $status) :?>
+                        <?php $selectStatus = (isset($this->registerRowData['user']['status']) and ($this->registerRowData['user']['status'] == $key))?'selected="selected"':' ';?>
+                        <option value="<?php echo $key;?>" <?php echo $selectStatus;?>><?php echo $status;?></option>
+                    <?php endforeach; ?>
+            </select>
+          </div>
+            
+        </fieldset>
+        
+		<fieldset>
+            <div class="list-table-20">
+                <label class="label-control" for="FirstName">Nome:</label>
+                <input tabindex="1" type="text" name="user[first_name]" id="FirstName" maxlength="25" class="input w200 {required:true}"
+                       value="<?php if (isset($this->registerRowData['user']['first_name'])) echo $this->registerRowData['user']['first_name'];?>">
+            </div>
+            <div class="list-table-20">
+			<label class="label-control" for="Surname">Sobrenome:</label>
+                <input tabindex="2" type="text" name="user[surname]" id="Surname" maxlength="25" class="input w200 {required:true}"
+                       value="<?php if (isset($this->registerRowData['user']['surname'])) echo $this->registerRowData['user']['surname'];?>">
+            </div>
+
+<!--
+			<label for="Gender">Sexo:</label>
+    -->        
+            <input type="hidden" name="user[gender]" value=''>
+            <!--
+                <select tabindex="3" data-placeholder="Escolha" id="Gender" class="fancy w95 {required:true}" name="user[gender]">
+                    <option value=""></option>
+                    <?php //foreach (Vtx_Util_Array::gender() as $key => $gender) : ?>
+                        <?php //if ($this->registerRowData['user']['gender'] == $key): ?>
+                            <option value="<?php //echo $key;?>" selected="selected"><?php //echo $gender;?></option>
+                        <?php //else:?>
+                            <option value="<?php //echo $key;?>"><?php //echo $gender;?></option>
+                        <?php //endif;?>
+                     <?php //endforeach;?>
+                </select>
+            -->
+<!--
+			<label for="BornDate">Data de Nascimento:</label>
+                <input tabindex="4" type="text" name="user[born_date]" id="BornDate" class="input datepicker {required:true} w95"
+                       value="<?php if (isset($this->registerRowData['user']['born_date'])) echo Vtx_Util_Date::format_dma($this->registerRowData['user']['born_date']);?>">
+            <hr class="clear" />
+-->
+<!--
+            <label for="PositionId">Cargo:</label>
+                <select tabindex="5" data-placeholder="Escolha" id="PositionId" class="fancy {required:true} w220" name="user[position_id]">
+                    <option value=""></option>
+                    <?php //foreach ($this->getAllPositions as $position) : ?>
+                        <?php //if ($this->registerRowData['user']['position_id'] == $position->getId()): ?>
+                            <option value="<?php //echo $position->getId();?>" selected="selected"><?php //echo $position->getDescription();?></option>
+                        <?php //else:?>
+                            <option value="<?php //echo $position->getId();?>"><?php //echo $position->getDescription();?></option>
+                        <?php //endif;?>
+                     <?php //endforeach;?>
+                </select>
+            <hr class="clear" />
+            
+            -->
+
+            <!--
+            <label for="EducationId" class="">Escolaridade:</label>
+                <select tabindex="6" data-placeholder="Escolha" name="user[education_id]" id="EducationId" class="fancy w220 {required:true}">
+                    <option value=""></option>
+                    <?php //foreach ($this->getAllEducation as $education) : ?>
+                        <?php //if ($this->registerRowData['user']['education_id'] == $education->getId()): ?>
+                            <option value="<?php //echo $education->getId();?>" selected="selected"><?php //echo $education->getDescription();?></option>
+                        <?php ////////////////////////////////////SSS else:?>
+                            <option value="<?php //echo $education->getId();?>"><?php //echo $education->getDescription();?></option>
+                        <?php //endif;?>
+                     <?php //endforeach;?>
+                </select>
+            <hr class="clear" />
+             <hr class="clear" />
+            -->
+            
+            <div class="list-table-20">
+			<label class="label-control" for="Email">E-mail:</label>
+                <input tabindex="7" type="text" name="user[email]" id="Email" maxlenght="100" class="input w300 {required:true}"
+                    value="<?php if (isset($this->registerRowData['user']['email'])) echo $this->registerRowData['user']['email'];?>">
+            </div>
+            
+            <div class="list-table-20">
+                <label class="label-control" for="Cpf">Cpf:</label>
+                <input tabindex="8" type="text" name="user[cpf]" id="Cpf" class="input w140 {required:true}"
+                    value="<?php if (isset($this->registerRowData['user']['cpf'])) echo $this->registerRowData['user']['cpf'];?>">
+            </div>
+            
+                
+            </fieldset>
+        
+            <fieldset>
+                <div class="list-table-55">
+                    <label class="label-control" for="RegionalId">Regional/Acesso:</label>
+                    <select tabindex="9" data-placeholder="Escolha" name="userLocality[regional_id]" id="RegionalId" class="fancy w220 {required:true}">
+                        <option value=""></option>
+                        <?php
+                        /*
+                         * if ( $this->getAllRegional ) : ?>
+                            <?php foreach ($this->getAllRegional as $key => $value) : ?>
+                                <?php if ($this->registerRowData['userLocality']['regional_id'] == $key): ?>
+                                    <option value="<?php echo $key;?>" selected="selected"><?php echo $value;?></option>
+                                <?php else:?>
+                                    <option value="<?php echo $key;?>"><?php echo $value;?></option>
+                                <?php endif;?>
+                             <?php endforeach;?>
+                        <?php endif; 
+                        */?>
+                        <?php // if ( $this->getAllRegionalByAdmin ) : ?>
+                            <?php foreach ($this->getAllRegional as $regional) : ?>
+                                <?php if ($this->registerRowData['userLocality']['regional_id'] == $regional->getId()): ?>
+                                    <option value="<?php echo $regional->getId();?>" selected="selected"><?php echo $regional->getDescription();?></option>
+                                <?php else:?>
+                                    <option value="<?php echo $regional->getId();?>"><?php echo $regional->getDescription();?></option>
+                                <?php endif;?>
+                             <?php endforeach;?>
+                        <?php // endif; ?>
+                    </select>
+                </div>
+                <div class="list-table-15">
+                    <label class="label-control" for="RoleId" class="">Perfil</label> <?php // leia-se: Papel   ?>
+                    <select tabindex="10" data-placeholder="Escolha" name="userRole[role_id]" id="RoleId" class="fancy w220 {required:true}">
+                        <option value=""></option>
+                        <?php foreach ($this->roles as $role) :
+                                if ($role->getId() == $this->configRegistry()->acl->roleSupremeAdminId
+                                        or $role->getId() == $this->configRegistry()->acl->roleEnterpriseId
+                                        or $role->getId() == $this->configRegistry()->acl->roleGuestId) {
+                                    continue;
+                                }
+                            ?>
+                            <?php if ($this->registerRowData['userRole']['role_id'] == $role->getId()): ?>
+                                <option value="<?php echo $role->getId();?>" selected="selected"><?php echo $role->getLongDescription();?></option>
+                            <?php else:?>
+                                <option value="<?php echo $role->getId();?>"><?php echo $role->getLongDescription();?></option>
+                            <?php endif;?>
+                         <?php endforeach;?>
+                    </select>
+                </div>
+            </fieldset>
+        
+            <fieldset>
+                <?php
+                $checkSetCpf ='';
+                $disableSetCpf = '';
+                if ((isset($this->registerRowData['user']['login']) and isset($this->registerRowData['user']['cpf'])) and
+                    ($this->registerRowData['user']['login'] == $this->registerRowData['user']['cpf'])
+                    ) {
+                    $checkSetCpf = 'checked="checked"';
+                    $disableSetCpf = 'disabled="disabled"';
+                }
+                ?>
+                <div class="list-table-35">
+                    <label class="label-control" for="setCpfLogin">Deseja setar o CPF como o Login ?</label>
+                        <input tabindex="11" type="checkbox" value="1" name="user[set_login_cpf]" id="setCpfLogin" class="input"
+                        <?php echo $checkSetCpf; ?>/>
+                </div>
+                <div class="list-table-20">
+                    <label class="label-control" for="Login">Login:</label>
+                    <input tabindex="12" type="text" name="user[login]" id="Login" maxlength="30" class="input w220 {required:true}" autocomplete="off"
+                        value="<?php if (isset($this->registerRowData['user']['login'])) echo $this->registerRowData['user']['login'];?>"
+                        <?php echo $disableSetCpf; ?> 
+                    />
+                </div>
+            </fieldset>
+        
+            <fieldset>
+                
+        <?php
+        $password_hint = isset($this->registerRowData['user']['password_hint'])?$this->registerRowData['user']['password_hint']:null;
+        ?>
+        <div class="list-table-100">
+            <label class="label-control" for="PasswordHint">Dica de senha:
+                <input type="text" name="user[password_hint]" class="input list-table-100 valid" 
+                       id="PasswordHint" value="<?php echo $password_hint; ?>"/>            
+            </label>
+        </div>
+                
+            <?php if ($this->request()->getActionName() == 'edit') : ?>
+                <div class="list-table-35">
+                    <label class="label-control" for="changePassword">Deseja mudar a senha ?</label>
+                        <input tabindex="13" type="checkbox" value="1" name="user[change_password]" id="changePassword" class="input checkbox"/>
+                </div>
+                <div class="list-table-20">
+                    <label class="label-control" for="Keypass">Senha: *</label>
+                    <input tabindex="14" type="password" name="user[keypass]" id="Keypass" class="input w220" disabled="disabled"
+                           value="<?php if (isset($this->registerRowData['user']['keypass'])) echo $this->registerRowData['user']['keypass'];?>">
+                </div>
+
+                <label class="label-control" for="KeypassConfirm">Confirmação de senha: *</label>
+                    <input tabindex="15" type="password" name="user[keypass_confirm]" id="KeypassConfirm" class="input w220" disabled="disabled"
+                           value="<?php if (isset($this->registerRowData['user']['keypass_confirm'])) echo $this->registerRowData['user']['keypass_confirm'];?>">
+            <?php else : ?>
+                <div class="list-table-20">
+                    <label class="label-control" for="Keypass">Senha: *</label>
+                    <input tabindex="13" type="password" name="user[keypass]" id="Keypass" class="input w220 {required:true}"
+                           value="<?php if (isset($this->registerRowData['user']['keypass'])) echo $this->registerRowData['user']['keypass'];?>">
+                </div>
+                <div class="list-table-20">
+                    <label class="label-control" for="KeypassConfirm">Confirmação de senha: *</label>
+                    <input tabindex="14" type="password" name="user[keypass_confirm]" id="KeypassConfirm" class="input w220 {required:true}"
+                           value="<?php if (isset($this->registerRowData['user']['keypass_confirm'])) echo $this->registerRowData['user']['keypass_confirm'];?>">
+                </div>
+            <?php endif; ?>            
+
+                <?php /*
+                <input type="hidden" name="user[status]" id="Status" value="A" />
+                    <select tabindex="14" data-placeholder="Escolha"  class="fancy w220 {required:true}">
+                        <option value=""></option>
+                        <?php foreach (Vtx_Util_Array::status() as $key => $status) : ?>
+                            <?php if ($this->registerRowData['user']['status'] == $key): ?>
+                                <option value="<?php echo $key;?>" selected="selected"><?php echo $status;?></option>
+                            <?php else:?>
+                                <option value="<?php echo $key;?>"><?php echo $status;?></option>
+                            <?php endif;?>
+                         <?php endforeach;?>
+                    </select>
+                    <hr class="clear" />     
+                 */
+                ?>       
+        </fieldset>
+        <fieldset>
+        <button class="large green large btn-submit" type="submit" style="float: right" tabindex="16">
+            <!--span class="icon" data-icon="C"></span--> 
+            Salvar
+        </button>    
+        </fieldset>
+	</form>
+</div>

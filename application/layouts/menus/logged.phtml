@@ -1,0 +1,55 @@
+<?php
+$hasECAC = $this->hasCurrentCompetition();
+$currentBlockIdNegocios = Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios;
+$currentBlockIdEmpreendedorismo = Zend_Registry::get('configDb')->qstn->currentBlockIdEmpreendedorismo;
+
+$arrEtapas = $this->terminoEtapas();
+?>
+<ul class="main-menu">
+
+    <?php if ($this->loggedAllowed('edit', 'questionnaire:register')): ?>
+    
+            <li class="<?php echo $controller == 'register'? 'active ' : ''; ?>inscricao">
+                <a class="link" href="<?php echo $this->baseUrl('/questionnaire/register/edit/') ?>" title="Editar Dados da Candidata e da Empresa">Editar Dados <span class='warning done'></span></a>
+            </li>
+            
+    <?php endif; ?>
+       
+    <?php if ($this->loggedAllowed(null, 'questionnaire:respond') and $hasECAC): ?>
+        <?php /* ?>
+        <li class="<?php echo ($controller == 'respond' and $currentBlockIdEmpreendedorismo == $request->getParam('block'))? 'active ' : ''; ?>questionario-empreendedorismo">
+            <a class="link" href="/questionnaire/respond/index/block/<?php echo $currentBlockIdEmpreendedorismo; ?>" title="Questionário Empreendedorismo">Questionário Empreendedorismo 
+                <?php if ($arrEtapas['empreendedorismo']) { echo "<span class='warning done'></span>"; } ?>
+            </a>
+        </li>
+        <?php */ ?>
+
+        <li class="<?php echo ($controller == 'respond' and $currentBlockIdNegocios == $request->getParam('block'))? 'active ' : ''; ?>questionario-negocios">
+            <a class="link" href="/questionnaire/respond/index/block/<?php echo $currentBlockIdNegocios; ?>" title="Questionário Negócios">Questionário Negócios 
+             <?php if ($arrEtapas['negocios']) { echo "<span class='warning done'></span>"; } ?>
+            </a>
+        </li>
+    <?php endif; ?>
+        
+    <?php if ($this->loggedAllowed(null, 'questionnaire:report') and $hasECAC): ?>
+        
+        <li class="<?php echo $controller == 'report'? 'active ' : ''; ?>relato">
+
+            <a class="link" href="<?php echo $this->baseUrl('/questionnaire/report/') ?>" title="Enviar Relato">Relato
+            
+             <?php if ($arrEtapas['relato']) { echo "<span class='warning done'></span>"; } ?>
+            </a>
+        </li>
+        
+    <?php endif; ?>
+        
+    <?php if ($this->loggedAllowed(null, 'questionnaire:respond') and $hasECAC): ?>
+        
+        <li class="<?php echo ($controller == 'devolutive' and !$request->getParam('block'))? 'active ' : ''; ?>devolutiva">
+            <a class="link" href="/questionnaire/respond/index/geraDevolutiva/1" title="Obter Relatório de Devolutiva">Obter Relatório de Devolutiva 
+             <?php if ($arrEtapas['devolutiva']) { echo "<span class='warning done'></span>"; } ?>
+            </a>
+        </li>
+        
+    <?php endif; ?> 
+</ul>   

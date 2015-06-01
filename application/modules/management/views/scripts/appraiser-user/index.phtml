@@ -1,0 +1,156 @@
+<?php
+    $this->headScript()->appendFile($this->baseUrl('js/management/appraiser-user/index.js'));
+?>
+
+<h1 class="title">Aprovação de Avaliadores/Verificadores</h1>
+
+<?php if ($this->messageError): ?>
+    <div class="notice error">
+        <span data-icon="X" class="icon medium"></span>
+        <?php echo $this->messageError; ?>
+        <a data-icon="x" class="icon close" href="#close"></a>
+    </div>
+<?php endif; ?>
+
+<form action="<?php echo $this->url(array('page' => $this->pageCount, 'format' => 'html')) ?>" id="frm" method="GET">
+    <fieldset>
+        <input type="hidden" id="orderByValue" name="orderBy" value="" />
+        <input type="hidden" value="<?php echo $this->orderBy; ?>" />
+    </fieldset>
+    <fieldset>
+        <div class="list-table-20">
+            <label class="label-control" for="name">Nome:</label>
+            <input tabindex="1" id="name" type="text" name="filter[name]" value="<?php if(isset($this->filter['name'])) echo $this->filter['name'];?>" size="18" value="" class="input list-table-100" />
+        </div>
+
+        <div class="list-table-20">
+            <label class="label-control" for="Cnpj">Login:</label>
+            <input tabindex="1" id="cnpj" type="text" name="filter[login]" value="<?php if(isset($this->filter['login'])) echo $this->filter['login'];?>" size="18" value="" class="input list-table-100" />
+        </div>
+
+        <div class="list-table-20">
+            <label class="label-control" for="Cnpj">CPF:</label>
+            <input tabindex="1" id="Cpf" type="text" name="filter[cpf]" value="<?php if(isset($this->filter['cpf'])) echo $this->filter['cpf'];?>" size="18" value="" class="input list-table-100" />
+        </div>
+
+        <div class="list-table-20">
+            <label class="label-control" for="Uf" class="">UF:</label>
+            <select tabindex="5" name="filter[uf_id]" id="Uf" class="fancy" style="width: 163px;">
+                <option value="">Todas</option>
+                <?php foreach ($this->states as $state) :?>
+                    <option value="<?php echo $state->getId() ?>" <?php if($state->getId() == $this->filter['uf_id']) echo 'selected' ?>>
+                        <?php echo $state->getUf() ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <div class="list-table-20">
+            <label class="label-control" for="RoleId">Perfil:</label>
+            <select tabindex="3" name="filter[role_id]" id="RoleId" class="fancy" style="width: 163px;">
+                <option value="">Todos</option>
+                <?php foreach ($this->roles as $role) : ?>
+                    <option value="<?php echo $role->getId() ?>" <?php if($role->getId() == $this->filter['role_id']) echo 'selected' ?>>
+                        <?php echo $role->getLongDescription() ?>
+                    </option>
+                <?php endforeach;?>
+            </select>
+        </div>
+
+        <div class="list-table-20">
+            <label class="label-control" for="AppraiserStatus" class="">Situação:</label>
+            <select tabindex="5" name="filter[status]" id="AppraiserStatus" class="fancy" style="width: 163px;">
+                <option value="">Todas</option>
+                <?php foreach($this->appraiserStatuses as $key => $description) :?>
+                    <option value="<?php echo $key ?>" <?php if($key == $this->filter['appraiser_status']) echo 'selected' ?>>
+                        <?php echo $description ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+
+    </fieldset>
+    <button tabindex="16" style="float: right" type="submit" class="large btn-submit">Buscar</button>
+</form>
+
+<div class="table-menu header">
+    <?php
+    $total = $this->appraisers->getTotalItemCount();
+    $label_total = (($total > 0) ? implode(' ', array(
+        $total,
+        implode('', array(
+            'registro',
+            (($total > 1) ? 's' : '')
+        ))
+    )) : 'Nenhum registro encontrado');
+    ?>
+
+    <hgroup><h2>Usuários - <span><?php echo $label_total; ?></span></h2></hgroup>
+    <?php echo $this->paginationControl($this->appraisers, null, null); ?>
+</div>
+
+<table id="table-details">
+    <caption></caption>
+    <colgroup>
+        <col class="firstCol">
+        <col>
+        <col>
+        <col class="lastCol">
+    </colgroup>
+    <thead>
+    <tr class="alt first last">
+        <th>Nome</th>
+        <th>Usuário</th>
+        <th>Perfil</th>
+        <th>UF</th>
+        <th>Alteração</th>
+        <th style="width: 290px;">Situação</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach($this->appraisers as $appraiser):
+        $radioName = 'appraiser_'.$appraiser->getId().'_status';
+        $status = $appraiser->getStatus();
+        $updatedAt = $appraiser->getUpdatedAt();
+        if($updatedAt != ''){
+            $updatedAt = DateTime::createFromFormat('Y-m-d H:i:s', $updatedAt);
+            $updatedAt = $updatedAt->format('d/m/Y H:i:s');
+        } else {
+            $updatedAt = '--';
+        }
+        ?>
+
+        <tr class="first">
+            <td style='text-align:left'>
+                <dl>
+                    <dt><strong><?php echo $appraiser->getFirstName().' '.$appraiser->getSurname() ?></strong></dt>
+                    <dd><?php echo $appraiser->getCpf() ?></dd>
+                </dl>
+            </td>
+            <td><?php echo $appraiser->getLogin() ?></td>
+            <td><?php echo $appraiser->getRole() ?></td>
+            <td><?php echo $appraiser->getUf() ?></td>
+            <td>
+                <dl>
+                    <dt><?php echo $appraiser->getResponsibleFirstName().' '.$appraiser->getResponsibleSurname() ?></dt>
+                    <dd><?php echo $updatedAt ?></dd>
+                </dl>
+            </td>
+            <td style="width: 290px;">
+                <input type="radio" class="appraiser_status" <?php echo($status == 'able' ? 'checked' : '') ?> name="<?php echo $radioName ?>" value="able" style="float:none">Aprovado
+                <input type="radio" class="appraiser_status" <?php echo(($status == 'unable' or $status == NULL) ? 'checked' : '') ?> name="<?php echo $radioName ?>" value="unable" style="float:none">Reprovado
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    <?php if (count($this->appraisers) < 1) : ?>
+        <tr><td width="220" colspan="6">Não existem resultados para a busca realizada.</td></tr>
+    <?php endif; ?>
+    </tbody>
+</table>
+
+<div class="table-menu footer">
+    <?php echo $this->paginationControl($this->appraisers, null, null); ?>
+</div>

@@ -1,0 +1,72 @@
+<?php 
+$this->headScript()
+    ->appendFile($this->baseUrl('js/address/capital.js'))
+    ->appendFile($this->baseUrl('js/management/group/edit.js'));
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+$groupId = $this->groupRow->getId();
+?>
+<div id="content" class="">
+    <h1 class="center">
+        Grupo
+    </h1>
+    <a name="Voltar" id="back" href="<?php echo $this->baseUrl('management/group/'); ?>">Voltar</a>
+
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+
+    <form class="normal" method="POST" action="<?php echo $this->baseUrl(($this->request()->getActionName() == 'insert')? 'management/group/insert' : 'management/group/edit/id/' . $groupId); ?>">
+        <input type="hidden" name="id" id="GroupId"  value="<?php if($groupId) echo $groupId;?>">
+        <fieldset>
+            <label for="name">Título: </label>
+                <input type="text" name="name" id="GroupName" value="<?php if ($this->groupRowData) { echo $this->groupRowData['name']; } ?>">
+            <hr class="clear" />
+
+            <label for="description">Descrição: </label>
+                <textarea name="description" id="description" class="w220"><?php if ($this->groupRowData) echo $this->groupRowData['description']; ?></textarea>
+            <hr class="clear" />
+
+        </fieldset>
+        <div class="clear"> </div>
+        <button class="large green" type="submit" style="float: right">
+            <span class="icon" data-icon="C"></span> Salvar
+        </button>
+        <div class="clear"></div>
+    <?php
+        echo $this->paginationControl(
+            $this->getAllGroupEnterprise, null, null, array(/*'link' => $this->baseUrl('/xx')*/ )
+        );
+    ?>
+    <div class="clear"></div>
+    <table class="striped " border="0" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th style="width: 200px">Empresa</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php if (count($this->getAllGroupEnterprise) >= 1) : ?>
+        <?php
+            foreach ($this->getAllGroupEnterprise as $enterprise) :
+            ?>
+                <tr>
+                    <td><?php echo $enterprise->getSocialName();?></td>
+                </tr>
+            <?php
+            endforeach;
+        endif;
+        ?>
+        </tbody>
+    </table>
+    <?php
+        echo $this->paginationControl(
+            $this->getAllGroupEnterprise, null, null, array(/*'link' => $this->baseUrl('/xx')*/ )
+        );
+    ?>
+        <div class="clear"> </div>
+	</form>
+</div>

@@ -1,0 +1,33 @@
+<?php
+    $this->headScript()
+        ->appendFile($this->baseUrl('js/management/questionnaire/manage.js'))
+        ->prependFile($this->baseUrl('js/validation/lib/jquery.form.js'));
+?>
+<?php
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="pag_questionnaire">
+    <h1 class="center">Questões :: <b><?php if ($this->questionnaireRowData) { echo $this->questionnaireRowData['title']; } ?></b></h1>
+<a title="Voltar" id="back" href="<?php echo $this->baseUrl('management/questionnaire'); ?>">Voltar</a>
+
+    <ul class="qstn">
+        <?php
+            foreach ($this->defaultBlocks as $blockN => $block):
+                $systemDefault = true;
+                $blockFieldN = 'blo' . $blockN;
+                include 'items.phtml';
+            endforeach;
+        ?>
+        <?php
+            foreach ($this->blocks as $blockN => $block):
+                $systemDefault = false;
+                $blockFieldN = 'blo' . $blockN+1;
+                include 'items.phtml';
+        ?>
+
+        <?php endforeach; ?>
+    </ul> <!-- # ul.block -->
+    
+    <a class="add newBlock" href="#"><span data-icon="+" class="icon small"></span> Clique para adicionar um <b>Bloco</b></a>
+
+</div>
