@@ -1,0 +1,8 @@
+@import _base
+
+$class-slug: list-table- !default
+
+
+@for $i from 5 through 100
+  .#{$class-slug}-#{$i}
+    width: 0% + $i

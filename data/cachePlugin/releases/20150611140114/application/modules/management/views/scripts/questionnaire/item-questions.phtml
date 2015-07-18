@@ -1,0 +1,89 @@
+<?php $this->headScript()->captureStart() ?>
+    var QUESTION_TYPE_ABCD_ID = <?php echo Model_QuestionType::ABCD_ID; ?>;
+    var QUESTION_TYPE_YESNO_ID = <?php echo Model_QuestionType::YESNO_ID; ?>;
+    var QUESTION_TYPE_AGREEDISAGREE_ID = <?php echo Model_QuestionType::AGREEDISAGREE_ID; ?>;
+    var QUESTION_TYPE_ALWAYS_ID = <?php echo Model_QuestionType::ALWAYS_ID; ?>;
+
+    var ALTERNATIVE_TYPE_TEXT_ID = <?php echo Model_AlternativeType::TEXT_ACTION; ?>;
+    var ALTERNATIVE_TYPE_RESULT_ID = <?php echo Model_AlternativeType::RESULT_ACTION; ?>;
+<?php $this->headScript()->captureEnd() ?>
+
+<ul class="questions">
+    <?php
+        foreach ($criterion['questions'] as $questionN => $question):
+            $questionFieldN = $criterionFieldN . $questionN;
+
+            $action = (!$systemDefault)?
+                'management/question/edit/format/json/id/' . $criterionId : 
+                'management/question/insert/format/json';
+                ?>
+
+        <li class="question <?php echo (!$systemDefault)? '' : ' hide'; ?>">
+
+            <form action="<?php echo $this->baseUrl($action) ?>" method="POST" class="clearfix">
+                <input type="hidden" name="designation" value="1">
+                <input type="hidden" class="itemId" name="item_id" value="">
+                <input type="hidden" name="item_type" value="question">
+                <input type="hidden" name="status" value="A">
+                <input type="hidden" name="version" value="1">
+                <input type="hidden" name="parent_id" value="<?php echo $criterionId; ?>">
+
+                <input type="hidden" name="question_type_id" value="1">
+
+
+                <a href="#" class="expand" title="Editar" /><span class="ico plus large">+</span></a>
+                <label for="<?php echo $questionFieldN ?>">Questão <?php //echo $questionN ?></label>
+                <textarea name="value" id="<?php echo $questionFieldN ?>" class="title" data-minheight="22" placeholder="Conteúdo da questão" /><?php echo $question['name']; ?></textarea>
+                <a href="#" class="move moveQuestion" title="Mover" /><span class="ico move large">Mover</span></a>
+                <a href="#" class="delete" title="Excluir" /><span data-icon="T" class="icon"></span></a>
+
+                <fieldset class="adicionalFields"> 
+
+                    <br class="clear" />
+                    <label for="textarea<?php echo $questionFieldN; ?>" class="apoio">Apoio</label>
+                    <br class="clear" />
+                    <textarea name="supporting_text" id="textarea<?php echo $questionFieldN ?>" class="textareaQuestion autosecondTextarea" data-minheight="90" placeholder="Texto de apoio" /><?php echo $question['apoio']; ?></textarea>
+
+                    <br class="clear" />
+
+                    <label for="questionType<?php echo $questionFieldN ?>" class="questionTypeLabel">Tipo </label>
+                    <select class="question_type" name="question_type_id" id="questionType<?php echo $questionFieldN ?>" class="w220">
+                        <option value="1"> Alternativas (A,B,C,D) </option>
+                        <option value="3"> Sim, Não, Não sabe informar </option>
+                        <option value="5"> Concordo/.../Discordo totalmente </option>
+                        <option value="6"> Dificilmente/Às Vezes/Sempre acontece </option>
+                    </select>
+
+                    <br class="clear" />
+                    <hr style="margin: 6px 0 9px">
+                    <?php include 'item-questions-alternatives.phtml'; ?>
+
+                    <br class="clear" /> 
+
+                    <?php include 'item-questions-helpers.phtml'; ?>
+                    
+                    <br class="clear" />
+                    <button class="medium btReset" type="button" title="Cancelar"><span data-icon=":" class="icon"></span></button>
+                    <button class="medium green btSave"><span data-icon="C" class="icon"></span>Salvar</button>
+
+                    <br class="clear" />
+                    <div class="notice success hide">
+                        <span data-icon="C" class="icon small"></span> <b>Dados salvos com sucesso!</b>
+                        <a data-icon="x" class="icon small close" href="#close"></a>
+                    </div>
+
+                    <div class="notice error hide">
+                        <span data-icon="X" class="icon small"></span> <b></b>
+                        <a data-icon="x" class="icon small close" href="#close"></a>
+                    </div>
+                </fieldset> <!-- # .adicionalFields -->
+
+            </form>
+
+        </li> <!-- # li.question -->
+
+    <?php endforeach; ?>
+
+</ul> <!-- # ul.questions -->
+
+<a class="add newQuestion hide" href="#"><span data-icon="+" class="icon small"></span> Clique para adicionar uma <b>Questão</b></a>

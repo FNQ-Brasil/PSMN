@@ -1,0 +1,166 @@
+@import _base
+
+#site-content
+  .form-default
+    color: #333
+    *
+      +box-sizing(border-box)
+    fieldset
+      padding: 16px 16px 50px 16px
+    legend
+      display: none
+      &.form-default-legend
+        display: block
+        font-size: 22px
+        color: #00afe2
+        span
+          color: lighten(#00afe2, 10%)
+    label
+      display: block
+      margin: 10px 0 0 0
+      width: auto
+      position: relative
+      text-align: left
+      &.error
+        color: #900
+        font-size: 11px
+        margin: 4px 0 0 5px
+        white-space: nowrap
+      b
+        font-weight: 600
+        color: #666
+        display: block
+        text-indent: 5px
+        text-align: left
+        white-space: nowrap
+    a
+      color: #333
+      text-decoration: none
+      &:hover, &:focus
+        text-decoration: underline
+        outline: none
+    input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="number"]
+      +border-radius(5px)
+      +single-box-shadow( darken( #e4e5db, 10% ), 1px, 2px, 0, 0, inset)
+      height: 28px
+      border: 1px solid transparent
+      line-height: 28px
+      padding: 0 5px
+      margin: 5px 0 0 0
+      width: 100% !important
+      background-color: #e4e5db
+      &:focus
+        +box-shadow(0 0 7px $bgColor2, darken( #e4e5db, 30% ) -1px -2px 0 0 inset)
+        outline: none
+      &[readonly="readonly"]
+        +single-box-shadow( darken( #ddd, 10% ), 1px, 2px, 0, 0, inset)
+        background-color: #ddd
+      &.error
+        border: 2px solid $bgColor2
+    textarea
+      +border-radius(5px)
+      +single-box-shadow( darken( #e4e5db, 10% ), 1px, 2px, 0, 0, inset)
+      border: 1px solid transparent
+      line-height: 28px
+      padding: 0 5px
+      margin: 5px 0 10px 0
+      width: 100%
+      background-color: #e4e5db
+      &:focus
+        +box-shadow(0 0 7px $bgColor2, darken( #e4e5db, 30% ) -1px -2px 0 0 inset)
+        outline: none
+    button
+      +button()
+      margin: 15px 0 0 0
+      &:focus
+        +box-shadow(0 0 7px $bgColor2, darken( #e4e5db, 30% ) -1px -2px 0 0 inset)
+        outline: none
+    .chzn-container
+      width: 100% !important
+    &.form-column-2
+      overflow: hidden
+      background-color: rgba(90,0,0,.6)
+      label
+        width: 48%
+        float: left
+        overflow: hidden
+        margin: 0 0 15px 2%
+        b
+          font-weight: 600
+          width:  32%
+          display: block
+          float: left
+          line-height: 28px
+          color: #666
+        input
+          width:  65%
+          margin: 0 0 0 2%
+          float: left
+    .form-default-line-inline
+      margin: 15px 0 0 0
+      b
+        display: inline-block
+        width: 50%
+        margin-right: 10px
+      label
+        display: inline
+        margin-right: 20px
+    $class-slug: form-default-line-display- !default
+    @for $i from 2 through 5
+      .#{$class-slug}#{$i}
+        height: 70px
+        position: relative
+        label
+          float: left
+          width: floor( 100% / $i ) - 2%
+          margin: 10px 2% 0 0
+
+.notice
+  +border-radius(5px)
+  +single-box-shadow()
+  line-height: 20px
+  font-size: 14px
+  background-color: $bgColor2
+  margin: 0 0 15px 0
+  position: relative
+  color: #fff
+  margin: 10px
+  z-index: 100
+  line-height: 40px
+  text-indent: 10px
+  max-width: 650px
+  b
+    display: inline-block
+  .icon
+    +single-box-shadow()
+    float: right
+    background: darken($bgColor2, 5%)
+    width: 20px
+    height: 20px
+    border-radius: 10px
+    color: #fff
+    text-align: center
+    margin: -5px
+    line-height: 20px
+    text-indent: 0
+    text-decoration: none
+    .close
+      +square(20px)
+      +border-radius(100%)
+      span
+        color: #fff !important
+  &.success
+    background-color: $text1-color
+    .icon
+      background-color: darken($text1-color, 5%)
+
+//xHr
+.form-default-line-display-2-actions
+  width: 48%
+#frmContact
+  label
+    float: none !important
+
+.notice
+  &.hide
+    display: none

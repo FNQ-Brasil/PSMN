@@ -1,0 +1,160 @@
+<?php
+$this->headScript()
+    ->appendFile($this->baseUrl('js/management/appraiser/list.js?x1'))
+;
+?>
+<table class="table">
+  <caption></caption>
+  <thead>
+    <tr>
+      <th style="padding: 30px 5px 41px">Empresa</th>
+      <th>UF</th>
+        <th>Ranking</th>
+      <th class="appraisers-confirm">Vencedor<br>Nacional</th>
+      <th>Prata</th>
+      <th>Bronze</th>
+      <th class="appraisers-cancel">Desclassificar</th>
+      <th>P. Geral</th>
+      <th>Relat.<br>Interno</th>
+      <th>Pontos<br>Negócios</th> 
+      <th>Média<br>Relato</th>
+      <th>Prêmio</th>
+      <?php if ($competitionId == '2013') : ?>
+      <th>Pontos<br />Empreende.</th>
+      <?php endif; ?>
+      <th>RAA</th>
+    </tr>
+  </thead>
+<?php if (count($this->getAllEnterprise) >= 1): ?>
+  <tbody>
+<?php
+  foreach ($this->getAllEnterprise as $index => $enterprise):
+    $raa = $enterprise->getDevolutivePath();
+    $socialName = $enterprise->getSocialName();
+    $fantasyName = $enterprise->getFantasyName();
+    $CNPJ = trim($enterprise->getCnpj());
+    //$CPF = trim($enterprise->getCpf());
+    $CPF = '';
+    $UF = trim($enterprise->getUf());
+    $email = trim($enterprise->getEmailDefault());
+    //$phone = trim($enterprise->getTelefone());
+    $phone = trim($enterprise->getPhone());
+    $percent = ($enterprise->getPA() ? ($enterprise->getPA() . "%") : "");
+    $verificadores = array(
+      'confirm' => array(
+        'status' => (($enterprise->getClassificadoOuro() != null) ? $enterprise->getClassificadoOuro() : false),
+        'statusPrata' => (($enterprise->getClassificadoPrata() != null) ? $enterprise->getClassificadoPrata() : false),
+        'statusBronze' => (($enterprise->getClassificadoBronze() != null) ? $enterprise->getClassificadoBronze() : false),
+      ),
+      'cancel' => array(
+        'status' => (($enterprise->getDesclassificadoFinal() != null) ? $enterprise->getDesclassificadoFinal() : false),
+        'note' => trim($enterprise->getMotivoDesclassificadoFinal())
+      )
+    );
+?>
+    <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?> <?php echo ($verificadores['cancel']['status'] ? 'editable' : ''); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
+      <td>
+        <dl style="text-align: left; height: 42px;">
+          <dt title="<?php echo $socialName; ?>"><b><?php echo (($fantasyName != '') ? substr($fantasyName, 0, 60) : '--'); ?></b></dt>
+          <dd style="margin-left: 5px" class="identity" title="<?php echo $email; ?> <?php echo $phone; ?>"><?php echo (($CNPJ != '') ? $CNPJ : (($CPF != '') ? $CPF : '--')); ?></dd>
+        </dl>
+      </td>
+
+      <td class="middle"><i><?php echo $UF; ?></i></td>
+        <td class="middle">
+            <?php echo ($index+1) ?>
+        </td>
+        <td class="middle">
+            <?php if ($enterprise->getPontosGeral() != '-'): ?>
+              <input type="checkbox" 
+                <?php if ($isCurrentCompetition) : ?>
+                    name="change-ranking-<?php echo $index; ?>" id="change-ranking-<?php echo $index; ?>" class="change-ranking" value="1" 
+                <?php else : ?> disabled <?php endif; ?>
+               <?php echo ($verificadores['confirm']['status'] ? 'checked="checked"' : ''); ?> />
+          <?php endif; ?>
+        </td>
+        <td class="middle">
+            <input type="checkbox" 
+                <?php if ($isCurrentCompetition) : ?>
+                name="x" id="s2" class="change-ranking" value="2" 
+                <?php else : ?> disabled <?php endif; ?>
+            <?php echo ($verificadores['confirm']['statusPrata'] ? 'checked="checked"' : ''); ?> />
+        </td>
+        <td class="middle">
+            <input type="checkbox" 
+                <?php if ($isCurrentCompetition) : ?>
+                name="x" id="s2" class="change-ranking" value="3" 
+                <?php else : ?> disabled <?php endif; ?>
+                <?php echo ($verificadores['confirm']['statusBronze'] ? 'checked="checked"' : ''); ?> />
+        </td>
+      <td class="middle">
+        <input type="checkbox" 
+               <?php if ($isCurrentCompetition) : ?>
+               name="cancel-ranking-<?php echo $index; ?>" id="cancel-ranking-<?php echo $index; ?>" class="cancel-ranking" value="<?php echo $enterprise->getIdKey(); ?>" 
+            <?php else : ?> disabled <?php endif; ?>
+            <?php echo ($verificadores['cancel']['status'] ? 'checked="checked"' : ''); ?> />
+        <a href="" title="Editar justificativa" class="cancel-ranking-note-edit">(editar justificativa)</a>
+      </td>
+
+      <td class="middle">
+          <?php
+            if ($enterprise->getPontosGeral() != '-') {
+                echo number_format($enterprise->getPontosGeral()*100, 1 , ',', '.') . '%';
+            }
+        ?>
+      </td>
+
+      <td class="middle" style="height: 43px;">
+        <dl>
+          <dt>
+            <a href="<?php echo $this->baseUrl("management/appraiser/internal-report/enterprise-id-key/{$enterprise->getIdKey()}/competition-id/{$competitionId}"); ?>#report" target="_blank" title="Relatório Interno" class="download-raa" target="blank">Interno</a>
+          </dt>
+        </dl>
+      </td>
+ 
+      <td class="middle"><span>
+          <?php
+            echo number_format($enterprise->getNegociosTotal()*10, 1 , ',', '.').'%';
+            ?>
+          </span></td>
+
+      </td>
+            <td class="middle">
+                <?php echo number_format($enterprise->getMediaPontos(), 1 , ',', '.');?>
+            </td>
+
+
+
+        <td class="middle"><span><?php echo str_replace('Microempreendedora', 'Microemp.', $enterprise->getDescriptionEca()); ?></span></td>
+        <?php if($competitionId == '2013') : ?>
+        <td class="middle"><span><?php echo number_format($enterprise->getPontosEmpreendedorismo(), 2 , ',', '.');?></span></td>
+        <?php endif; ?>
+        <td class="middle">
+          <dl>
+              <dt>
+                  <?php if ($raa): ?>
+                      <a href="<?php echo $raa; ?>" title="Baixar RAA" class="report">Baixar RAA</a>
+                  <?php endif; ?>
+              </dt>
+
+          </dl>
+        </td>
+    </tr>
+    <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
+      <td class="cancel-ranking-fieldset" data-saved="true">
+        <dl>
+          <dt><label>Justificativa <i>(obrigatório)</i></label></dt>
+          <dd class="field"><textarea name="cancel-ranking-note-<?php echo $index; ?>" id="cancel-ranking-note-<?php echo $index; ?>" class="cancel-ranking-note"><?php echo $verificadores['cancel']['note']; ?></textarea></dd>
+          <dd class="button"><a href="" title="Salvar" class="cancel-ranking-note-save">Salvar</a></dd>
+          <!--a href="#" title="Fechar" onclick="console.log($(this).closest('td').hide());return false;">(X)</a-->
+        </dl>
+      </td>
+    </tr>
+<?php
+  endforeach;
+?>
+  </tbody>
+<?php
+endif;
+?>
+</table>

@@ -1,0 +1,45 @@
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="">
+    <h1 class="center">Questão :: Trocar ordem</h1>
+    <a title="Voltar" id="back" href="<?php echo $this->baseUrl('management/question/'); ?>">Voltar</a>
+
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+    
+    <form class="normal" method="POST" action="<?php echo $this->baseUrl('management/question/move/id/'. $this->questionRow->getId()); ?>">
+
+        <fieldset>
+
+            <label for="value">Critério / posição / Questão Atual: </label>
+                <?php echo $this->questionRow->getCriterionId().' - '.$this->questionRow->getDesignation().' - '.$this->questionRow->getValue(); ?>
+            <input  type="hidden" name="old_position" readonly="readonly" id="old_position" value="<?php echo $this->questionRow->getId(); ?>">
+            <br class="clear" />
+            <hr />
+            <label for="new_position">Critério / posição / Trocar com Questão: </label>
+                <select name="new_position" id="new_position" class="w300 fancy">
+                    <?php foreach ($this->getAllQuestion as $question) : ?>
+                        <?php if($question->getId() != $this->questionRow->getId() ) :?>
+                            <?php if($question->getCriterionId() == $this->questionRow->getCriterionId() ) : ?>
+                                <option value="<?php echo $question->getId(); ?>">
+                                    <?php echo $question->getCriterionId().' - '. $question->getDesignation().' - '. $question->getValue(); ?>
+                                </option>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
+            <br class="clear" />
+
+        </fieldset>
+
+        <div class="clear"> </div>
+        <button type="submit" class="save">Finalizar</button>
+        <div class="clear"> </div>
+	</form>
+</div>

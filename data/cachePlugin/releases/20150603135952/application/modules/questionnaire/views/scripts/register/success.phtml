@@ -1,0 +1,113 @@
+<?php
+$currentBlockIdNegocios = Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios;
+$currentBlockIdEmpreendedorismo = Zend_Registry::get('configDb')->qstn->currentBlockIdEmpreendedorismo;
+$edit = (isset($this->itemEditSuccess) and $this->itemEditSuccess)?true:false;
+$insert = (isset($this->itemInsertSuccess) and $this->itemInsertSuccess)?true:false;
+    if ($insert) {
+    ?>
+        <script type="text/javascript">
+        var fb_param = {};
+        fb_param.pixel_id = '6008963567005';
+        fb_param.value = '0.00';
+        fb_param.currency = 'BRL';
+        (function(){
+          var fpw = document.createElement('script');
+          fpw.async = true;
+          fpw.src = '//connect.facebook.net/en_US/fp.js';
+          var ref = document.getElementsByTagName('script')[0];
+          ref.parentNode.insertBefore(fpw, ref);
+        })();
+        </script>
+        <noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/offsite_event.php?id=6008963567005&amp;value=0&amp;currency=BRL" /></noscript>
+    <?php
+    }
+// ->appendFile($this->baseUrl('js/address/capital.js'))
+?>
+<h1 class="title">Candidata</h1>
+
+<?php
+$he = '';
+if ($this->hasEligibility != 0) {
+    
+    //$he .= '<br /><hr />';
+        $he .= '<fieldset style="border: 1px solid #ccc; margin-top: 4px; width: 470px;" class="fontMeta">';
+            $he .= '<legend>Empresa não elegível a participar do Prêmio:</legend>';
+             $he .= '<label>Motivo:</label>';
+    switch ($this->hasEligibility) {
+        case 1:
+            $he .= '<br />';
+            ?>
+            <?php 
+              // <div style="height: 16px; width: 16px; float: left;" class="ineligibility1"></div> Faturamento e Data de abertura inválidos <br />
+            $he .= '<div style="width: 465px;" class="">Empresa não poderá participar deste ciclo, por ter sua data de abertura posterior, e seu faturamento superior, ao que dita o Regulamento do Prêmio. Seu cadastro, no entanto, foi realizado com sucesso. Caso deseje receber uma devolutiva sobre a Gestão, você precisará responder as questões que se seguem e redigir o Relato.</div>';
+            //echo '<br /><h2>A data de abertura e o faturamento da empresa não atende aos critérios conforme o regulamento.</h2>';
+            break;
+        case 2:
+            $he .= '<br />';
+            ?>
+            <?php 
+              //<div style="height: 16px; width: 16px; float: left;" class="ineligibility2"></div> Data de abertura inválida <br />
+            $he .= '<div style="width: 465px;" class="">Empresa não poderá participar deste ciclo, por ter sua data de abertura posterior ao que dita o Regulamento do Prêmio. Seu cadastro, no entanto, foi realizado com sucesso. Caso deseje receber uma devolutiva sobre a Gestão, você precisará responder as questões que se seguem e redigir o Relato.</div>';
+            //echo '<br /><h2>A data de abertura não atende aos critérios conforme o regulamento.</h2>';
+            break;
+        case 3:
+            $he .= '<br />';
+            ?>
+            <?php 
+              //<div style="height: 16px; width: 16px; float: left;" class="ineligibility3"></div> Faturamento inválido
+            $he .= '<div style="width: 465px;" class="">Empresa não poderá participar deste ciclo, por ter seu faturamento superior ao que dita o Regulamento do Prêmio. Seu cadastro, no entanto, foi realizado com sucesso. Caso deseje receber uma devolutiva sobre a Gestão, você precisará responder as questões que se seguem e redigir o Relato.</div>';
+            //echo '<br /><h2>O faturamento da empresa não atende aos critérios conforme o regulamento.</h2>';
+            break;
+        default:
+            break;
+    }
+        $he .= '</fieldset>';
+?>
+<?php
+}
+?>
+
+    <?php if ($edit) : ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+            Dados alterados com sucesso.
+            <a href="<?php echo $this->baseUrl('questionnaire/respond/index/block/' . $currentBlockIdNegocios); ?>">
+                Clique aqui para responder o <strong>Questionário Negocios</strong>.
+            </a>
+            <a data-icon="x" class="icon close" href="#close"></a>
+            
+            <?php echo $he ?>
+            
+        </div>
+        <button tabindex="48" class="large btn-submit" type="button"
+                style="float: right; margin-bottom: 20px"
+                onclick="window.location.href='<?php echo $this->baseUrl('questionnaire/respond/index/block/' . $currentBlockIdNegocios); ?>'">
+            <span class="icon" data-icon="C"></span>Continuar
+        </button>
+    <?php endif; ?>
+
+    <?php if ($insert) : ?>
+        <?php include_once '../application/layouts/includes/facebook_pixels/register_finished.phtml'; ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    Seu cadastro foi concluído com sucesso. Entre com sua senha abaixo ou posteriormente na página inicial.
+            <a data-icon="x" class="icon close" href="#close"></a>
+            <?php echo $he ?>
+        </div>
+        <form class="login-success" action="<?php echo $this->baseUrl('/site/index/'); ?>" method="POST">
+            <input type="hidden" name="headerRedirect" value="1">
+          <input type="hidden" name="uri" value="<?php echo $this->baseUrl('questionnaire/respond/index/block/' . $currentBlockIdNegocios); ?>">
+          <label for="" class="label-login ">Login/Seu CPF</label>
+          <input type="text" value="<?php echo $this->cpf; ?>" class="input input-text list-table-30" id="usernameLogin" name="username" placeholder="Informe seu CPF">
+          <label for="" class="label-login">Senha</label>
+          <input type="password" name="password" id="userPassword" class="input input-text list-table-30">
+          <button class="btn-submit"><span class="icon" data-icon=""></span> Continuar</button>
+        </form>
+
+
+    <script>
+    $('#usernameLogin').inputmask("mask", {"mask": "999.999.999-99", "clearIncomplete": true});
+    $('#userPassword').focus();
+    </script>
+    <?php endif; ?>
+

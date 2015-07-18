@@ -1,0 +1,1650 @@
+@charset "UTF-8"
+
+@import compass/css3
+
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary
+  display: block
+
+audio, canvas, video
+  display: inline-block
+
+audio:not([controls])
+  display: none
+  height: 0
+
+[hidden]
+  display: none
+
+html
+  font-family: sans-serif
+  -webkit-text-size-adjust: 100%
+  -ms-text-size-adjust: 100%
+
+body
+  margin: 0
+
+a
+  &:focus
+    outline: thin dotted
+  &:active, &:hover
+    outline: 0
+
+h1
+  font-size: 2em
+  margin: 0.67em 0
+
+abbr[title]
+  border-bottom: 1px dotted
+
+b, strong
+  font-weight: bold
+
+dfn
+  font-style: italic
+
+hr
+  -moz-box-sizing: content-box
+  box-sizing: content-box
+  height: 0
+
+mark
+  background: #ff0
+  color: #000
+
+code, kbd, pre, samp
+  font-family: monospace, serif
+  font-size: 1em
+
+pre
+  white-space: pre-wrap
+
+q
+  quotes: "\201C" "\201D" "\2018" "\2019"
+
+small
+  font-size: 80%
+
+sub
+  font-size: 75%
+  line-height: 0
+  position: relative
+  vertical-align: baseline
+
+sup
+  font-size: 75%
+  line-height: 0
+  position: relative
+  vertical-align: baseline
+  top: -0.5em
+
+sub
+  bottom: -0.25em
+
+img
+  border: 0
+
+svg:not(:root)
+  overflow: hidden
+
+figure
+  margin: 0
+
+fieldset
+  border: 1px solid #c0c0c0
+  margin: 0 2px
+  padding: 0.35em 0.625em 0.75em
+
+legend
+  border: 0
+  padding: 0
+
+button, input, select, textarea
+  font-family: inherit
+  font-size: 100%
+  margin: 0
+
+button, input
+  line-height: normal
+
+button, select
+  text-transform: none
+
+button, html input[type="button"]
+  -webkit-appearance: button
+  cursor: pointer
+
+input
+  &[type="reset"], &[type="submit"]
+    -webkit-appearance: button
+    cursor: pointer
+
+button[disabled], html input[disabled]
+  cursor: default
+
+input
+  &[type="checkbox"], &[type="radio"]
+    box-sizing: border-box
+    padding: 0
+  &[type="search"]
+    -webkit-appearance: textfield
+    -moz-box-sizing: content-box
+    -webkit-box-sizing: content-box
+    box-sizing: content-box
+    &::-webkit-search-cancel-button, &::-webkit-search-decoration
+      -webkit-appearance: none
+
+button::-moz-focus-inner, input::-moz-focus-inner
+  border: 0
+  padding: 0
+
+textarea
+  overflow: auto
+  vertical-align: top
+
+table
+  border-collapse: collapse
+  border-spacing: 0
+
+h1, h2, h3, h4, h5, h6, p, blockquote, pre, dl, dd, ol, ul, form, fieldset, legend, table, th, td, caption, hr
+  margin: 0
+  padding: 0
+
+abbr[title], dfn[title]
+  cursor: help
+
+a, u
+  text-decoration: none
+
+ins
+  text-decoration: none
+  border-bottom: 1px solid
+
+img
+  font-style: italic
+
+label, input, textarea, button, select, option
+  cursor: pointer
+
+.text-input
+  &:active, &:focus
+    cursor: text
+    outline: none
+
+textarea
+  &:active, &:focus
+    cursor: text
+    outline: none
+
+.cf:after, .nav:after, .menu:after
+  content: ""
+  display: table
+  clear: both
+
+h1, h2, h3, h4, h5, h6, hgroup, ul, ol, dl, blockquote, p, address, table, fieldset, figure, pre, .form-fields > li, .fale small, .media, .island
+  margin-bottom: 24px
+  margin-bottom: 1.5rem
+
+.islet
+  margin-bottom: 24px
+  margin-bottom: 1.5rem
+  h1, h2, h3, h4, h5, h6, hgroup, ul, ol, dl, blockquote, p, address, table, fieldset, figure, pre, .form-fields > li, .fale small
+    margin-bottom: 12px
+    margin-bottom: 0.75rem
+
+.fale .islet small
+  margin-bottom: 12px
+  margin-bottom: 0.75rem
+
+.islet
+  .media, .island, .islet
+    margin-bottom: 12px
+    margin-bottom: 0.75rem
+
+.landmark
+  margin-bottom: 48px
+  margin-bottom: 3rem
+
+hr
+  margin-bottom: 22px
+  margin-bottom: 1.375rem
+
+ul, ol, dd
+  margin-left: 48px
+  margin-left: 3rem
+
+html
+  font: 1em / 1.5 serif
+  overflow-y: scroll
+  min-height: 100%
+
+a
+  &:hover, &:active, &:focus
+    text-decoration: underline
+
+.current > a
+  cursor: text
+  text-decoration: underline
+
+img
+  max-width: 100%
+  &[width], &[height]
+    max-width: none
+
+.img--right
+  float: right
+  margin-bottom: 24px
+  margin-left: 24px
+
+.img--left
+  float: left
+  margin-right: 24px
+  margin-bottom: 24px
+
+.img--center
+  display: block
+  margin-right: auto
+  margin-bottom: 24px
+  margin-left: auto
+
+.img--short
+  height: 120px
+
+.img--medium
+  height: 240px
+
+.img--tall
+  height: 360px
+
+figure > img
+  display: block
+
+table
+  width: 100%
+
+th, td
+  padding: 6px
+  text-align: left
+
+@media screen and (min-width: 480px)
+  th, td
+    padding: 12px
+
+[colspan]
+  text-align: center
+
+[colspan="1"]
+  text-align: left
+
+[rowspan]
+  vertical-align: middle
+
+[rowspan="1"]
+  vertical-align: top
+
+.numerical
+  text-align: right
+
+.t5
+  width: 5%
+
+.t10
+  width: 10%
+
+.t12
+  width: 12.5%
+
+.t15
+  width: 15%
+
+.t20
+  width: 20%
+
+.t25
+  width: 25%
+
+.t30
+  width: 30%
+
+.t33
+  width: 33.333%
+
+.t35
+  width: 35%
+
+.t37
+  width: 37.5%
+
+.t40
+  width: 40%
+
+.t45
+  width: 45%
+
+.t50
+  width: 50%
+
+.t55
+  width: 55%
+
+.t60
+  width: 60%
+
+.t62
+  width: 62.5%
+
+.t65
+  width: 65%
+
+.t66
+  width: 66.666%
+
+.t70
+  width: 70%
+
+.t75
+  width: 75%
+
+.t80
+  width: 80%
+
+.t85
+  width: 85%
+
+.t87
+  width: 87.5%
+
+.t90
+  width: 90%
+
+.t95
+  width: 95%
+
+.table--bordered
+  th, td
+    border: 1px solid #ccc
+  th:empty, td:empty
+    border: none
+  thead tr:last-child th
+    border-bottom-width: 2px
+  tbody tr th:last-of-type
+    border-right-width: 2px
+
+.table--striped tbody tr:nth-of-type(odd)
+  background-color: #ffc
+
+.table--data
+  font: 12px / 1.5 sans-serif
+
+fieldset
+  padding: 24px
+
+.form-fields
+  list-style: none
+  margin: 0
+  > li:last-child
+    margin-bottom: 0
+
+label, .label
+  display: block
+
+header.cell-3
+  margin-left: -30px
+
+.additional
+  display: block
+  font-weight: normal
+
+.check-list
+  list-style: none
+  margin: 0
+
+.check-label
+  display: inline-block
+
+.check-list
+  label, .label
+    display: inline-block
+
+.spoken-form label
+  display: inline-block
+  font: inherit
+
+.extra-help
+  display: inline-block
+  visibility: hidden
+
+.text-input
+  &:active + .extra-help, &:focus + .extra-help
+    visibility: visible
+
+.nav
+  list-style: none
+  margin-left: 0
+  > li
+    display: inline-block
+    *display: inline
+    zoom: 1
+    > a
+      display: inline-block
+      *display: inline
+      zoom: 1
+
+.nav--stacked > li
+  display: list-item
+  > a
+    display: block
+
+.nav--banner
+  text-align: center
+
+.nav--block
+  line-height: 1
+  letter-spacing: -0.31em
+  word-spacing: -0.43em
+  white-space: nowrap
+  > li
+    letter-spacing: normal
+    word-spacing: normal
+    > a
+      padding: 12px
+
+.nav--fit
+  display: table
+  width: 100%
+  > li
+    display: table-cell
+    > a
+      display: block
+
+.nav--keywords > li
+  &:after
+    content: ", "
+  &:last-child:after
+    display: none
+
+.this-or-this
+  display: table
+  width: 100%
+  text-align: center
+
+.this-or-this__this, .this-or-this__or
+  display: table-cell
+  vertical-align: middle
+
+.s, .i
+  display: inline-block
+  line-height: 1
+  position: relative
+  vertical-align: middle
+  zoom: 1
+  font-style: normal
+  font-weight: normal
+  text-align: center
+
+.s
+  background-image: url(/path/to/your/sprite.png)
+  width: 16px
+  height: 16px
+  top: -1px
+  overflow: hidden
+  *text-indent: -9999px
+  &:before
+    content: ""
+    display: block
+    width: 0
+    height: 100%
+
+.i
+  font-size: 16px
+  width: 1em
+  height: 1em
+  &:before
+    content: attr(data-icon)
+
+.i--large
+  font-size: 32px
+
+.i--huge
+  font-size: 64px
+
+.i--natural
+  font-size: inherit
+
+.icon-text > .icon-text__icon
+  margin-right: 6px
+
+.icon-text--rev > .icon-text__icon
+  margin-left: 6px
+
+.brand
+  font-family: "Lato","Helvetica Neue",sans-serif!important
+  color: #61344c!important
+
+.brand-face
+  font-family: "Lato","Helvetica Neue",sans-serif!important
+
+.brand-color, .brand-colour
+  color: #61344c!important
+
+.float--right
+  float: right!important
+
+.float--left
+  float: left !important
+
+.text--left
+  text-align: left  !important
+
+.text--center, .notFound, .navegacao
+  text-align: center!important
+
+.text--right
+  text-align: right !important
+
+.flush
+  margin: 0!important
+
+.flush--top
+  margin-top: 0!important
+
+.flush--right
+  margin-right: 0!important
+
+.flush--bottom
+  margin-bottom: 0!important
+
+.flush--left
+  margin-left: 0!important
+
+.flush--ends
+  margin-top: 0!important
+  margin-bottom: 0!important
+
+.flush--sides
+  margin-right: 0!important
+  margin-left: 0!important
+
+.ir, .rfSlider .slideshow .nav > li > a
+  border: 0
+  font: 0 / 0 Arial
+  text-shadow: none
+  color: transparent
+  background-color: transparent
+
+.hidden
+  display: none !important
+  visibility: hidden
+
+.visuallyhidden
+  border: 0
+  clip: rect(0 0 0 0)
+  height: 1px
+  margin: -1px
+  overflow: hidden
+  padding: 0
+  position: absolute
+  width: 1px
+  &.focusable
+    &:active, &:focus
+      clip: auto
+      height: auto
+      margin: 0
+      overflow: visible
+      position: static
+      width: auto
+
+.invisible
+  visibility: hidden
+
+.full-bleed
+  margin-right: -24px !important
+  margin-left: -24px !important
+
+.islet .full-bleed
+  margin-right: -12px !important
+  margin-left: -12px !important
+
+.informative
+  cursor: help
+
+.muted
+  opacity: 0.5
+  filter: alpha(opacity = 50)
+
+.proceed
+  text-align: right
+
+.go:after
+  content: " ┬╗"
+
+.caps, .auth a, .alpha, h2
+  text-transform: uppercase
+
+.accessibility
+  position: absolute
+  left: -99999px
+
+[dir=rtl] .accessibility
+  left: auto
+  right: -99999px
+
+.hide
+  position: absolute
+  left: -9999px
+
+@media only screen and (max-width: 480px)
+  .hide--palm
+    position: absolute
+    left: -9999px
+
+@media only screen and (min-width: 481px) and (max-width: 1023px)
+  .hide--lap
+    position: absolute
+    left: -9999px
+
+@media only screen and (max-width: 1023px)
+  .hide--portable
+    position: absolute
+    left: -9999px
+
+@media only screen and (min-width: 1024px)
+  .hide--desk
+    position: absolute
+    left: -9999px
+
+.row
+  &:before
+    content: "\0020"
+    display: block
+    height: 0
+    overflow: hidden
+  &:after
+    content: "\0020"
+    display: block
+    height: 0
+    overflow: hidden
+    clear: both
+  zoom: 1
+
+.col-1
+  display: inline
+  float: left
+  width: 62px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-1
+  display: inline
+  float: left
+  width: 82px
+
+.col-2
+  display: inline
+  float: left
+  width: 144px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-2
+  display: inline
+  float: left
+  width: 164px
+
+.col-3
+  display: inline
+  float: left
+  width: 226px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-3
+  display: inline
+  float: left
+  width: 246px
+
+.col-4
+  display: inline
+  float: left
+  width: 308px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-4
+  display: inline
+  float: left
+  width: 328px
+
+.col-5
+  display: inline
+  float: left
+  width: 390px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-5
+  display: inline
+  float: left
+  width: 410px
+
+.col-6
+  display: inline
+  float: left
+  width: 472px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-6
+  display: inline
+  float: left
+  width: 492px
+
+.col-7
+  display: inline
+  float: left
+  width: 554px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-7
+  display: inline
+  float: left
+  width: 574px
+
+.col-8
+  display: inline
+  float: left
+  width: 636px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-8
+  display: inline
+  float: left
+  width: 60%
+  &.customPad
+    padding-left: 30px
+
+.col-9
+  display: inline
+  float: left
+  width: 718px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-9
+  display: inline
+  float: left
+  width: 738px
+
+.col-10
+  display: inline
+  float: left
+  width: 800px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-10
+  display: inline
+  float: left
+  width: 820px
+
+.col-11
+  display: inline
+  float: left
+  width: 882px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-11
+  display: inline
+  float: left
+  width: 902px
+
+.col-12
+  display: inline
+  float: left
+  width: 964px
+  margin: 0 10px
+  margin: 0 relative-size(10, 16px, rem)
+
+.cell-12
+  display: inline
+  float: left
+  width: 984px
+
+.bt-sprite, .bt-bolinha-empty, .rfSlider .slideshow .nav > li > a, .bt-bolinha-full, .rfSlider .slideshow .nav > li > a.rf-slideshownav-current-nav, .bt-bolinha-plus, .bt-down, .bt-enviar-login, .bt-inscreva-se, .bt-next, .bt-prev, .bt-select, .bt-up
+  background: url('../images/sprites/bt-s135d993ec4.png') no-repeat
+
+.bt-bolinha-empty, .rfSlider .slideshow .nav > li > a
+  background-position: -13px -117px
+  height: 14px
+  width: 15px
+
+.bt-bolinha-full, .rfSlider .slideshow .nav > li > a.rf-slideshownav-current-nav
+  background-position: -42px -117px
+  height: 14px
+  width: 14px
+
+.bt-bolinha-plus
+  background-position: -28px -117px
+  height: 14px
+  width: 14px
+
+.bt-down
+  background-position: -146px -117px
+  height: 34px
+  width: 57px
+
+.bt-enviar-login
+  background-position: -56px -117px
+  height: 33px
+  width: 90px
+
+.bt-inscreva-se
+  background-position: 0 -151px
+  height: 45px
+  width: 210px
+
+.bt-next
+  background-position: -118px 0
+  height: 117px
+  width: 60px
+
+.bt-prev
+  background-position: -57px 0
+  height: 117px
+  width: 61px
+
+.bt-select
+  background-position: 0 -117px
+  height: 12px
+  width: 13px
+
+.bt-up
+  background-position: 0 0
+  height: 34px
+  width: 57px
+
+.icon-sprite, .icon-seta_login_branca, .auth a.txtbranco .seta, .icon-seta_login_roxa, .auth a.txtroxo .seta, .icon-seta_ver_mais
+  background: url('../images/sprites/icon-s7a6c8b1815.png') no-repeat
+
+.icon-seta_login_branca, .auth a.txtbranco .seta
+  background-position: 0 -51px
+  height: 35px
+  width: 87px
+
+.icon-seta_login_roxa, .auth a.txtroxo .seta
+  background-position: 0 -16px
+  height: 35px
+  width: 87px
+
+.icon-seta_ver_mais
+  background-position: 0 0
+  height: 16px
+  width: 11px
+
+html
+  color: #333
+  font-size: 90%
+  outline: none
+
+body
+  font-family: "Lato","Helvetica Neue",sans-serif
+  background-image: url('../images/pattern.jpg?1362180049')
+  //background: url(../images/originals/home.jpg) no-repeat
+  //background: url(../images/originals/home0.png) no-repeat
+  //background: url(../images/originals/premio.png) no-repeat
+  //background: url(../images/originals/como.png) no-repeat
+  //background: url(../images/originals/premiacao.png) no-repeat
+  //background: url(../images/originals/como-escrever.png) no-repeat
+  //background: url(../images/originals/fale.png) no-repeat
+  //background: url(../images/originals/cronograma.png) no-repeat
+  background-position: left 0
+  background-repeat: repeat-x
+  background-color: #fff
+  overflow-y: auto
+
+hr
+  border: 0
+  border-top: 1px solid white
+  display: block
+  height: 1px
+  margin: 0
+  overflow: hidden
+  padding: 0
+  &.both
+    margin: 10px 0
+#content-area
+  max-width: 84.5%
+  //overflow: hidden
+  margin: 0 auto
+  height: 100%
+  position: relative
+.wrapper
+  margin-left: auto
+  margin-right: auto
+  position: relative
+  min-width: 981px
+  &:before
+    content: "\0020"
+    display: block
+    height: 0
+    overflow: hidden
+  &:after
+    content: "\0020"
+    display: block
+    height: 0
+    overflow: hidden
+    clear: both
+  zoom: 1
+
+.main
+  opacity: 1.5
+  margin-left: auto
+  margin-right: auto
+  min-width: 981px
+  height: 771px
+  overflow: hidden
+  background-image: url('../images/bgs/home.png?1362180049')
+  background-repeat: no-repeat
+  background-position: right 0
+  .wrapper
+    padding-top: 15px
+    height: 756px
+    background-repeat: no-repeat
+    background-position: right 0
+  > .wrapper > .customPad
+    padding-left: 30px
+
+.logo
+  margin-left: 60px
+  width: 119px
+  height: 256px
+  background-image: url('../images/logo.png?1362107421')
+  background-repeat: no-repeat
+  background-position: left tpp
+
+.menu
+  list-style: none
+  margin-left: 0
+  li
+    font-size: 16px
+    font-size: 1rem
+    line-height: 27px
+    padding-left: 59px
+    color: #61344c
+    background-image: url('../images/linha.png?1362107421')
+    background-repeat: no-repeat
+    background-position: 10px 100%
+    a
+      color: #61344c
+      display: block
+      padding: 10px 0px 10px
+      font-style: italic
+      letter-spacing: 1px
+      font-size: 15px
+    &.current > a
+      cursor: text
+      text-decoration: none
+      font-weight: bold
+
+.auth
+  margin: 0 auto 10px auto
+  //width: 720px
+  width: 770px
+  position: relative
+  min-height: 60px
+  background-image: url('../images/auth.png?1362107421')
+  background-repeat: no-repeat
+  background-position: center bottom
+  label
+    color: #ee7c48
+    font-style: italic
+  a
+    display: inline-block
+    *display: inline
+    *zoom: 1
+    font-size: 14px
+    font-size: 0.875rem
+    line-height: 1.71429
+    position: absolute
+    margin-left: 15px
+    font-weight: bold
+    font-style: italic
+    width: 90px
+    top: 6px
+    i
+      position: absolute
+      top: 26px
+      left: 20px
+    &.txtbranco
+      color: white
+    &.txtroxo
+      color: #7a4f66
+  #frmLogin
+    padding: 0 0 0 85px
+    //padding: 0 0 0 122px
+#link-forgot-password
+  display: block
+  clear: both
+  white-space: nowrap
+  top: 34px
+  font-size: 10px
+  text-transform: none
+  left: 406px
+  color: #7a4f66
+  text-decoration: underline
+
+.notFound
+  font-size: 22px
+  font-size: 1.375rem
+  line-height: 1.09091
+  color: black
+  padding: 50px 10px
+
+.frm
+  label
+    font-size: 14px
+    font-size: 0.875rem
+    line-height: 1.71429
+    font-weight: normal
+  select
+    -webkit-box-sizing: border-box
+    -moz-box-sizing: border-box
+    box-sizing: border-box
+    font-size: 12px
+    font-size: 0.75rem
+    line-height: 2
+    -webkit-transition: all 0.3s ease-in-out
+    -moz-transition: all 0.3s ease-in-out
+    -o-transition: all 0.3s ease-in-out
+    transition: all 0.3s ease-in-out
+    padding: 0 10px
+    height: 40px
+    outline: none
+    border: 1px solid #ddd
+  input
+    &[type=text], &[type=password]
+      -webkit-box-sizing: border-box
+      -moz-box-sizing: border-box
+      box-sizing: border-box
+      font-size: 13px
+      font-size: 0.75rem
+      line-height: 2
+      -webkit-transition: all 0.3s ease-in-out
+      -moz-transition: all 0.3s ease-in-out
+      -o-transition: all 0.3s ease-in-out
+      transition: all 0.3s ease-in-out
+      padding: 0 10px
+      height: 40px
+      outline: none
+      border: 1px solid #ddd
+  textarea
+    -webkit-box-sizing: border-box
+    -moz-box-sizing: border-box
+    box-sizing: border-box
+    font-size: 12px
+    font-size: 0.75rem
+    line-height: 2
+    -webkit-transition: all 0.3s ease-in-out
+    -moz-transition: all 0.3s ease-in-out
+    -o-transition: all 0.3s ease-in-out
+    transition: all 0.3s ease-in-out
+    padding: 0 10px
+    height: 40px
+    outline: none
+    border: 1px solid #ddd
+  select:focus
+    -webkit-box-shadow: 0 0 5px #ee7c48
+    -moz-box-shadow: 0 0 5px #ee7c48
+    box-shadow: 0 0 5px #ee7c48
+    border: 1px solid #ee7c48
+  input
+    &[type=text]:focus, &[type=password]:focus
+      -webkit-box-shadow: 0 0 5px #ee7c48
+      -moz-box-shadow: 0 0 5px #ee7c48
+      box-shadow: 0 0 5px #ee7c48
+      border: 1px solid #ee7c48
+  textarea:focus
+    -webkit-box-shadow: 0 0 5px #ee7c48
+    -moz-box-shadow: 0 0 5px #ee7c48
+    box-shadow: 0 0 5px #ee7c48
+    border: 1px solid #ee7c48
+  button
+    position: relative
+    -webkit-box-sizing: border-box
+    -moz-box-sizing: border-box
+    box-sizing: border-box
+    font-size: 14px
+    line-height: 2
+    outline: none
+    border: 0
+    color: white
+    text-transform: uppercase
+    font-style: italic
+    font-weight: 600
+    &:active
+      top: 1px
+  &.inline
+    label
+      display: inline-block
+      *display: inline
+      *zoom: 1
+      margin-right: 5px
+      height: 33px
+      line-height: 33px
+    input
+      &[type=text], &[type=password]
+        display: inline-block
+        *display: inline
+        *zoom: 1
+        margin-right: 10px
+        height: 33px
+    label
+      margin-left: 10px
+      font-size: 15px
+#auth_login, #auth_senha
+  width: 178px
+  font-size: 12px
+.bt-enviar-login
+  margin: 0 0 0 7px
+.theFooter
+  background-color: white
+  padding: 10px
+  -webkit-box-shadow: #ddd 0 0 25px
+  -moz-box-shadow: #ddd 0 0 25px
+  box-shadow: #ddd 0 0 25px
+
+#footer-vorttex-logo
+  background-image: url('../images/vorttex-logo.png')
+  background-repeat: repeat
+  background-color: transparent
+  width: 66px 
+  height: 20px
+  display: inline-block
+  text-indent: -999em
+  position: absolute
+  top: 8px
+  left: 90px
+
+.boxWhite
+  background-image: url('../images/white.png?1362110206')
+  background-repeat: repeat
+  background-color: transparent
+  width: 403px !important
+  right: 0px
+  padding: 24px 34px !important
+
+.frm
+  select
+    background-image: url('../images/white.png?1362110206')
+    background-repeat: repeat
+    background-color: transparent
+  input
+    &[type=text], &[type=password]
+      background-image: url('../images/white.png?1362110206')
+      background-repeat: repeat
+      background-color: transparent
+  textarea
+    background-image: url('../images/white.png?1362110206')
+    background-repeat: repeat
+    background-color: transparent
+
+.container, .fale.boxWhite
+  width: 100%
+  max-width: 760px
+  max-height: 595px
+  padding: 24px 30px 20px
+  position: relative
+  &.page-premio
+    margin: 209px 0 0 60px
+    width: 100% !important
+    h2
+      margin: 10px 0 0 0
+    h3
+      margin: 3px 0 32px 0
+      width: 70%
+      line-height: 21px
+    p
+      margin: 0 0 20px 0
+      font-size: 15px
+      display: block
+  &.page-participar
+    margin: 81px 0 0 60px
+    width: 100% !important
+    h2
+      margin: 10px 0 0 0
+    h3
+      margin: 3px 0 32px 0
+      width: 70%
+      line-height: 21px
+    p
+      margin: 0 0 20px 0
+      font-size: 15px
+      display: block
+  &.page-premiacao
+    margin: 81px 0 0 60px
+    width: 100% !important
+    h2
+      margin: 10px 0 0 0
+    h3
+      margin: 3px 0 32px 0
+      width: 70%
+      line-height: 21px
+    p
+      margin: 0 0 20px 0
+      font-size: 15px
+      display: block
+  &.page-regulamento
+    margin: 81px 0 0 60px
+    width: 100% !important
+    h2
+      margin: 10px 0 0 0
+    h3
+      margin: 3px 0 32px 0
+      width: 70%
+      line-height: 21px
+    p
+      margin: 0 0 20px 0
+      font-size: 15px
+      display: block
+  &.page-como-escrever
+    margin: 81px 0 0 60px
+    width: 100% !important
+    h2
+      margin: 10px 0 0 0
+    h3
+      margin: 3px 0 32px 0
+      width: 70%
+      line-height: 21px
+    p
+      margin: 0 0 20px 0
+      font-size: 15px
+      display: block
+  &.page-fale-conosco
+    margin: 81px 0 0 60px
+    width: 100% !important
+    overflow: auto
+    h2
+      margin: 10px 0 0 0
+    h3
+      margin: 3px 0 32px 0
+      width: 70%
+      line-height: 21px
+    p
+      margin: 0 0 20px 0
+      font-size: 15px
+      display: block
+    small
+      padding: 24px 0 0 0
+      display: block
+  &.page-ciclos
+    margin: 81px 0 0 60px
+    width: 100% !important
+    h2
+      margin: 10px 0 0 0
+    h3
+      margin: 3px 0 32px 0
+      width: 70%
+      line-height: 21px
+    p
+      margin: 0 0 20px 0
+      font-size: 15px
+      display: inline-block
+.page-cronograma
+  margin: 113px 0 0 92px
+.frm
+  select.fale
+    width: 100%
+    max-width: 760px
+    max-height: 500px
+    padding: 24px 30px
+    position: relative
+  input.fale
+    &[type=text], &[type=password]
+      width: 100%
+      max-width: 760px
+      max-height: 500px
+      padding: 30px
+      position: relative
+      margin: 5px 0 0 0
+  textarea.fale
+    width: 100%
+    max-width: 760px
+    max-height: 500px
+    padding: 30px
+    position: relative
+
+.container
+  overflow: auto
+
+.register-warning
+  line-height: 0
+  border: 1px solid
+  border-color: #ee7c48
+  border-radius: 10px
+  color: #ee7c48
+  margin-bottom: 11px
+  padding: 17px 0px 0px 8px
+  width: 74%
+
+.navegacao a
+  display: inline-block
+  *display: inline
+  *zoom: 1
+  position: relative
+  i
+    position: absolute
+    top: -30px
+    left: 0
+    &.bt-up
+      top: -595px
+.mCSB_container
+  p
+    margin: 20px 0 20px 0
+    font-size: 14px
+    line-height: 20px
+    color: #666
+
+.alpha, h2
+  font-size: 20px
+  font-size: 1.25rem
+  line-height: 1.2
+  color: #61344c
+  font-style: italic
+  font-weight: bold
+  letter-spacing: 1px
+  margin: 0
+
+.beta, h3
+  font-size: 18px
+  line-height: 1.33333
+  color: #666
+  font-weight: normal
+  font-style: italic
+  text-transform: none
+  margin: 8px 0 0 0
+
+#crono-principal
+  position: relative
+  .crono-nav
+    @extend .bt-sprite
+    position: absolute
+    top: 53%
+    height: 50px
+    width: 20px
+    overflow-y: hidden
+    text-indent: -999em
+    margin: -25px 0 0 0
+    cursor: pointer
+    &#crono-prev
+      left: 10px
+      background-position: -58px -33px
+    &#crono-next
+      right: 10px
+      background-position: -158px -33px
+.box-cronograma
+  color: white
+  font-style: italic
+  font-size: 14px
+  font-size: 0.875rem
+  line-height: 1.71429
+  margin: 82px 0 0 0
+  width: 548px
+  .tbl-show
+    margin: 0
+    border-collapse: separate
+    border-spacing: 1px
+    width: 274px
+    height: 274px
+    table-layout: fixed
+    td
+      padding: 5px
+      width: 262px
+      height: 262px
+      text-align: center
+      vertical-align: middle
+      .showDia
+        font-size: 19px
+        font-size: 1.1875rem
+        line-height: 1.26316
+      hr
+        width: 140px
+        margin: 10px auto
+  .tbl
+    margin: 0
+    border-collapse: separate
+    border-spacing: 1px
+    width: 240px
+    height: 240px
+    table-layout: fixed
+    td
+      cursor: pointer
+      padding: 5px
+      width: 80px
+      height: 80px
+      text-align: center
+      vertical-align: middle
+      table
+        margin: 0
+      &.flush
+        margin: 0!important
+        padding: 0!important
+
+.rosa
+  background-color: #ff7f73
+
+.roxo
+  background-color: #7a4f66
+
+.vermelho
+  background-color: #fd6f62
+
+.cinza-escuro
+  background-color: #666666
+
+.cinza
+  background-image: url('../images/line.png?1362485042')
+  background-repeat: no-repeat
+  background-color: #e5e1e1
+  background-position: center center
+  overflow: hidden
+  text-indent: -99999px
+
+.laranja
+  background-color: #ee7c48
+
+.home
+  &.bt-inscreva-se
+    +border-radius(2px)
+    border-top: 1px solid #79251B
+    border-right: 1px solid #884040
+    border-bottom: 1px solid #752B28
+    border-left: 1px solid #571A13
+    background: #61344c
+    @include background-image(linear-gradient(#885872, #6C465A))
+    @include box-shadow(#A4727F 1px 2px 1px inset)
+    color: white
+    margin: 19px 0
+    border: 0
+    width: auto
+    padding: 12px 95px
+    font-weight: 600
+    text-transform: uppercase
+    font-style: italic
+    line-height: 43px
+    height: auto
+  &.col-4
+    width: 395px
+
+.rfSlider
+  -webkit-box-sizing: border-box
+  -moz-box-sizing: border-box
+  box-sizing: border-box
+  width: 330px
+  height: 293px
+  padding: 10px 20px
+  position: absolute
+  bottom: 0
+  .slideshow
+    .slides
+      -webkit-box-sizing: border-box
+      -moz-box-sizing: border-box
+      box-sizing: border-box
+      position: relative
+      width: 100%
+      height: 280px
+      div
+        -webkit-box-sizing: border-box
+        -moz-box-sizing: border-box
+        box-sizing: border-box
+        width: 100%
+        height: 280px
+        h2, h3, p
+          color: #7a4f66
+          font-weight: normal
+          font-style: italic
+          margin: 0
+          padding: 0
+        h2
+          font-size: 25px
+          margin: 3px 0 0 0
+          line-height: 25px
+          font-weight: 600
+          text-transform: none
+        h3
+          font-size: 18px
+          font-size: 1.125rem
+          line-height: 1.33333
+          margin-bottom: 15px
+        p
+          font-size: 15px
+          line-height: 20px
+          font-style: normal
+          &.med
+            font-size: 17px
+            font-style: italic
+            margin: 14px 0 0 0
+            display: inline-block
+            letter-spacing: 1px
+            font-weight: 600
+            a
+              color: #7a4f66
+    .nav
+      margin: 0 0 10px 0
+      line-height: normal
+      height: 14px
+      > li > a
+        vertical-align: top
+  .prev, .next
+    position: absolute
+    top: 80px
+  .prev
+    left: -45px
+  .next
+    right: -45px
+
+.Styled
+  vertical-align: middle
+
+select.Styled
+  position: relative
+  z-index: 10
+  cursor: pointer
+  &.hiddenStyle
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0)
+    opacity: 0
+
+span.Styled
+  -webkit-box-sizing: border-box
+  -moz-box-sizing: border-box
+  box-sizing: border-box
+  font-size: 12px
+  font-size: 0.75rem
+  line-height: 2
+  background-image: url('../images/sprites/bt/select.png?1362117315')
+  background-position: 85% center
+  background-repeat: no-repeat
+  background-color: white
+  position: absolute
+  z-index: 9
+  top: 0
+  left: 0
+  display: block
+  padding: 0px 5px
+  width: 42px !important
+  height: 40px
+  border: 1px solid #ddd
+  line-height: 40px
+
+.fale.boxWhite
+  max-height: 550px
+
+.frm
+  select.fale
+    max-height: 550px
+  input.fale
+    &[type=text], &[type=password]
+      max-height: 550px
+  textarea.fale
+    max-height: 550px
+
+.fale
+  small
+    display: block
+  .frm
+    textarea
+      width: 380px
+      min-height: 100px
+    select, input[type=text]
+      width: 190px
+    select.ped, input[type=text].ped
+      width: 50px
+      margin-right: 10px
+    select.ped-rev, input[type=text].ped-rev
+      margin-right: 0px
+    select.med, input[type=text].med
+      width: 131px
+    select.med-rev, input[type=text].med-rev
+      margin-right: 10px
+    .act
+      top: 27px
+    .bloco .blocoFrm
+      display: inline-block
+      *display: inline
+      *zoom: 1
+      font-size: 0
+      margin-right: 18px
+      margin-bottom: 18px
+      position: relative
+      &:last-child
+        margin-right: 0px
+      span.Styled
+        top: 22px
+
+.forgot-pass
+  background: #fff
+  position: relative
+  overflow: hidden
+  padding: 20px
+  h1
+    color: #7a4f66
+    font-size: 22px
+  form
+  fieldset
+    width: 90%
+    border: none
+  input
+    width: 50%
+  #bt-reset-pass
+    background: url("../images/sprites/bt-s135d993ec4.png") no-repeat
+    background-position: -56px -117px
+    height: 33px
+    width: 90px
+    margin: 10px 0 0 0
+  #msgError
+    background-color: #ee7c48
+    line-height: 20px
+    font-size: 14px
+    color: #fff
+    text-indent: 10px

@@ -1,0 +1,114 @@
+<?php
+$this->headScript()
+    ->appendFile($this->baseUrl('js/management/user.js'));
+
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="pag_role_index">
+    <h1 class="center">Perfis Sistema</h1> <?php // leia-se: Gerenciamento de papéis  ?>
+    <hr class="clear">
+    <?php if ($this->roleInsertSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Perfil criado com sucesso.'; ?> <?php // leia-se: Papel criado com sucesso  ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+    
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+
+        
+    <table class="striped tight" border="0" cellpadding="0" cellspacing="0">
+        <caption></caption>
+        <colgroup>
+            <col class="firstCol" />
+            <col style="width: 100px" />
+            <col style="width: 260px" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th rowspan="2" style="width: 175px"> Perfil </th> <?php // leia-se: Papel ?>
+                <th rowspan="2" class="lastTd" style="width: 75px; font-size: 0.8em"> Ações </th>
+                <th colspan="1" style="padding-left: 3px; padding-right: 0; padding-bottom: 0px; font-size: 0.8em; height: 29px">Acesso
+                <select tabindex="2" name="filter[questionnaire_id]" id="QuestionnaireId" class="fnc fancy" style="width: 160px; font-size: 11px; color: #666; margin-bottom: 4px;">
+                    <option value="">Selecione</option>
+                    <?php foreach ($this->getAllQuestionnaires as $questionnaire) : ?>
+                        <?php if ($questionnaire->getId() == $this->questionnaire_id)://$this->filter['questionnaire_id']) : ?>
+                            <option value="<?php echo $questionnaire->getId();?>" selected="selected"><?php echo $questionnaire->getTitle()." - ".$questionnaire->getDescription();?></option>
+                        <?php else :  ?>
+                            <option value="<?php echo $questionnaire->getId();?>"><?php echo $questionnaire->getTitle()." - ".$questionnaire->getDescription();?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
+                </th>
+            </tr>
+            <tr>
+                <th class="colspan">Periódo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                foreach ($this->roles as $role):
+                    if ($role->getId() == $this->configRegistry()->acl->roleSupremeAdminId) {
+                        continue;
+                    }
+            ?>
+                <tr>
+                    <th>
+                        <?php echo $role->getLongDescription(); ?>
+                        <?php if ($role->getIsSystemRole()): ?>
+                            (Sistema)
+                        <?php endif; ?>
+                    </th>
+                    <td class="right">
+                        <?php if (!$role->getIsSystemRole()): ?>
+
+                            <?php if ($this->loggedAllowed('edit')): ?>  
+                                <a href="<?php echo $this->baseUrl('management/role/edit/id/' . $role->getId()); ?>" title="Editar perfil"><span class="ico edit">Editar</span></a>
+                            <?php endif; ?> 
+    
+                            <?php if ($this->loggedAllowed('delete')): ?>
+                                <a href="<?php echo $this->baseUrl('management/role/delete/id/' . $role->getId()); ?>" title="Deletar perfil" class="delete confirm"><span class="ico delete">Excluir</span></a>
+                            <?php endif; ?> 
+
+                        <?php endif; ?>
+
+                        <?php if ($this->loggedAllowed('edit', 'management:privilege')): ?>
+                            <?php if (!$role->getIsSystemRole() or ($role->getIsSystemRole() and $this->loggedUser->isSupremeAdmin())): ?>
+                                <a href="<?php echo $this->baseUrl('management/privilege/edit/role/' . $role->getId()); ?>" title="Editar privilégios"><span class="ico options">Privilégios</span></a>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </td>
+                    <td class="right">
+                    <?php echo ($role->getStartDate())?Vtx_Util_Date::format_dma($role->getStartDate()) . ' à ':'-'; ?>
+                    <?php echo ($role->getStartDate())?Vtx_Util_Date::format_dma($role->getEndDate()): ''; ?>
+                    
+                        <?php
+                            $roleQstnId = $role->getRoleQuestionnaireId();
+                            if ($roleQstnId) {
+                                $url = 'management/role-questionnaire/edit/id/' . $roleQstnId;
+                                $url_delete = 'management/role-questionnaire/delete/id/' . $roleQstnId . '/questionnaire_id/'.$this->questionnaire_id;
+                            } else {
+                                $url = 'management/role-questionnaire/insert/role_id/' . $role->getId() . '/questionnaire_id/'.$this->questionnaire_id;
+                                $url_delete = '';
+                            }
+                        ?>
+                            <?php if ($this->questionnaire_id and $this->loggedAllowed('edit', 'management:role-questionnaire')): ?>  
+                                <a href="<?php echo $this->baseUrl($url); ?>" title="Editar período de acesso"><span class="ico edit">Editar</span></a>
+                            <?php endif; ?>
+                            <?php if ($url_delete != '' and $this->questionnaire_id and $this->loggedAllowed('delete', 'management:role-questionnaire')): ?>
+                                <a href="<?php echo $this->baseUrl($url_delete);?>" title="Excluir período de acesso" class="delete confirm"><span class="ico delete">Excluir</span></a>
+                            <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <hr class="clear"/>
+</div>

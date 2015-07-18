@@ -1,0 +1,383 @@
+#page-login
+  #main
+    width: 998px
+  #home-login
+    #login-password
+      height: 0
+      overflow: hidden
+  .warn
+    font-size: 11px
+    background: #ccc
+    padding: 5px 10px
+    margin: 0 0 10px
+    border-radius: 5px
+    color: #fff
+    &.error
+      color: #900
+  footer
+    &.relative
+      position: relative !important
+      bottom: 0 !important
+      top: 20px !important
+
+  &.MpeBrasil-v1
+    background-image: url(/assets/images/mpe-brasil/home-background.jpg)
+    background-color: #fff
+    background-position: top center
+    background-repeat: no-repeat
+    background-size: 100%
+    #home-login
+      float: left
+      width: 48%
+      hgroup
+        +size(103px, 245px)
+        background: url(/assets/images/mpe-brasil/title.png) no-repeat center top
+        text-indent: -999em
+        margin: 101px 0 0 78px
+      form
+        margin: 83px 0 0 65px
+      fieldset
+      legend
+        display: none
+      label
+        display: block
+        position: relative
+        label.error
+          +absLT(50%, 10px)
+          +box-shadow(1px 1px 3px #666)
+          background: #ccc
+          border-radius: 5px
+          color: #333
+          font-size: 11px
+          margin: 0 0 0 -40%
+          padding: 5px
+          position: absolute
+          width: 50%
+          &:before
+            +absBL(-20px, 50%)
+            border: 10px solid transparent
+            border-color: #ccc transparent transparent transparent
+            content: ""
+        span
+          color: #333
+          display: block
+          font-size: 12px
+          padding: 0 0 0 9px
+        input
+          +border-radius(5px)
+          +size(46px, 100%)
+          border: 4px solid #99ccff
+          border: 4px solid rgba(#99ccff, 0.45)
+          margin: 10px 0
+          line-height: 35px
+          text-indent: 10px
+          &:focus, &:hover
+            border: 4px solid #99ccff
+      button
+        background: url(/assets/images/mpe-brasil/button-home-login.png) no-repeat center top
+        +size(43px, 115px)
+        border: none
+        text-indent: -999em
+        margin: 10px 0 0 0
+        float: right
+        &:focus, &:hover
+
+    #home-text
+      float: left
+      width: 52%
+      padding: 0 0 0 94px
+      h3
+        +size(87px, 231px)
+        background: url(/assets/images/mpe-brasil/title2.png) no-repeat center top
+        margin: 103px 0 0 0
+        text-indent: -999em
+      p
+        color: #666
+        font-size: 12px
+        margin: 25px 0 0 0
+        line-height: 20px
+        width: 69%
+    footer
+      +absBL(20px, 0)
+      +size(55px, 100%)
+      background: url(/assets/images/mpe-brasil/footer-background.png) repeat-x
+      line-height: 55px
+      #footer
+        background: url(/assets/images/mpe-brasil/logos-footer.png) no-repeat center right
+        width: 998px
+        margin: 0 auto
+        p
+          font-size: 10px
+          color: #111c37
+
+  &.SebraeMais
+    background-image: url(/assets/images/sebrae-mais/home-background.jpg)
+    background-color: #e4e4e4
+    background-position: top center
+    background-repeat: no-repeat
+    //background: url(/_.layouts/conceito-sebrae.jpg) no-repeat center top
+    #home-login
+      float: left
+      width: 48%
+      hgroup
+        +size(87px, 167px)
+        background: url(/assets/images/sebrae-mais/title.png) no-repeat center top
+        margin: 128px 0 0 71px
+        text-indent: -999em
+      form
+        margin: 72px 0 0 67px
+      fieldset
+      legend
+        display: none
+      label
+        display: block
+        position: relative
+        label.error
+          +absLT(50%, 10px)
+          +box-shadow(1px 1px 3px #666)
+          background: #ccc
+          border-radius: 5px
+          color: #333
+          font-size: 11px
+          margin: 0 0 0 -40%
+          padding: 5px
+          position: absolute
+          width: 50%
+          &:before
+            +absBL(-20px, 50%)
+            border: 10px solid transparent
+            border-color: #ccc transparent transparent transparent
+            content: ""
+        span
+          color: #333
+          display: block
+          font-size: 12px
+          padding: 0 0 0 4px
+        input
+          +border-radius(5px)
+          +size(46px, 100%)
+          border: 4px solid #b5c0c4
+          border: 4px solid rgba(#b5c0c4, 0.45)
+          margin: 10px 0
+          line-height: 35px
+          text-indent: 10px
+          &:focus, &:hover
+            border: 4px solid #b5c0c4
+      button
+        background: url(/assets/images/sebrae-mais/button-home-login.png) no-repeat center top
+        +size(59px, 130px)
+        border: none
+        float: right
+        margin: 5px 0 10px 0
+        text-indent: -999em
+        &:focus, &:hover
+
+    #home-text
+      float: left
+      width: 52%
+      padding: 0 0 0 100px
+      h3
+        +size(51px, 265px)
+        background: url(/assets/images/sebrae-mais/title2.png) no-repeat center top
+        margin: 131px 0 0 0
+        text-indent: -999em
+      p
+        color: #333
+        display: block
+        font-size: 13px
+        line-height: 14px
+        margin: 12px 0 16px 0
+        width: 86%
+    footer
+      +absBL(20px, 0)
+      +size(69px, 100%)
+      background: url(/assets/images/sebrae-mais/footer-background.png) repeat-x
+      line-height: 49px
+      #footer
+        background: url(/assets/images/sebrae-mais/logos-footer.png) no-repeat top right
+        width: 998px
+        margin: 0 auto
+        p
+          font-size: 10px
+          color: #111c37
+
+  &.MpeDiagnostico
+    background-image: url(/assets/images/mpe-diagnostico/home-background.jpg)
+    background-color: #e4e4e4
+    background-position: top center
+    background-repeat: no-repeat
+    //background: url(/_.layouts/conceito-diagnostico.jpg) no-repeat center top
+    #home-login
+      float: left
+      width: 48%
+      hgroup
+        +size(146px, 248px)
+        background: url(/assets/images/mpe-diagnostico/title.png) no-repeat center top
+        margin: 57px 0 0 67px
+        text-indent: -999em
+      form
+        margin: 84px 0 0 67px
+      fieldset
+      legend
+        display: none
+      label
+        display: block
+        position: relative
+        label.error
+          +absLT(50%, 10px)
+          +box-shadow(1px 1px 3px #666)
+          background: #ccc
+          border-radius: 5px
+          color: #333
+          font-size: 11px
+          margin: 0 0 0 -40%
+          padding: 5px
+          position: absolute
+          width: 50%
+          &:before
+            +absBL(-20px, 50%)
+            border: 10px solid transparent
+            border-color: #ccc transparent transparent transparent
+            content: ""
+        span
+          color: #333
+          display: block
+          font-size: 12px
+          padding: 0 0 0 4px
+        input
+          +border-radius(5px)
+          +size(46px, 100%)
+          border: 4px solid #99ccff
+          border: 4px solid rgba(#99ccff, 0.45)
+          margin: 10px 0
+          text-indent: 10px
+          line-height: 35px
+          &:focus, &:hover
+            border: 4px solid #99ccff
+      button
+        background: url(/assets/images/mpe-diagnostico/button-home-login.png) no-repeat center top
+        +size(63px, 135px)
+        border: none
+        text-indent: -999em
+        margin: 3px -8px 10px 0
+        float: right
+        &:focus, &:hover
+
+    #home-text
+      float: left
+      width: 52%
+      padding: 0 0 0 100px
+      h3
+        +size(503px, 522px)
+        background: url(/assets/images/mpe-diagnostico/title2.png) no-repeat center top
+        margin: 38px 0 0 -135px
+        text-indent: -999em
+      p
+        display: none
+    footer
+      +absBL(20px, 0)
+      +size(89px, 100%)
+      line-height: 49px
+      #footer
+        background: url(/assets/images/mpe-diagnostico/logos-footer.png) no-repeat top right
+        width: 848px
+        margin: 0 auto
+        p
+          font-size: 10px
+          color: #006699
+
+  &.MpeBrasil
+    background-image: url(/assets/images/mpe-brasil/home-background.jpg)
+    background-color: #fff
+    background-position: top center
+    background-repeat: no-repeat
+    background-size: 100%
+    #home-login
+      float: left
+      width: 48%
+      hgroup
+        +size(193px, 405px)
+        background: url(/assets/images/mpe-brasil/title.png) no-repeat center top
+        text-indent: -999em
+        margin: 12px 0 0 75px
+      form
+        margin: 69px 0 0 91px
+      fieldset
+      position: relative
+      legend
+        display: none
+      label
+        display: block
+        position: relative
+        label.error
+          +absLT(50%, 10px)
+          +box-shadow(1px 1px 3px #666)
+          background: #ccc
+          border-radius: 5px
+          color: #333
+          font-size: 11px
+          margin: 0 0 0 -40%
+          padding: 5px
+          position: absolute
+          width: 50%
+          &:before
+            +absBL(-20px, 50%)
+            border: 10px solid transparent
+            border-color: #ccc transparent transparent transparent
+            content: ""
+        span
+          color: #333
+          display: block
+          font-size: 12px
+          padding: 0 0 0 9px
+        input
+          +border-radius(5px)
+          +size(46px, 100%)
+          border: 4px solid #99CCFF
+          margin: 10px 0
+          line-height: 35px
+          text-indent: 10px
+          &:focus, &:hover
+            border: 4px solid #99ccff
+      button
+        background: url(/assets/images/mpe-brasil/button-home-login.png) no-repeat center top
+        +size(59px, 130px)
+        border: none
+        text-indent: -999em
+        margin: -5px 0 0 0
+        float: right
+        &:focus, &:hover
+      #link-forgot-password
+        font-size: 12px
+        display: inline-block
+        margin: 5px 0 0 10px
+        color: #13519a
+        display: none
+
+    #home-text
+      float: left
+      width: 52%
+      padding: 0 0 0 138px
+      h3
+        +size(87px, 231px)
+        background: url(/assets/images/mpe-brasil/title2.png) no-repeat center top
+        margin: 93px 0 0 0
+        text-indent: -999em
+      p
+        color: #666
+        font-size: 12px
+        margin: 18px 0 0 0
+        line-height: 19px
+        width: 69%
+    footer
+      +absBL(20px, 0)
+      +size(55px, 100%)
+      padding: 0 0 100px 0
+      line-height: 55px
+      #footer
+        background: url(/assets/images/mpe-brasil/logos-footer.png) no-repeat center right
+        width: 808px
+        margin: 0 auto
+        p
+          font-size: 10px
+          color: #006699

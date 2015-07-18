@@ -1,0 +1,186 @@
+<table class="table">
+  <caption></caption>
+  <thead>
+    <tr>
+      <th>Empresa</th>
+      <!--th>Razão social</th-->
+      <th>UF</th>
+      <th class="appraisers-confirm">Classificar</th>
+      <th class="appraisers">Avaliadores</th>
+      <th class="appraisers-cancel">Desclassificar</th>
+      <!--th>Relato</th-->
+      <th>Prêmio</th>
+      <!--th>Inscrição</th-->
+      <!--th>Q. Negócios</th-->
+      <th>Pts. Negócios</th>
+      <!--th>Q. Empreende.</th-->
+      <?php if($competitionId == 2013) : ?>
+      <th>Pts. Empreende.</th>
+      <?php endif; ?>
+      <th>Devolutiva</th>
+      <!--th>Ações</th-->
+    </tr>
+  </thead>
+<?php
+if (count($this->getAllEnterprise) >= 1):
+?>
+  <tbody>
+<?php
+  foreach ($this->getAllEnterprise as $index => $enterprise):
+    $raa = $enterprise->getDevolutivePath();
+    $socialName = $enterprise->getSocialName();
+    $fantasyName = $enterprise->getFantasyName();
+    $CNPJ = trim($enterprise->getCnpj());
+    //$CPF = trim($enterprise->getCpf());
+    $CPF = '';
+    $UF = trim($enterprise->getUf());
+    $email = trim($enterprise->getEmailDefault());
+    //$phone = trim($enterprise->getTelefone());
+    $phone = trim($enterprise->getPhone());
+    $percent = ($enterprise->getPA() ? ($enterprise->getPA() . "%") : "");
+    $appraisers = array(
+      'confirm' => array(
+        'status' => (($enterprise->getClassificar() != null) ? $enterprise->getClassificar() : false),
+        'options' => array(
+          'primary' => array(
+            'status' => (($enterprise->getAppraiserId() != null) ? $enterprise->getAppraiserId() : 0),
+            'field' => array(),
+            'label' => false
+          ),
+          'secondary' => array(
+            'status' => (($enterprise->getAppraiserIdSec() != null) ? $enterprise->getAppraiserIdSec() : 0),
+            'field' => array(),
+            'label' => false
+          ),
+          'thirdary' => array(
+            'status' => (($enterprise->getAppraiserIdTer() != null) ? $enterprise->getAppraiserIdTer() : 0),
+            'field' => array(),
+            'label' => false
+          )
+        )
+      ),
+      'cancel' => array(
+        'status' => (($enterprise->getDesclassificar() != null) ? $enterprise->getDesclassificar() : false),
+        'note' => trim($enterprise->getJustificativa())
+      )
+    );
+    if (isset($this->getAllAppraisers)):
+      foreach ($this->getAllAppraisers as $avaliador):
+        $avaliadorNome = $avaliador->getFirstName() . ' ' . $avaliador->getSurname();
+        $appraisers['confirm']['options']['primary']['field'][] = '<option '. (($isCurrentCompetition)?'':'disabled') .' value="' . (($isCurrentCompetition)?$avaliador->getId():null) . '" ' . (($appraisers['confirm']['options']['primary']['status'] == $avaliador->getId()) ? 'selected="selected"' : '') . '>' . $avaliadorNome . '</option>';
+        $appraisers['confirm']['options']['secondary']['field'][] = '<option '. (($isCurrentCompetition)?'':'disabled') .' value="' . (($isCurrentCompetition)?$avaliador->getId():null) . '" ' . (($appraisers['confirm']['options']['secondary']['status'] == $avaliador->getId()) ? 'selected="selected"' : '') . '>' . $avaliadorNome . '</option>';
+        $appraisers['confirm']['options']['thirdary']['field'][] = '<option '. (($isCurrentCompetition)?'':'disabled') .' value="' . (($isCurrentCompetition)?$avaliador->getId():null) . '" ' . (($appraisers['confirm']['options']['thirdary']['status'] == $avaliador->getId()) ? 'selected="selected"' : '') . '>' . $avaliadorNome . '</option>';
+      endforeach;
+    endif;
+    
+        $eligibility = ($enterprise->getHasEligibility()=='0')?'':'-ineligibility'.$enterprise->getHasEligibility();
+    
+?>
+    <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even').$eligibility; ?> <?php echo ($appraisers['cancel']['status'] ? 'editable' : ''); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
+      <td>
+        <dl style="text-align: left">
+          <dt title="<?php echo $fantasyName; ?>"><b><?php echo (($fantasyName != '') ? substr($fantasyName, 0, 60) : '--'); ?></b></dt>
+          <dd class="identity" title="<?php echo (($CNPJ != '') ? $CNPJ : (($CPF != '') ? $CPF : '--')); ?>"><?php echo (($CNPJ != '') ? $CNPJ : (($CPF != '') ? $CPF : '--')); ?></dd>
+        </dl>
+      </td>
+      <!--td>
+        <dl style="text-align: left">
+          <dt title="<?php echo $socialName; ?>"><i><?php echo (($socialName != '') ? substr($socialName, 0, 60) : '--'); ?></i></dt>
+          <dd class="email" title="<?php echo $email; ?>"><span><a href="mailto:<?php echo $email; ?>"><?php echo (($email != '') ? $email : '--'); ?></a></span></dd>
+          <dd class="phone" title="<?php echo $phone; ?>"><span><?php echo (($phone != '') ? $phone : '--'); ?></span></dd>
+        </dl>
+      </td-->
+      <td class="middle"><i><?php echo $UF; ?></i></td>
+      <td class="middle">
+          <input type="checkbox" 
+                <?php if ($isCurrentCompetition): ?> 
+                 name="change-ranking-<?php echo $index; ?>" id="change-ranking-<?php echo $index; ?>" 
+                 class="change-ranking" 
+                 value="<?php echo $enterprise->getIdKey(); ?>" 
+                 <?php else : ?>
+                     disabled
+                 <?php endif; ?>
+                <?php echo ($appraisers['confirm']['status'] ? 'checked="checked"' : ''); ?> />
+      </td>
+      <td>
+        <dl class="change-ranking-label" style="display: <?php echo (!$appraisers['confirm']['status'] ? 'block' : 'none'); ?>;">
+          <dt>Avaliadores</dt>
+          <dd class="primary"><span>Não selecionado</span></dd>
+          <dd class="secondary"><span>Não selecionado</span></dd>
+          <dd class="thirdary"><span>Não selecionado</span></dd>
+        </dl>
+        <dl class="change-ranking-field" style="display: <?php echo ($appraisers['confirm']['status'] ? 'block' : 'none'); ?>;">
+          <dt>Avaliadores</dt>
+          <dd class="primary">
+            <select <?php echo ($isCurrentCompetition)?'':'disabled'; ?> 
+                    name="change-ranking-options-first-<?php echo $index; ?>" id="change-ranking-options-first-<?php echo $index; ?>" 
+                    class="change-ranking-option" data-type="1">
+                <?php if($isCurrentCompetition) : ?>
+                    <option value="0">Selecione</option>
+                <?php endif; ?>
+                    
+              <?php echo implode("\n", $appraisers['confirm']['options']['primary']['field']); ?>
+            </select>
+          </dd>
+          <dd class="secondary">
+            <select <?php echo ($isCurrentCompetition)?'':'disabled'; ?> name="change-ranking-options-second-<?php echo $index; ?>" id="change-ranking-options-second-<?php echo $index; ?>" class="change-ranking-option" data-type="2">
+              <option value="0">Selecione</option>
+              <?php echo implode("\n", $appraisers['confirm']['options']['secondary']['field']); ?>
+            </select>
+          </dd>
+          <dd class="thirdary">
+            <select <?php echo ($isCurrentCompetition)?'':'disabled'; ?> name="change-ranking-options-second-<?php echo $index; ?>" id="change-ranking-options-second-<?php echo $index; ?>" class="change-ranking-option" data-type="3">
+              <option value="0">Selecione</option>
+              <?php echo implode("\n", $appraisers['confirm']['options']['thirdary']['field']); ?>
+            </select>
+          </dd>
+        </dl>
+      </td>
+      <td class="middle">
+        <input type="checkbox" 
+            <?php if ($isCurrentCompetition): ?> 
+            name="cancel-ranking-<?php echo $index; ?>" id="cancel-ranking-<?php echo $index; ?>" class="cancel-ranking" value="<?php echo $enterprise->getIdKey(); ?>" 
+            <?php else : ?> 
+                disabled
+            <?php endif; ?> 
+            <?php echo ($appraisers['cancel']['status'] ? 'checked="checked"' : ''); ?> />
+        
+            <a href="" title="Editar justificativa" class="cancel-ranking-note-edit">(editar justificativa)</a>
+      </td>
+      <td class="middle"><span><?php echo str_replace('Microempreendedora', 'Microemp.', $enterprise->getDescriptionEca()); ?></span></td>
+
+      <td class="middle"><span><?php echo number_format($enterprise->getNegociosTotal(), 1);?></span></td>
+    <?php if($competitionId == 2013) : ?>
+      <td class="middle"><span><?php echo $enterprise->getPontosEmpreendedorismo();?></span></td>
+    <?php endif; ?>
+      <td class="middle">
+        <dl>
+        	<dt>
+                <?php if ($raa): ?>
+                    <a href="<?php echo $raa; ?>" title="Baixar RAA" class="report">Baixar RAA</a>
+                <?php endif; ?>
+			</dt>
+            <?php if ($permissionRespondAll): ?>
+              <dd class="survey"><?php echo ($percent ? $percent : '-'); ?></dd>
+            <?php endif; ?>
+        </dl>
+      </td>
+ 
+    </tr>
+    <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
+      <td class="cancel-ranking-fieldset" data-saved="true">
+        <dl>
+          <dt><label>Justificativa <i>(obrigatório)</i></label></dt>
+          <dd class="field"><textarea name="cancel-ranking-note-<?php echo $index; ?>" id="cancel-ranking-note-<?php echo $index; ?>" class="cancel-ranking-note"><?php echo $appraisers['cancel']['note']; ?></textarea></dd>
+          <dd class="button"><a href="" title="Salvar" class="cancel-ranking-note-save">Salvar</a></dd>
+        </dl>
+      </td>
+    </tr>
+<?php
+  endforeach;
+?>
+  </tbody>
+<?php
+endif;
+?>
+</table>

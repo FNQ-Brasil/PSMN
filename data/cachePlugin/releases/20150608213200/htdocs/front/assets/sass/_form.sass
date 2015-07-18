@@ -1,0 +1,128 @@
+.form-default
+  fieldset
+    display: block
+    padding: 0 0 20px 0
+  legend
+    +size(54px, 100%)
+    border-bottom: 1px solid #ccc
+    color: #333
+    font-size: 18px
+    line-height: 61px
+    margin: 0 0 25px 0
+    padding: 0 8px
+  label
+    border-bottom: 1px solid #e5e5e5
+    display: block
+    float: left
+    margin: 0
+    padding: 0 11px 9px 11px
+    span
+      color: #999
+      display: block
+      line-height: 35px
+      padding: 0 0 0 8px
+      white-space: nowrap
+  input
+    +border-radius(5px)
+    +size(47px, 100%)
+    background-color: transparent
+    border: 6px solid #E8E8E8
+    padding: 0 5%
+    &:focus
+      border-color: #8CE8E8
+      &:hover
+        border-color: darken( #8CE8E8, 10% )
+    &:hover
+      border-color: lighten( #8CE8E8, 10% )
+  .label-inline
+    width: 99%
+    padding: 0 0 4px 8px
+    span
+      display: inline-block
+      line-height: 58px
+      padding: 0
+      width: 30%
+    input
+      display: inline-block
+      width: 66%
+  .radio-group-horizontal
+    display: block
+    clear: both
+    border-bottom: 1px solid #e5e5e5
+    p
+      color: #999
+      display: inline-block
+      line-height: 70px
+      padding: 0 0 0 8px
+      width: 30%
+    label
+      //+size(57px, auto)
+      border: none
+      display: inline-block
+      float: none
+      line-height: 57px
+      margin: 0 11px
+      padding: 0 37px 0 5px
+      position: relative
+      cursor: pointer
+      &.reason
+        float: right
+        padding: 0
+        margin: 0
+        width: 39%
+        span
+          line-height: 66px
+          margin: 0
+          padding: 0
+          text-indent: 0
+          width: 40px
+          float: left
+          &:after
+            display: none
+          &:before
+            display: none
+        input
+          float: left
+          display: inline-block
+          width: 70%
+          margin: 12px 0 0 11px
+      &.checked
+        span
+          &:before
+            background-color: #006666
+          &:after
+            border-color: #8CE8E8
+      span
+        display: block
+        position: relative
+        z-index: 3
+        &:after
+          +absRT(-31px, 6px)
+          +square(16px)
+          +border-radius(100%)
+          content: ""
+          border: 4px solid #E8E8E8
+          z-index: 1
+        &:before
+          +absRT(-23px, 14px)
+          +square(8px)
+          +border-radius(100%)
+          content: ""
+          z-index: 2
+          background-color: transparent
+        &:hover
+          &:before
+            background-color: lighten( #006666, 10% )
+          &:after
+            border-color: lighten( #8CE8E8, 10% )
+      input[type="radio"]
+        +square(26px)
+        +absRT(5px, 6px)
+        +opacity(0)
+        margin: 0
+        padding: 0
+
+$class-slug: label !default
+@for $i from 1 through 10
+  .#{$class-slug}-1-#{$i}
+    width: 100% / $i - 1

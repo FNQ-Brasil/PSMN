@@ -1,0 +1,26 @@
+<?php if ($this->pageCount > 1): ?>
+
+<div class="areaPaginationControl">
+        <?php   if (isset($this->previous)):
+                    if ($this->current-1==1)
+                            $title= 'Voltar para a primeira página';
+                    else
+                        $title= 'Voltar para pág. '.($this->current-1).' de ' . $this->pageCount . '';
+        ?>
+        <a href="<?php echo (isset($this->link)) ? $this->link."/page/".$this->previous : $this->url(array('page' => $this->previous, 'format'=>'html'))?>" title="<?php echo $title ?>" rel="alternate" class="icon i-voltar-all-active"><span class="dnone">Anterior</span></a>
+        <?php else: ?>
+        <a rel="alternate" class="icon i-voltar-all disabled"><span class="dnone">Voltar</span></a>
+        <?php endif; ?>
+        
+        <?php   if (isset($this->next)):
+                    if ($this->current+1==$this->pageCount)
+                            $title= 'Avançar para última página';
+                    else
+                        $title= 'Avançar para pág. '.($this->current+1).' de ' . $this->pageCount. '';
+        ?>
+        <a href="<?php echo (isset($this->link)) ? $this->link."/page/".$this->next : $this->url(array('page' => $this->next, 'format'=>'html'))?>" title="<?php echo $title ?>" rel="alternate" class="icon i-avancar-all-active"><span class="dnone">Avançar</span></a>
+        <?php else: ?>
+        <a href="#" rel="alternate" class="icon i-avancar-all disabled"><span  class="dnone">Avançar</span></a>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>

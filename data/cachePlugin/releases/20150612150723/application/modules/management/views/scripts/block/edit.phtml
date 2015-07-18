@@ -1,0 +1,72 @@
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="">
+    <h1 class="center">
+        Bloco ::
+        <?php echo ($this->request()->getActionName() == 'insert')? 'Inserir' : 'Editar'; ?>
+    </h1>
+    <a title="Voltar" id="back" href="<?php echo $this->baseUrl('management/block/'); ?>">Voltar</a>
+
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+
+    <?php if ($this->blockInsertSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Bloco inserido com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->blockUpdateSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Bloco atualizado com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <form class="normal" method="POST" action="<?php echo $this->baseUrl(($this->request()->getActionName() == 'insert')? 'management/block/insert' : 'management/block/edit/id/' . $this->blockRow->getId()); ?>">
+
+        <fieldset>
+            <label for="designation">Ordem: </label>
+                <input type="text" readonly="readonly" name="designation" id="designation" value="<?php if ($this->blockRowData) { echo $this->blockRowData['designation']; } ?>">
+                
+            <br class="clear" />
+            
+            <label for="questionnaire_id">Questionário </label>
+                <select name="questionnaire_id" id="questionnaire_id" class="fancy">
+                    <?php foreach ($this->getAllQuestionnaire as $key => $questionnaire) : ?>
+                        <?php if ($this->blockRowData['questionnaire_id'] == $questionnaire->getId()) : ?>
+                            <option value="<?php echo $questionnaire->getId();?>" selected="selected"> <?php echo $questionnaire->getDescription();?> </option>
+                        <?php else : ?>
+                            <option value="<?php echo $questionnaire->getId();?>"> <?php echo $questionnaire->getDescription();?> </option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
+            <br class="clear" />
+
+            <label for="value">Descrição: </label>
+                <input type="text" name="value" id="value" value="<?php if ($this->blockRowData) echo $this->blockRowData['value']; ?>">
+            <br class="clear" />
+
+            <label for="long_description">Long Description: </label>
+                <textarea name="long_description" id="long_description"><?php if ($this->blockRowData) echo $this->blockRowData['long_description']; ?></textarea>
+            <br class="clear" />
+            
+            <label for="conclusion_text">Conclusion Text: </label>
+                <textarea name="conclusion_text" id="conclusion_text"><?php if ($this->blockRowData) echo $this->blockRowData['conclusion_text']; ?></textarea>
+            <br class="clear" />
+        </fieldset>
+
+        <div class="clear"> </div>
+        <button type="submit" class="save">Finalizar</button>
+        <div class="clear"> </div>
+	</form>
+</div>

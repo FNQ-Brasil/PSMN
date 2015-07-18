@@ -1,0 +1,22 @@
+<h1 class="center">Usuário</h1>
+<a title="Voltar" id="back" href="<?php echo $this->baseUrl('/management/user/'); ?>">Voltar</a>
+
+<?php if (isset($this->itemUpdateSuccess)):?>
+    <?php if ($this->itemUpdateSuccess):?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    Usuário (<?php echo $this->firstnameSuccess; ?>) editado com sucesso.
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?php if (isset($this->itemInsertSuccess)):?>
+    <?php if ($this->itemInsertSuccess):?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    Usuário (<?php echo $this->firstnameSuccess; ?>) cadastrado com sucesso.
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>

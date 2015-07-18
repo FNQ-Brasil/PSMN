@@ -1,0 +1,79 @@
+<?php
+//$this->setEncoding('UTF-8');
+echo "\xEF\xBB\xBF";
+
+function rr ($value)
+{
+    return str_replace(',','',str_replace(';', '', $value)); 
+}
+function rr2 ($value)
+{
+    return str_replace(',','.',$value); 
+}
+
+/**
+view usada para gerar conteudo do fetchall em .CSV
+*/
+//CONFIGURACOES
+$separador = ";";
+$novalinha = "\n";
+
+if (count($this->dataReport) >= 1):
+     
+    echo "Preenchimento de Inscrições - Estado{$separador}";
+    echo $novalinha;
+    echo "Estado{$separador}";
+    echo "Realizadas pelos digitadores{$separador}";
+    echo "Realizadas pelas próprias empresas{$separador}";
+    echo $novalinha;
+     
+    for ($index1 = 1; $index1 < 28; $index1++) {
+        $dataInscricoes[$index1] = 0;
+    }
+    $totalInscricoesEmpresas = 0;
+    $totalInscricoesDigitadores = 0 ;
+    $ufs = array();
+    foreach ($this->dataReport as $index => $dataRow):
+        
+        $dataInscricoes[$dataRow->getStateId()] = $dataRow->getAceiteEmpresaQt() + $dataRow->getAceiteDigitadoresQt();
+        $ufs[$dataRow->getStateId()] = $dataRow->getUf();
+        
+        $totalInscricoesEmpresas += $dataRow->getAceiteEmpresaQt();
+        $totalInscricoesDigitadores += $dataRow->getAceiteDigitadoresQt();
+
+        echo $dataRow->getState();
+        echo $separador;
+        echo $dataRow->getAceiteDigitadoresQt();
+        echo $separador;
+        echo $dataRow->getAceiteEmpresaQt();
+        echo $separador;
+        echo $novalinha;
+        
+    endforeach;
+        
+endif;
+
+if (count($this->dataCategoriaReport) >= 1): 
+    
+    echo $novalinha;
+    echo "Preenchimento de Inscrições - Setor{$separador}";
+    echo $novalinha;
+    echo "Categoria{$separador}";
+    echo "Realizadas pelos digitadores{$separador}";
+    echo "Realizadas pelas próprias empresas{$separador}";
+
+    echo $novalinha;
+    $categoriaMpe = Vtx_Util_Array::categoriaMpe();
+    foreach ($this->dataCategoriaReport as $index => $dataRow):
+
+        echo $categoriaMpe[$dataRow->getCategoriaId()];
+        echo $separador;
+        echo $dataRow->getAceiteDigitadoresQt(); 
+        echo $separador;
+        echo $dataRow->getAceiteEmpresaQt(); 
+        echo $separador;
+        echo $novalinha;
+
+    endforeach; 
+    
+endif;

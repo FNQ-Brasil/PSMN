@@ -1,0 +1,381 @@
+.sucess-message-form
+  h3
+    font-size: 18px
+    color: #4a7ba7
+    line-height: 40px
+  p
+    font-size: 13px
+    color: #999
+    line-height: 20px
+    margin: 0 0 10px 0
+    a
+      +text-shadow( 0 -1px 0  darken(#6894bc, 10%))
+      +border-radius(5px)
+      background: #6894bc
+      border: none
+      clear: both
+      color: #fff
+      font-size: 18px
+      height: 45px
+      line-height: 45px
+      margin: 10px 0 0 0
+      padding: 0 25px
+      text-decoration: none
+      display: inline-block
+      &:hover,  &:focus
+        background: darken(#6894bc, 10%)
+.form-default
+  fieldset
+    display: block
+    padding: 0
+  legend
+    +size(54px, 100%)
+    border-bottom: 1px solid #ccc
+    color: #888
+    font-size: 18px
+    line-height: 61px
+    margin: 0 0 25px 0
+    padding: 10px 8px
+  .form-line
+    float: left
+    clear: both
+    width: 100%
+  .tip-form
+    font-size: 12px
+    color: #999
+
+  label
+    border-bottom: 1px solid #e5e5e5
+    display: block
+    float: left
+    margin: 0
+    padding: 0 11px 9px 11px
+    position: relative
+    height: 92px
+    &.line-radio
+      padding: 0
+      height: 51px
+    &.line-checkbox
+      padding-bottom: 0
+      height: 51px
+      .label-checkbox
+        padding: 0 5px
+        line-height: 51px
+        &:before
+          top: 17px
+      input
+        padding: 0
+        margin: 19px 0 0 0
+    &.error
+      +box-shadow(2px 2px 2px #999)
+      +border-radius(5px)
+      background: #ccc
+      border: none
+      bottom: -9px
+      color: #6894bc
+      font-size: 9px
+      height: 24px
+      left: 50%
+      line-height: 14px
+      margin: 0 0 0 -25%
+      padding: 5px 5px 5px 15px
+      position: absolute
+      white-space: nowrap
+      &:before
+        +absLT(5px, 5px)
+        content: "!"
+        font-size: 20px
+        font-weight: 600
+      &:after
+        +square(0)
+        +absBL(24px, 24px)
+        content: ""
+        border: 6px solid transparent
+        border-color: transparent transparent #ccc transparent
+    &.label-radio
+      height: 51px
+      position: relative
+      input[type="radio"]
+        +absLT(-6px, 20px)
+        +square(15px)
+        +opacity(0)
+      //input[type="radio"]:checked + span,
+      input[type="radio"].checked + span
+        &:after
+          content: ""
+          +absLT(-13px, 25px)
+          +border-radius(30px)
+          +square(8px)
+          background: #6894bc
+      input[type="radio"]:focus + span
+        &:before
+          border: 4px solid darken( #6894bc, 10% )
+      span
+        text-align: center
+        display: inline-block
+        line-height: 52px
+        position: relative
+        &:before
+          content: ""
+          +absLT(-19px, 19px)
+          +border-radius(30px)
+          +square(12px)
+          background: #fff
+          border: 4px solid #E8E8E8
+      &:hover
+        &:before
+          border: 4px solid darken( #6894bc, 10% )
+      input
+        +square(20px)
+        display: inline-block
+        //margin: 36px 0 0 0
+        margin: 0
+    span
+      color: #999
+      display: block
+      line-height: 35px
+      padding: 0 0 0 8px
+      white-space: nowrap
+      &.label-radio
+        line-height: 50px
+      &.label-checkbox
+        display: inline-block
+        float: left
+        padding: 35px 0 0 10px
+        line-height: 47px
+        cursor: pointer
+        &:hover
+          &:before
+            background: lighten( #6894bc, 15% )
+        &.focus
+          &:before
+            background: #6894bc
+          &:hover
+            &:before
+              background: darken( #6894bc, 10% )
+        &.checked
+          &:before
+            content: "✔"
+            color: #666
+        &:before
+          +square(20px)
+          +absLT(10px, 46px)
+          +border-radius(5px)
+          content: ""
+          line-height: 20px
+          text-align: center
+          font-size: 16px
+          color: #333
+          background: #e8e8e8
+  select
+    +size(47px, 100%)
+    background-color: transparent
+    border: 6px solid transparent
+  input
+    +border-radius(5px)
+    +size(47px, 100%)
+    background-color: transparent
+    border: 6px solid #E8E8E8
+    padding: 0 5%
+    color: #666
+    &[readonly]
+      border-color: lighten( #e8e8e8, 3%)
+      color: #999
+    &[disabled]
+      border-color: lighten( #e8e8e8, 3%)
+      background-color: lighten( #e8e8e8, 5%)
+      &:hover
+        border-color: lighten( #e8e8e8, 3%)
+    &[type="checkbox"]
+      +square(17px)
+      display: block
+      float: left
+      margin: 48px 0 0 0
+      padding: 0
+    &:focus
+      border-color: #6894bc
+      &:hover
+        border-color: darken( #6894bc, 10% )
+    &:hover
+      border-color: lighten( #6894bc, 35% )
+  .label-inline
+    width: 99%
+    padding: 0 0 4px 8px
+    span
+      display: inline-block
+      line-height: 58px
+      padding: 0
+      width: 30%
+    input
+      display: inline-block
+      width: 66%
+  .radio-group-horizontal
+    display: block
+    clear: both
+    border-bottom: 1px solid #e5e5e5
+    p
+      color: #999
+      display: inline-block
+      line-height: 70px
+      padding: 0 0 0 8px
+      width: 30%
+    label
+      //+size(57px, auto)
+      border: none
+      display: inline-block
+      float: none
+      line-height: 57px
+      margin: 0 11px
+      padding: 0 37px 0 5px
+      position: relative
+      cursor: pointer
+      &.reason
+        float: right
+        padding: 0
+        margin: 0
+        width: 39%
+        span
+          line-height: 66px
+          margin: 0
+          padding: 0
+          text-indent: 0
+          width: 40px
+          float: left
+          &:after
+            display: none
+          &:before
+            display: none
+        input
+          float: left
+          display: inline-block
+          width: 70%
+          margin: 12px 0 0 11px
+      &.checked
+        span
+          &:before
+            background-color: #006666
+          &:after
+            border-color: #6894bc
+      span
+        display: block
+        position: relative
+        z-index: 3
+        &:after
+          +absRT(-31px, 6px)
+          +square(16px)
+          +border-radius(100%)
+          content: ""
+          border: 4px solid #E8E8E8
+          z-index: 1
+        &:before
+          +absRT(-23px, 14px)
+          +square(8px)
+          +border-radius(100%)
+          content: ""
+          z-index: 2
+          background-color: transparent
+        &:hover
+          &:before
+            background-color: lighten( #006666, 10% )
+          &:after
+            border-color: lighten( #6894bc, 15% )
+      input[type="radio"]
+        +square(26px)
+        +absRT(5px, 6px)
+        +opacity(0)
+        margin: 0
+        padding: 0
+  button
+    +text-shadow( 0 -1px 0  darken(#6894bc, 10%))
+    +border-radius(5px)
+    background: darken( #6894bc, 20% )
+    border: none
+    clear: both
+    color: #fff
+    float: right
+    font-size: 16px
+    height: 2em
+    line-height: 2em
+    margin: 10px 0 20px 0
+    padding: 0 2em
+    text-transform: uppercase
+    &:hover,  &:focus
+      background: darken(#6894bc, 10%)
+.finishContinue
+  +text-shadow( 0 -1px 0  darken(#6894bc, 10%))
+  +border-radius(5px)
+  background: darken( #6894bc, 20% )
+  border: none
+  clear: both
+  color: #fff
+  float: right
+  font-size: 16px
+  height: 2em
+  line-height: 2em
+  margin: 10px 0 20px 0
+  padding: 0 2em
+  text-transform: uppercase
+  &:hover,  &:focus
+    background: darken(#6894bc, 10%)
+
+$class-slug: label !default
+@for $i from 1 through 10
+  @for $ii from 1 through 10
+    .#{$class-slug}-#{$ii}-#{$i}
+      //width: 100% / $i
+      width: ( 100% / $i ) * $ii
+.label-empty
+  height: 92px
+
+.customSelect
+  +border-radius(5px)
+  background-color: transparent
+  border: 6px solid #E8E8E8
+  color: #666
+  overflow: hidden
+  &.changed
+    background-color: #f0dea4
+  &.customSelectHover
+    border-color: lighten( #6894bc, 35% )
+  &.customSelectOpen
+    border-color: #6894bc
+  &.customSelectFocus
+    border-color: #6894bc
+  &.customSelectDisabled
+    border-color: lighten( #e8e8e8, 3%)
+    background-color: lighten( #e8e8e8, 5%)
+    .customSelectInner
+      background: none
+.customSelectInner
+  padding: 0 20px
+  background: url(/assets/images/select-arrows.png) no-repeat top right
+  max-width: 100%
+  overflow: hidden
+  text-overflow: ellipsis
+  padding-right: 47px !important
+
+.form-message
+  line-height: 45px
+  text-indent: 15px
+  border-radius: 10px
+  color: #666
+  font-size: 14px
+  cursor: pointer
+  background: #E3ECEE url(/assets/images/close-message.png) no-repeat 98% 10px
+  margin: 30px 0
+  a
+    color: #4a7ba7
+    font-weight: 600
+  &.success
+    background-color: #4a7ba7
+    color: #fff
+    a
+      color: #ccc
+  &.error
+    background-color: #4a7ba7
+    color: #fff
+    a
+      color: #ccc
+
+#form-cadastro
+  padding: 20px 0

@@ -1,0 +1,175 @@
+<?php
+$this->headScript()
+  ->appendFile($this->baseUrl('js/management/avaliacao.js?x1'));
+
+$addressEnterprise = $this->enterprise->findAddressEnterprise()->current();
+$enterpriseState = $addressEnterprise->findParentState();
+
+$blocoAnterior = ''; 
+$criterioAnterior = '';
+$qsts = array();
+$blocos = array();
+$criterios = array();
+//Questoes
+foreach ($this->questoes as $k => $questao):
+    $bloco = $questao->getBloco();
+    $criterio = $questao->getCriterio();
+    if ($bloco != $blocoAnterior) {
+        $qsts[$bloco] = array(
+            'BlockName' => Vtx_Util_PsmnAvaliacao::BlocosAvaliacao($bloco), 'Criterions' => array()
+        );
+    }
+    if ($criterio != $criterioAnterior) {
+        $qsts[$bloco]['Criterions'][$criterio] = array(
+            'CriterionValue' => Vtx_Util_PsmnAvaliacao::CriteriosAvaliacao($bloco, $criterio),
+            'Questions' => array()
+        );
+    }
+    $qsts[$bloco]['Criterions'][$criterio]['Questions'][$questao->getId()] = $questao;
+    $blocoAnterior = $bloco;
+    $criterioAnterior = $criterio;
+endforeach;
+$etapa = ($this->etapa == 'nacional')?'/etapa/nacional':'';
+?>
+
+<h1 class="title"><a name="anchor"></a>Avaliação</h1>
+  <?php if ($this->finalizacaoErro): ?>
+        <h3 style="color: #ED7C4C; font: bold 19px 'Lato'; margin-bottom: 22px; margin-top: 28px; background-color: #FCFC8D">Avaliação salva, porém não foi possível finalizá-la. Faltam notas ou indicações das linhas, verifique.</h3>
+  <?php elseif ($this->conclusaoErro): ?>
+        <h3 style="color: #ED7C4C; font: bold 19px 'Lato'; margin-bottom: 22px; margin-top: 28px; background-color: #FCFC8D">Avaliação salva, porém não foi possível finalizá-la. Uma observação é obrigatória no final da página.</h3>
+  <?php endif; ?>
+<form action="" method="POST" id="frmAvaliacao" class="avaliacao">
+
+  <fieldset>
+    <input type="hidden" id="" name="" value="" />
+  </fieldset>
+  <fieldset>
+    <div class="list-table-20">
+      <label class="label-control">CNPJ</label>
+      <span class="label-value"><?php echo $this->enterprise->getFormattedCnpj(); ?></span>
+    </div>
+
+    <div class="list-table-20">
+      <label class="label-control">Candidata</label>
+      <span class="label-value"><?php echo $this->president->getName(); ?></span>
+    </div>
+
+    <div class="list-table-20">
+      <label class="label-control">Estado</label>
+      <span class="label-value"><?php echo $enterpriseState->getUf(); ?></span>
+    </div>
+
+    <div class="list-table-20">
+      <label class="label-control">Categoria</label>
+      <span class="label-value"><?php if ($this->enterprise->getCategoryAwardId()) echo Vtx_Util_Array::categoriaPsmn($this->enterprise->getCategoryAwardId()) ?></span>
+    </div>
+
+  </fieldset>
+    <a id="verRelato" 
+       href="<?php echo $this->baseUrl('management/avaliacao/report/enterprise-id-key/' . $this->enterprise->getIdKey().$etapa); ?>#report" target="_blank" title="Ver relato"><span>Ver<i> relato</i></span></a>
+    
+  <h2 class="subtitle" style="">Critérios, requisitos e itens     <span>Necessário salvar os dados no final da página.</span></h2>
+
+
+    <div id="avaliacaoRelato"class="inner-content" style="margin-top: 0">
+    <ul class="root">
+<?php foreach ($qsts as $blockId => $bloco): ?>
+        
+      <li class="macro closed">
+        <p class="title">
+          <b class="topic" style="<?php echo (isset($this->questionsError[$blockId])? 'background-color: #FCFC8D"' : ''); ?>"><?php echo $bloco['BlockName']; ?></b>
+          <a href="" class="help" title="<?php echo Vtx_Util_PsmnAvaliacao::CriteriosInfo($blockId, 0 ); ?>">Saiba mais</a>
+          <span class="score">Nota: <i class="total">0</i></span>
+          <a href="" class="toggle" title="Alternar">Alternar</a>
+        </p>
+
+        <ul>
+        <?php foreach ( $qsts[$blockId]['Criterions'] as $criterioId => $criterio): ?>
+          <li class="micro closed">
+            <p class="title">
+              <b class="topic" style="<?php echo (isset($this->questionsError[$blockId][$criterioId])? 'background-color: #FCFC8D"' : ''); ?>"><?php echo $criterio['CriterionValue']; ?></b>
+              <a href="" class="help" title="<?php echo Vtx_Util_PsmnAvaliacao::CriteriosInfo($blockId, $criterioId); ?>">Saiba mais</a>
+              <span class="score">Nota: <i class="total">0</i></span>
+              <a href="" class="toggle" title="Alternar">Alternar</a>
+            </p>
+
+            <ol class="answers">
+            <?php
+            $letras = array('A','B','C','D','E','F','G','H','I');
+            $ii = 0;
+            foreach ( $qsts[$blockId]['Criterions'][$criterioId]['Questions'] as $questaoId => $questao):
+                
+                ?>
+              <li class="question" id="question-<?php echo $questaoId; ?>" data-weight="<?php echo $questao->getPeso(); ?>">
+                <div class="texto" style="<?php echo (isset($this->questionsError[$blockId][$criterioId][$letras[$ii]])? 'background-color: #FCFC8D"' : ''); $ii++; ?>"><?php echo $questao->getQuestao(); ?></div>
+                <div class="answer-option">
+                  <?php
+                    $checked = (isset($this->respostas[$questaoId]) and $this->respostas[$questaoId]['Resposta'] == 'D')? ' checked' : '';
+                  ?>
+                  <input type="radio" value="D"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="option radio" data-percentage="0" />
+                  <label style="background: none !important;" for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="label-inline radio">
+                    Não Evidenciado
+                  </label>
+                  <?php // Dificilmente acontece ?>
+                </div>
+                <div class="answer-option">
+                  <?php
+                    $checked = (isset($this->respostas[$questaoId]) and $this->respostas[$questaoId]['Resposta'] == 'A')? ' checked' : '';
+                  ?>
+                  <input type="radio" value="S"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-b" class="option radio" data-percentage="50" />
+                  <label for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-b" class="label-inline radio">
+                    Levemente Evidenciado
+                  </label>
+                  <?php // Ás vezes acontece ?>
+                </div>
+                <div class="answer-option">
+                  <?php
+                    $checked = (isset($this->respostas[$questaoId]) and $this->respostas[$questaoId]['Resposta'] == 'S')? ' checked' : '';
+                  ?>
+                  <input type="radio" value="A"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-c" class="option radio" data-percentage="100" />
+                  <label for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-c" class="label-inline radio">
+                    Fortemente Evidenciado
+                  </label>
+                  <?php // Sempre acontece ?>
+                </div>
+                <div class="answer-report-mentions">
+                  <dl class="report-mentions">
+                    <dt>Linhas do relato:</dt>
+                    <dd>
+                        <?php $linha = (isset($this->respostas[$questaoId]))? $this->respostas[$questaoId]['Linha1'] : '0'; ?>
+                      <input type="text" name="linha1[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-line-begin" class="input avaliacao number" maxlength="4" value="<?php echo $linha; ?>" />
+                      <ul class="control number">
+                        <li class="up"><a href="" title="Aumentar" data-action="increase" data-field="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-line-begin">Aumentar</a></li>
+                        <li class="down"><a href="" title="Diminuir" data-action="decrease" data-field="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-line-begin">Diminuir</a></li>
+                      </ul>
+                    </dd>
+                    <dd>
+                        <?php $linha = (isset($this->respostas[$questaoId]))? $this->respostas[$questaoId]['Linha2'] : '0'; ?>
+                      <input type="text" name="linha2[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-line-end" class="input avaliacao number" maxlength="4" value="<?php echo $linha; ?>" />
+                      <ul class="control number">
+                        <li class="up"><a href="" title="Aumentar" data-action="increase" data-field="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-line-end">Aumentar</a></li>
+                        <li class="down"><a href="" title="Diminuir" data-action="decrease" data-field="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-line-end">Diminuir</a></li>
+                      </ul>
+                    </dd>
+                  </dl>
+                </div>
+              </li>
+            <?php endforeach; ?>
+            </ol>
+          </li>
+        <?php endforeach; ?>
+        </ul>
+      </li>
+<?php endforeach; ?>
+</ul>
+        <div class="complement" style="margin-top: 15px">
+            <h2 class="subtitle"><label for="conclusao" style="font: bold 18px 'Lato'; margin-bottom: 22px; margin-top: 28px;<?php if ($this->conclusaoErro): ?>  background-color: #FCFC8D<?php endif; ?>">Observações</label></h2>
+            <textarea id="conclusao" name="conclusao" style="width: 100%"><?php echo isset($this->conclusao)? $this->conclusao : ''; ?></textarea>
+        </div>
+        <div class="complement">
+            <input id="finalizar" type="hidden" name="finalizar" value="0" />
+            <button class="large btn-submit" type="none" onclick="$('#finalizar').val('1');$('#frmAvaliacao').submit();return false;"><b>Finalizar e enviar ao gestor</b></button>  
+            <button class="large btn-submit" type="submit" style="background-color: #7D5977; margin-right: 10px"><b>Salvar e continuar depois</b></button>     
+        </div>
+    </div>
+</form>

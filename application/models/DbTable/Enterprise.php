@@ -592,6 +592,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             $filter['regional_id']
         );
 
+        
         $esaJoinCond = 'ESA.StateId = AE.StateId OR ESA.CityId = AE.CityId OR ESA.NeighborhoodId = AE.NeighborhoodId';
 
         $query = $this->getReportBaseQuery($filter)

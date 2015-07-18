@@ -1,0 +1,40 @@
+<?php
+$request = $this->request();
+$controller = $request->getControllerName();
+$action = $request->getActionName();
+
+header("Content-Type: text/html; charset=utf-8");
+header("X-UA-Compatible: IE=edge,chrome=1");
+?>
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="pt-br"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta chme="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Mulher de Negócios tem como objetivo identificar, selecionar e premiar os relatos de vida de mulheres empreendedoras, as quais transformaram seus sonhos em realidade e cuja história de vida hoje é exemplo para outras que possuem o mesmo sonho. " />
+
+	<link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <link href="<?php echo $this->baseUrl('portal-assets/css/style.css?adasdv2014') ?>" media="all" rel="stylesheet" type="text/css" >
+    <link rel="stylesheet" href="<?php echo $this->baseUrl('portal-assets/js/vendor/jquery/plugin/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css?v2014') ?>" media="all" type="text/css">
+    <!--[if (gte IE 6)&(lte IE 8)]>
+        <script src="<?php echo $this->baseUrl('portal-assets/js/vendor/shiv.js') ?>" type="text/javascript"></script>
+    <![endif]-->
+    
+    <?php echo $this->headLink() . $this->headStyle(). "\n";
+        $this->headTitle()->prepend('Mulher de Negócios - Prêmio Sebrae');
+        echo /*$this->headMeta() .*/ $this->headTitle()->setSeparator(' - ');
+    ?><link href="http://<?php echo $_SERVER["HTTP_HOST"]; ?>/favicon.ico" rel="shortcut icon" />
+    <script type="text/javascript">
+    var fb_param = {}; fb_param.pixel_id = '6008963572205'; fb_param.value = '0.00'; fb_param.currency = 'BRL';
+    (function(){
+      var fpw = document.createElement('script'); fpw.async = true; fpw.src = '//connect.facebook.net/en_US/fp.js';
+      var ref = document.getElementsByTagName('script')[0]; ref.parentNode.insertBefore(fpw, ref);
+    })();
+    </script>
+    <noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/offsite_event.php?id=6008963572205&amp;value=0&amp;currency=BRL" /></noscript>
+</head>
+<body>

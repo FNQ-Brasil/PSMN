@@ -1,0 +1,30 @@
+<?php include realpath(dirname(__FILE__) . '/../menus/admin.phtml'); ?>
+
+<h1 class="title tquiz">Cadastro de empresas</h1>
+
+<?php if (isset($this->messageError)):?>
+    <?php if ($this->messageError):?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+             <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+
+<div id="tabs">
+    <form method="POST" class="normal" autocomplete="off" name="frmRegister" id="frmRegister" action="<?php echo $this->baseUrl('/management/enterprise/cadastro'); ?>">
+        <div id="tabs-1">
+            <fieldset>
+                <div class="help-block">Esta área permite que a candidata realize o cadastro dos dados da Empresa.</div>
+                <div class="list-table-30">
+                    <label class="label-control">CPF</label>
+                    <input id="username" type="text" name="username" size="18"  class="w140 input list-table-95 cpf" value="" />
+                </div>
+            </fieldset>
+            <button type="submit" class="form-button-tab-nav btn-submit" style="font-size: 16px">
+                <span class="icon" data-icon=""></span> <b>Cadastrar</b>
+            </button>
+        </div>
+    </form>
+</div>

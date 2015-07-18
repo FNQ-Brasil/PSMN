@@ -1,0 +1,118 @@
+
+.finish-criterion
+  h1
+    display: block
+    font-size: 20px
+    line-height: 28px
+    width: 470px
+  .clearfix
+    clear: both
+  .fc-completed
+    +border-radius(10px)
+    text-align: center
+    font-size: 14px
+    color: #666
+    background: #e4edef
+    padding: 20px 0
+    margin: 15px 0 0
+    strong
+      color: black
+
+  .fc-pagination
+    position: relative
+    height: 27px
+    margin: 20px 0 0
+    li
+      float: left
+      margin: 0 98px 0 0
+      position: relative
+      z-index: 3
+      &.active
+        a
+          background: #6894bc
+      &.item-6
+        margin: 0 0 0 4px
+      a
+        +border-radius(15px)
+        +square(30px)
+        background: #ccc
+        color: white
+        display: block
+        padding: 8px 0 0 11px
+        text-decoration: none
+
+    .fc-progressbar
+      background: #ccc
+      height: 7px
+      position: absolute
+      top: 11px
+      width: 99%
+
+    .fc-progressbar-active
+      background: #6894bc
+      height: 7px
+      position: absolute
+      top: 11px
+      width: 0
+    .fc-progressbar-active-23
+      width: 23%
+    .fc-progressbar-active-42
+      width: 42%
+    .fc-progressbar-active-61
+      width: 61%
+    .fc-progressbar-active-80
+      width: 80%
+    .fc-progressbar-active-99
+      width: 99%
+  .fc-accordion
+    margin: 30px 0 0
+    .fc-accordion-container
+      border-bottom: 1px solid #ccc
+      border-top: 1px solid #ccc
+      &.first
+        border-bottom: 0
+      &.open
+        .fc-accordion-title
+          background: url(../images/ico-slide-open.png) 97% 10px no-repeat
+      .fc-accordion-title
+        background: url(../images/ico-slide-close.png) 97% 10px no-repeat
+        color: #666
+        font-size: 18px
+        font-weight: bold
+        margin: 10px 0
+        padding: 10px 10px
+      .fc-accordion-content
+        color: #666666
+        display: none
+        font-size: 13px
+        margin: 15px 0
+        padding: 0 10px
+        ul
+          li
+            border-bottom: 1px solid #ccc
+            float: left
+            height: 18px
+            line-height: 19px
+            margin: 0 18px 0 0
+            padding: 14px 0 22px 0
+            width: 200px
+            .fc-icon
+              display: block
+              float: left
+              height: 19px
+              margin: 0 10px 0 0
+              width: 19px
+              &.fc-icon-checked
+                background: url(../images/fc-icon-checked.png) 0 0 no-repeat
+              &.fc-icon-alert
+                background: url(../images/fc-icon-alert.png) 0 0 no-repeat
+  button
+    +border-radius(5px)
+    +text-shadow(rgba(blue, .2) 0 -1px 0)
+    background: #6894bc
+    border: 0
+    color: white
+    float: right
+    font-size: 18px
+    margin: 15px 0
+    padding: 12px 20px

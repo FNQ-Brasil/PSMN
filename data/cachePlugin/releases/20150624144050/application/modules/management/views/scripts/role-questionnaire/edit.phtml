@@ -1,0 +1,105 @@
+<?php 
+$this->headScript()
+    ->prependFile($this->baseUrl('js/management/role-questionnaire/edit.js'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.metadata.js'))
+    ->prependFile($this->baseUrl('js/validation/jquery.validate.min.js'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.form.js'));
+
+//$this->headLink()->prependStylesheet($this->baseUrl('css/custom-theme/jquery-ui-1.8.23.custom.css'));
+?>
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div class="pageEditRoleQuestionnaire" id="content">
+    <h1 class="center">
+        Período de acesso ao questionário
+    </h1>
+    <a title="Voltar" id="back" href="<?php echo $this->baseUrl('management/role/index/questionnaire_id/'.$this->roleQuestionnaireRowData['questionnaire_id']); ?>">Voltar</a>
+<?php if (isset($this->itemEditSuccess)):?>
+    <?php if ($this->itemEditSuccess):?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span> role-questionnaire alterada com sucesso.
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?php if (isset($this->itemInsertSuccess)):?>
+    <?php if ($this->itemInsertSuccess):?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    role-questionnaire inserida com sucesso.
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+    
+<?php if (isset($this->messageError)):?>
+    <?php if ($this->messageError):?>
+        <div class="notice error">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+    
+    <form id="frmRoleQuestionnaire" class="normal" action="<?php echo $this->baseUrl( ($this->request()->getActionName() == 'insert')? 
+                  'management/role-questionnaire/insert/format/json' : 
+                  'management/role-questionnaire/edit/id/'.$this->roleQuestionnaireRow->getId().'/format/json'); ?>" method="POST" class="normal" autocomplete="on">
+         <div id="msgError" class="notice error autoScroll" style="margin-left: 26px; z-index: 9999">
+             <span class="icon small" data-icon="X"></span>
+             <b></b><a href="#close" class="icon close" data-icon="x"></a>
+         </div>
+		 <fieldset>        
+             
+            <label for="Role">Perfil</label> <?php // leia-se: Papel   ?>
+                <input name="rq[role_id]" type="hidden" value="<?php if ($this->roleQuestionnaireRowData['role_id']) { 
+                           echo $this->roleQuestionnaireRowData['role_id']; 
+                           } ?>" />
+                <input name="questionnaire_name" id="RoleId" style="border:none;" type="text" 
+                       value="<?php if ($this->roleQuestionnaireRowData['role_name']) { 
+                           echo $this->roleQuestionnaireRowData['role_name']; 
+                           } ?>" class="w300 {required:true}" readonly="readonly" />
+            <hr class="clear" />
+
+            <label for="Questionnaire">Questionário:</label>
+                <input name="rq[questionnaire_id]" type="hidden" value="<?php if ($this->roleQuestionnaireRowData['questionnaire_id']) { 
+                           echo $this->roleQuestionnaireRowData['questionnaire_id']; 
+                           } ?>"/>
+                <input name="questionnaire_name" id="QuestionnaireId" style="border:none;" type="text" 
+                       value="<?php if ($this->roleQuestionnaireRowData['questionnaire_name']) { 
+                           echo $this->roleQuestionnaireRowData['questionnaire_name']; 
+                           } ?>" class="w300 {required:true}" readonly="readonly" />
+
+            <hr class="clear" />
+            
+            <label for="StartDate">Período válido para configuração:</label>
+            <span>Entre <?php echo Vtx_Util_Date::format_dma($this->roleQuestionnaireRowData['operation_beginning']); ?> até <?php echo Vtx_Util_Date::format_dma($this->roleQuestionnaireRowData['operation_ending']);?></span>
+            <hr class="clear" />
+            
+            <label for="StartDate">Data Início:</label>
+            <input id="StartDate" type="text" name="rq[start_date]" 
+                   value="<?php if (isset($this->roleQuestionnaireRowData['start_date'])) { 
+                       echo Vtx_Util_Date::format_dma($this->roleQuestionnaireRowData['start_date']); 
+                       } ?>" class="w95 datepicker {required:true}" alt="date"  />
+
+            <hr class="clear" />
+
+            <label for="EndDate">Data Fim:</label>
+            <input id="EndDate" type="text" name="rq[end_date]" 
+                   value="<?php if (isset($this->roleQuestionnaireRowData['end_date'])) { 
+                       echo Vtx_Util_Date::format_dma($this->roleQuestionnaireRowData['end_date']); 
+                       } ?>" class="w95 datepicker {required:true}" alt="date"  />
+
+            <hr class="clear" />
+
+            <hr class="clear" />
+
+            <hr class="clear">
+            <button class="large green" type="submit" style="float: right" tabindex="9">
+                <span class="icon" data-icon="C"></span> Salvar
+            </button>
+        </fieldset>
+	</form>
+</div>

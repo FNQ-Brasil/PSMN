@@ -1,0 +1,64 @@
+<?php
+$controller = $this->request()->getControllerName();
+$action = $this->request()->getActionName();
+
+$urlBack = ($this->loggedAllowed('index', 'management:enterprise')) ? '' : 'cadastro';
+header("Content-Type: text/html; charset=utf-8");
+header("X-UA-Compatible: IE=edge,chrome=1");
+?><!doctype html>
+<html class="no-js" lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <meta chme="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Mulher de Negócios 2015" />
+
+    <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->baseUrl('css/chosen.css?v2014') ?>" media="all" rel="stylesheet" type="text/css" >
+     <link href="<?php echo $this->baseUrl('assets/css/main.css?11xqqx112e132e2314v2014'); ?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo $this->baseUrl('assets/css/cadastro.css?11x112e132e234v2014'); ?>" rel="stylesheet" type="text/css">
+<link href="http://<?php echo $_SERVER["HTTP_HOST"]; ?>/favicon.ico" rel="shortcut icon" />
+    <?php echo $this->headLink() . $this->headStyle(); ?>
+        <?php
+        $this->headTitle()->prepend('Mulher de Negócios - Prêmio Sebrae');
+        echo /* $this->headMeta() . */ $this->headTitle()->setSeparator(' - ');
+        ?>
+
+        <!--[if (gte IE 6)&(lte IE 8)]>
+        <script src="<?php echo $this->baseUrl('assets/javascripts/libraries/html5shiv/html5shiv.js') ?>" type="text/javascript"></script>
+        <![endif]-->
+    </head>
+    <body class="logged"><a id="top-of-page"></a>
+        <div id="wrapper">
+            <div class="container12">
+                <div class="header">
+                    <h1 id="logo"><a href="<?php echo $this->baseUrl('/'); ?>" title="Prêmio Sebra Mulher de Negócios">Prêmio Sebra Mulher de Negócios</a></h1>
+                    <div id="breadcrumb">
+                        <p>Você está em:</p>
+                        <ul>
+                            <!--
+                            <li class="first">
+                            <?php if (isset($this->isViewAdmin) and $this->isViewAdmin): ?>
+                                        <a href="<?php echo $this->baseUrl('/management/enterprise/' . $urlBack); ?>">VOLTAR</a> 
+                                <?php // javascript:window.history.go(-1); ?>
+                            <?php endif; ?>
+                                Voc&ecirc; est&aacute; em:
+                            </li>
+                            -->
+                            <li><a href="" title="Mulher de Neg&oacute;cios 2015"><span>Mulher de Neg&oacute;cios 2015</span></a></li>
+                            <?php /* ?>
+                            <li class="current"><span><i>Avaliação</i></span></li>
+                            <?php */ ?>
+                        </ul>
+                    </div>
+                    <?php if (Zend_Auth::getInstance()->hasIdentity()): ?>
+                        <div id="profile">
+                            <dl>
+                                <dt><b><?php echo $this->userAuth()->getFirstName(); ?></b></dt>
+                                <dd><?php echo $this->userAuth()->getRoleLongDescription(); ?></dd>
+                            </dl>
+                            <ul>
+                                <li class="logout"><a href="<?php echo $this->baseUrl('login/logout'); ?>" title="Sair">Sair</a></li>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+                </div>

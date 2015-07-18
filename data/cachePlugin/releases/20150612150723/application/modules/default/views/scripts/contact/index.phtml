@@ -1,0 +1,57 @@
+<nav role="navigation">
+    
+<?php
+$this->headScript()
+    ->appendFile($this->baseUrl('js/default/contact.js'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.metadata.js'))
+    ->prependFile($this->baseUrl('js/validation/jquery.validate.min.js'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.form.js'));
+include realpath(dirname(__FILE__) . '/../includes/menu/notlogged.phtml');
+
+?>
+</nav>
+<?php
+///<div id="welcome">
+?>
+
+<div id="content">
+    <h1>Mulher de Negócios 2014 :: Contato</h1>
+
+    <?php if (isset($this->itemSendSuccess)):?>
+        <?php if ($this->itemSendSuccess):?>
+            <div class="notice success">
+                <span data-icon="C" class="icon medium"></span>
+                        Obrigado! Em breve retornaremos o contato.
+                <a data-icon="x" class="icon close" href="#close"></a>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+    
+    <form method="POST" id="frmContact" action="<?php echo $this->baseUrl('contact/index/format/json'); ?>">
+        <fieldset>
+            
+            <label for="name">Nome:</label>
+            <br class="clear" />
+                    <input tabindex="1" id="OcbRegister" type="text" maxlength="50" size="50" 
+                           name="contact[name]" 
+                           class="w300" />
+            <hr class="clear" />
+
+            <label for="email">Email:</label>
+            <br class="clear" />
+                    <input tabindex="2" id="OcbRegister" type="text" maxlength="50" size="50" 
+                           name="contact[email]" 
+                           class="w300" />
+            <hr class="clear" />
+            
+            <label for="message">Mensagem:</label>
+                <textarea tabindex="3" name="contact[message]" ></textarea>
+
+            <hr class="clear" />
+            
+            <button  tabindex="4" type="submit" value="Enviar">Enviar</button>
+            
+        </fieldset>
+    </form>
+
+</div>

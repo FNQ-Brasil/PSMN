@@ -1,0 +1,28 @@
+<?php
+$this->headScript()
+    ->appendFile($this->baseUrl('js/address/capital.js'))
+    ->appendFile($this->baseUrl('js/questionnarie/register.js?v23333322'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.metadata.js'))
+    ->prependFile($this->baseUrl('js/validation/jquery.validate.min.js'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.form.js'));
+
+$this->headLink()->prependStylesheet($this->baseUrl('css/custom-theme/jquery-ui-1.8.23.custom.css'));
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content">
+    <h1 class="center">Cadastro da Empresa</h1>
+    <a title="Voltar" id="back" href="#">Voltar</a>
+    <?php if ($this->itemSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Empresa inscrita com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>    
+    <form method="POST" class="normal"
+          action="<?php echo $this->baseUrl('enterprise/edit/'); ?>" id="frmRegister">
+            <?php
+                include realpath(APPLICATION_PATH.'/modules/questionnaire/views/scripts/register/formregister.phtml');
+            ?>
+	</form>
+</div>

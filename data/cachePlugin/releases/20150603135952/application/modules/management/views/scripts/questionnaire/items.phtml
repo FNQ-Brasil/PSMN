@@ -1,0 +1,45 @@
+    <?php
+        $blockId = isset($block['Id'] )? $block['Id'] : '';
+        $action = (!$systemDefault)?
+            'management/block/edit/format/json/id/' . $blockId : 
+            'management/block/insert/format/json';
+    ?>
+    <li class="block clearfix<?php echo (!$systemDefault)? '' : ' systemDefault'; ?>">
+
+        <form class="clearfix" action="<?php echo $this->baseUrl($action) ?>" method="POST">
+            <input type="hidden" name="designation" value="<?php echo isset($block['Designation'] )? $block['Designation'] : ''; ?>">
+            <input type="hidden" name="conclusion_text" value="">
+            <input type="hidden" name="questionnaire_id" value="<?php echo $this->questionnaireId; ?>">
+            <input type="hidden" class="itemId" name="item_id" value="<?php echo $blockId; ?>">
+            <input type="hidden" name="item_type" value="block">
+
+            <a href="#" class="expand" title="Editar" /><span class="ico plus large">+</span></a>
+            <label for="<?php echo $blockFieldN; ?>">Bloco</label>
+            <input type="text" name="value" class="title" id="<?php echo $blockFieldN; ?>" placeholder="Nome para o bloco" value="<?php echo $block['Value'] ?>" />
+            <a href="#" class="move moveBlock" title="Mover" /><span class="ico move large">Mover</span></a>
+            <a href="#" class="delete" title="Excluir" /><span data-icon="T" class="icon"></span></a>
+
+            <fieldset class="adicionalFields clearfix">                    
+                <label for="textarea<?php echo $blockFieldN; ?>" class="apoio">Apoio</label><br class="clear" />
+
+                <textarea name="long_description" id="textarea<?php echo $blockFieldN ?>" class="autohide" data-minheight="90" placeholder="Texto de apoio"/><?php echo $block['LongDescription'] ?></textarea>
+                <button class="small green btSave" type="submit"><span data-icon="C" class="icon"></span>Salvar</button>
+                <button class="small btReset" type="button" title="Cancelar"><span data-icon=":" class="icon"></span></button>
+
+                <br class="clear" />
+
+                <div class="notice success hide">
+                    <span data-icon="C" class="icon small"></span> <b>Dados salvos com sucesso!</b>
+                    <a data-icon="x" class="icon small close" href="#close"></a>
+                </div>
+
+                <div class="notice error hide">
+                    <span data-icon="X" class="icon small"></span> <b></b>
+                    <a data-icon="x" class="icon small close" href="#close"></a>
+                </div>
+
+            </fieldset>
+        </form>
+
+        <?php include 'item-criterions.phtml'; ?>
+    </li> <!-- # li.block -->

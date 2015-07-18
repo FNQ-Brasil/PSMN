@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.php.debug.core.launching.PHPExeLaunchConfigurationType">
+<stringAttribute key="ATTR_FILE" value="/psmn/htdocs/index.php"/>
+<stringAttribute key="ATTR_FILE_FULL_PATH" value="/var/www/psmn/htdocs/index.php"/>
+<stringAttribute key="ATTR_LOCATION" value="/home/SSI/ZendStudio/plugins/com.zend.php.debug.debugger.php55.linux.x86_64_12.5.1.v20150514-2003/resources/php55/php"/>
+<stringAttribute key="debugOutputEncoding" value="UTF-8"/>
+<stringAttribute key="debugTransferEncoding" value="UTF-8"/>
+<stringAttribute key="exeDebugArguments" value="${build_files}"/>
+<booleanAttribute key="firstLineBreakpoint" value="true"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/psmn/application/models/Appraiser.php"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.profile"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
+<intAttribute key="org.eclipse.php.debug.core.PHP_Port" value="10137"/>
+<stringAttribute key="org.eclipse.php.debug.core.PHP_Project" value="/psmn"/>
+<booleanAttribute key="org.eclipse.php.debug.core.RunWithDebugInfo" value="true"/>
+<stringAttribute key="org.eclipse.php.debug.coreconfiguration_delegate_class" value="com.zend.php.debug.core.launch.PHPExecutableExtendedLaunchDelegate"/>
+<stringAttribute key="org.eclipse.php.debug.corephp_debugger_id" value="org.eclipse.php.debug.core.zendDebugger"/>
+<stringAttribute key="php_debug_type" value="php_exe_script_debug"/>
+</launchConfiguration>

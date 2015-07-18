@@ -1,0 +1,144 @@
+    <h1 class="title">Regionais/Perfis de Acesso por Localidade</h1>
+
+  
+    <?php if (isset($this->itemInsertSucess)):?>
+        <?php if ($this->itemInsertSucess):?>
+            <div class="notice success">
+                <span data-icon="C" class="icon medium"></span>
+                        Regional inserida com sucesso.
+                <a data-icon="x" class="icon close" href="#close"></a>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?> 
+    
+    <?php if (isset($this->itemUpdateSucess)):?>
+        <?php if ($this->itemUpdateSucess):?>
+            <div class="notice success">
+                <span data-icon="C" class="icon medium"></span>
+                        Regional/Perfil de Acesso alterada com sucesso.
+                <a data-icon="x" class="icon close" href="#close"></a>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?> 
+    
+    <?php if (isset($this->itemDeleteSuccess)):?>
+        <?php if ($this->itemDeleteSuccess):?>
+            <div class="notice success">
+                <span data-icon="C" class="icon medium"></span>
+                        Regional/Perfil de Acesso excluída com sucesso.
+                <a data-icon="x" class="icon close" href="#close"></a>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?> 
+
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+    
+
+    <form action="<?php echo $this->url(array('page' => $this->pageCount, 'format' => 'html')) ?>" id="frm" method="GET">
+        <fieldset>
+            <input type="hidden" id="orderByValue" name="orderBy" value="" />
+            <input type="hidden" value="<?php echo $this->orderBy; ?>" />
+       </fieldset>
+
+        <fieldset>
+          <div class="list-table-20">
+            <label class="label-control" for="Cnpj">Nome:</label>
+            <input tabindex="1" id="regional" type="text" name="filter[regional]" size="18" value="<?php echo isset($this->filter['regional'])? $this->filter['regional'] : ''; ?>" class="input list-table-100" />
+          </div>
+
+          <div class="list-table-20">
+            <label class="label-control" for="Uf" class="select">Estadual:</label>
+            <select data-placeholder="" tabindex="10" id="Uf" class="fancy" name="filter[state_id]">
+                <option value="">Todos</option>
+                <?php foreach ($this->getAllStates as $states) : ?>
+                    <?php if (isset($this->filter['state_id']) && $states->getId() == $this->filter['state_id']) : ?>
+                        <option value="<?php echo $states->getId();?>" selected><?php echo $states->getUf();?></option>
+                    <?php else : ?>
+                        <option value="<?php echo $states->getId();?>"><?php echo $states->getUf();?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
+          </div>
+        </fieldset>
+            <!--
+            <hr class="clear" />
+
+            <label for="Uf" class="select">Uf:</label>
+            <select data-placeholder="" tabindex="10" id="Uf" class="fnc" style="width:80px;" name="filter[state_id]">
+                <option value="">Todos</option>
+                <?php foreach ($this->getAllStates as $states) : ?>
+                    <?php //if ($states->getId() == $this->registerAddressEnterpriseData['state_id']) : ?>
+                        <option value="<?php echo $states->getId();?>"><?php echo $states->getUf();?></option>
+                    <?php //endif; ?>
+                <?php endforeach; ?>
+            </select>
+            
+            <label for="city" class="select">Cidade:</label>
+            <select tabindex="10" id="CityId" style="width:180px;" class="fnc" name="filter[city_id]">
+                <option value="">Todas</option>
+            </select>
+            
+            <label for="Neighborhood" class="select">Bairro:</label>
+            <select tabindex="10" id="NeighborhoodId" style="width:180px;" class="fnc" name="filter[neighborhood_id]">
+                <option value="">Todos</option>
+            </select>-->
+            <button class="large btn-submit" type="submit" style="float: right" tabindex="16">Buscar</button>
+    </form> 
+
+    <div class="table-menu header">
+<?php
+$total = $this->getAll->getTotalItemCount();
+$label_total = (($total > 0) ? implode(' ', array(
+  $total,
+  implode('', array(
+    'registro',
+    (($total > 1) ? 's' : '')
+  ))
+)) : 'Nenhum registro encontrado');
+?>
+      <hgroup>
+        <h2>Regionais/Perfis de Acesso por Localidade - <span><?php echo $label_total; ?></span></h2>
+        <!-- <h3>Empresas inelegíveis para o Prêmio MPE</h3> -->
+      </hgroup>
+      <?php echo $this->paginationControl($this->getAll, null, null); ?>
+    </div>
+
+    <table id="table-details">
+        <caption></caption>
+        <colgroup>
+            <col class="firstCol" style="width: 200px">
+            <col>
+        </colgroup>
+        <thead>
+            <tr class="alt first last">
+                <th> Nome</th>
+                <th class="lastTd"> Ações </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($this->getAll as $regional): ?>
+            <tr class="first" >
+                <th nowrap><?php echo $regional->getDescription();?></th>
+                <td class="center">
+                    <a href="<?php echo  $this->baseUrl('/management/regional/index/listar/ok/id/'.$regional->getId()); ?>" title="Listar regional">Listar</a>
+                    
+       <?php  if ($this->loggedAllowed('edit', 'management:regional')): ?>             
+                    <a href="<?php echo  $this->baseUrl('/management/regional/edit/id/'.$regional->getId()); ?>" title="Editar regional">Editar</a>
+       <?php  endif; ?>
+       <?php  if ($this->loggedAllowed('delete', 'management:regional')): ?>                          
+                    <a href="<?php echo  $this->baseUrl('/management/regional/delete/id/'.$regional->getId()); ?>" title="Excluir regional" class="delete" onclick="return(confirm('Tem certeza que deseja remover excluir esta regional?'))">Excluir</a>
+       <?php  endif; ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <div class="table-menu footer">
+      <?php echo $this->paginationControl($this->getAll, null, null); ?>
+    </div>

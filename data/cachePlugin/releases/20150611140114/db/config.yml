@@ -1,0 +1,26 @@
+development:
+  adapter: mysql2
+  database: psmn_dev
+  encoding: latin1
+  host: localhost
+  port: 3306
+  username: root
+  password: wkm#2010
+
+homolog:
+  adapter: mysql2
+  database: bd_psmn_hmg
+  encoding: latin1
+  host: fnq-mysql-01.dualtec.com.br
+  port: 3306
+  username: bd_psmn
+  password: Fg87er4#2aQ
+
+production:
+  adapter: mysql2
+  database: PSMN_Prd
+  encoding: latin1
+  host: fnq-mysql-01.dualtec.com.br
+  port: 3306
+  username: mdnegocios
+  password: '@12Br#*ab'

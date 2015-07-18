@@ -1,0 +1,257 @@
+<table class="table">
+  <caption></caption>
+  <thead>
+    <tr>
+      <th>Empresa</th>
+      <th>Razão social</th>
+      <th>UF</th>
+      
+      <th>Relato</th>
+      
+      <th>Prêmio</th>
+      <?php if ($isCurrentCompetition) : ?>
+        <th>Q. Negócios</th>
+      <?php endif; ?>
+      <th>Devolutiva</th>
+      
+      <?php /* if ($competitionId == 2013) : ?>
+        <th>Q. Empreende.</th>
+      <?php endif; */ ?>
+      <th>% Concluído</th>
+
+      <?php if($competitionId > 2014): ?>
+        <th>Confirmado</th>
+      <?php endif; ?>
+
+      <th>Ações</th>
+    </tr>
+  </thead>
+<?php
+if (count($this->getAllEnterprise) >= 1):
+?>
+  <tbody>
+<?php
+  foreach ($this->getAllEnterprise as $index => $enterprise):
+
+    $raa = $enterprise->getDevolutivePath();
+    $socialName = $enterprise->getSocialName();
+    $fantasyName = $enterprise->getFantasyName();
+    $CNPJ = trim($enterprise->getCnpj());
+    //$CPF = trim($enterprise->getCpf());
+    $CPF = '';
+    $UF = trim($enterprise->getUf());
+    $email = trim($enterprise->getEmailDefault());
+    //$phone = trim($enterprise->getTelefone());
+    $phone = $phone = trim($enterprise->getPhone());
+    
+    if (isset($this->getAllAppraisers)):
+      $appraisers = array(
+        'confirm' => array(
+          'status' => (($enterprise->getClassificar() != null) ? $enterprise->getClassificar() : false),
+          'options' => array(
+            'primary' => array(
+              'status' => (($enterprise->getAppraiserId() != null) ? $enterprise->getAppraiserId() : 0),
+              'field' => array(),
+              'label' => false
+            ),
+            'secondary' => array(
+              'status' => (($enterprise->getAppraiserIdSec() != null) ? $enterprise->getAppraiserIdSec() : 0),
+              'field' => array(),
+              'label' => false
+            )
+          )
+        ),
+        'cancel' => array(
+          'status' => (($enterprise->getDesclassificar() != null) ? $enterprise->getDesclassificar() : false),
+          'note' => trim($enterprise->getJustificativa())
+        )
+      );
+
+      foreach ($this->getAllAppraisers as $avaliador):
+        $appraisers['confirm']['options']['primary']['field'][] = '<option value="' . $avaliador->getId() . '" ' . (($appraisers['confirm']['options']['primary']['status'] == $avaliador->getId()) ? 'selected="selected"' : '') . '>' . $avaliador->getFirstName(). '</option>';
+        $appraisers['confirm']['options']['secondary']['field'][] = '<option value="' . $avaliador->getId() . '" ' . (($appraisers['confirm']['options']['secondary']['status'] == $avaliador->getId()) ? 'selected="selected"' : '') . '>' . $avaliador->getFirstName(). '</option>';
+      endforeach;
+    endif;
+    
+    
+?>
+    <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
+      <td>
+        <dl style="text-align: left">
+          <dt title="<?php echo $fantasyName; ?>"><b><?php echo (($fantasyName != '') ? substr($fantasyName, 0, 60) : '--'); ?></b></dt>
+          <dd class="identity" title="<?php echo (($CNPJ != '') ? $CNPJ : (($CPF != '') ? $CPF : '--')); ?>"><?php echo (($CNPJ != '') ? $CNPJ : (($CPF != '') ? $CPF : '--')); ?></dd>
+        </dl>
+      </td>
+      <td>
+        <dl  style="text-align: left">
+          <dt title="<?php echo $socialName; ?>"><i><?php echo (($socialName != '') ? substr($socialName, 0, 60) : '--'); ?></i></dt>
+          <dd class="email" title="<?php echo $email; ?>"><span><a href="mailto:<?php echo $email; ?>"><?php echo (($email != '') ? $email : '--'); ?></a></span></dd>
+          <dd class="phone" title="<?php echo $phone; ?>"><span><?php echo (($phone != '') ? $phone : '--'); ?></span></dd>
+        </dl>
+      </td>
+      <td class="middle"><i><?php echo $UF; ?></i></td>
+      <?php ?>  
+      <td class="middle">
+        <dl>
+        <?php
+                if ($this->loggedAllowed('edit', 'management:enterprise')
+                or $this->loggedAllowed('acompanhareport', 'management:report')
+            ):
+                $linkReport = null;
+		if(!$enterprise->getReportId()) {
+            if ($this->loggedAllowed('edit', 'management:enterprise')) {
+                $linkReport = ($isCurrentCompetition)?'insert/enterprise_id_key/'.$enterprise->getIdKey().'/competition_id/'.$competitionId:null;
+                $titleReport = '';
+            }
+            $statusReport = 'NÃO';
+		} else {
+            if ($this->loggedAllowed('edit', 'management:enterprise')) {
+                $linkReport = 'edit/report_id/'.$enterprise->getReportId().'/enterprise_id_key/'.$enterprise->getIdKey().'/programa_id/'.$competitionId;
+            } else {
+                $linkReport = 'acompanhareport/report_id/'.$enterprise->getReportId().'/enterprise_id_key/'.$enterprise->getIdKey().'/programa_id/'.$competitionId;
+            }
+                $titleReport = $enterprise->getReportTitle();
+                $statusReport = 'SIM';
+		}
+                
+                ?>
+			<dt>
+                <?php if (isset($linkReport)): ?>
+                    <a href="<?php echo $this->baseUrl('management/report/'.$linkReport);?>" title="Relato da empresa <?php echo $titleReport; ?>" class="answer-survey">Relato</a>
+                <?php endif; ?>
+            </dt>
+			<dd class="survey"><?php echo $statusReport; ?></dd>
+            <?php
+                    endif;
+            ?>                            
+        </dl>
+      </td>
+      
+      <td class="middle"><span><?php echo str_replace('Microempreendedora', 'Microemp.', $enterprise->getCategoryDescription()); ?></span></td>
+   <?php /*   <td class="middle"><span><?php echo Vtx_Util_Date::format_dma($enterprise->getPresidentCreated()); ?></span></td> */ ?>
+      <?php if ($isCurrentCompetition) : ?>
+      <td class="middle">
+            <?php if ($enterprise->getCurrentStatus()):
+                if ($permissionRespondAll or $this->loggedAllowed('acompanhqstn', 'management:questionnaire')):
+                    $uriPart = $permissionRespondAll? 'not-coop-responding' : 'acompanhqstn';
+            ?>
+            <dl>
+                    <dt><a title="Ver/Responder questionário Negócios" href="<?php echo $this->baseUrl('management/questionnaire/' . $uriPart .'/enterprise-id-key/' . $enterprise->getIdKey() . '/block/' . Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios);?>" class="answer-survey" target="window">Ver/Responder questionário Negócios</a>
+                    </dt>
+            </dl>
+            <?php endif;
+                else:
+            ?>
+
+                OFF
+            <?php endif;?>
+      </td>
+      <?php endif; ?>
+      <?php /* ?>
+      <td class="middle">
+        <?php
+            if ($enterprise->getCurrentStatus()):
+                if ($permissionRespondAll  or $this->loggedAllowed('acompanhqstn', 'management:questionnaire')):
+
+                    $uriPart = $permissionRespondAll? 'not-coop-responding' : 'acompanhqstn'; 
+        ?>
+                <dl>
+                    <dt><a title="Ver/Responder questionário Empreendedorismo" href="<?php echo $this->baseUrl('management/questionnaire/' . $uriPart . '/enterprise-id-key/' . $enterprise->getIdKey() . '/block/' . Zend_Registry::get('configDb')->qstn->currentBlockIdEmpreendedorismo);?>" class="answer-survey" target="window">Ver/Responder questionário Empreendedorismo</a>
+                    </dt>
+                </dl>
+        <?php
+                endif;
+            else:
+        ?>
+                OFF
+        <?php
+        endif;
+        ?>
+      </td>
+      <?php */ ?>
+      <td class="middle">
+        <dl>
+            <dt>
+        <?php if ($raa): ?>
+            <a href="<?php echo $raa; ?>" title="Baixar RAA" class="report">Baixar RAA</a>
+        <?php endif; ?>
+            </dt>
+        <?php /* if ($permissionRespondAll): ?>
+            <dd class="survey"><?php echo ($percent ? $percent : '-'); ?></dd>
+        <?php endif; */ ?>
+        </dl>
+      </td>
+      
+      <td class="middle">
+        <dl>
+            <?php 
+            
+                $percent = 25;
+                if ($raa) {
+                    $percent += 25;
+                }
+                
+                if ($statusReport == 'SIM') {
+                    $percent += 25;
+                }
+                $getpa = $enterprise->getProgress();
+                if ($getpa) {
+                    $percent += 25;
+                }
+            
+                /*$percent
+                $percent = ( ? ($enterprise->getPA() . "%") : (
+                        ($raa)?'75%':(()?'50%':'25%')
+                        
+                        ) );
+                */
+            ?>
+            <?php if ($permissionRespondAll): 
+            //echo var_dump($raa);
+                ?>
+                <dd class="survey"><?php echo ($percent ? $percent.'%' : '-'); ?></dd>
+            <?php endif; ?>
+        </dl>
+      </td>
+
+      <?php if($competitionId > 2014): ?>
+        <td class="middle">
+          <?php if ($enterprise->getSubscriptionVerified()): ?>
+            <input type="checkbox" class="verified checkbox" value="1" disabled="disabled" checked="checked" />
+          <?php else: ?>
+            <input type="checkbox" class="unverified checkbox" data-enterprise-id-key="<?php echo $enterprise->getIdKey(); ?>" value="0" />
+          <?php endif; ?>
+        </td>
+      <?php endif; ?>
+      
+      <td class="middle">
+            <?php if ($this->loggedAllowed('edit', 'management:enterprise')): ?>
+                <ul>
+                    <li class="edit-register"><a href="<?php echo $this->baseUrl('management/enterprise/edit/id_key/' . $enterprise->getIdKey()); ?>" target="_blank" title="Ver/editar cadastro">Ver/editar cadastro</a></li>
+                </ul>
+            <?php elseif($this->loggedAllowed('acompanhacadastro', 'management:enterprise')): ?>
+                <ul>
+                    <li class="edit-register"><a href="<?php echo $this->baseUrl('management/enterprise/acompanhacadastro/id_key/' . $enterprise->getIdKey()); ?>" target="_blank" title="Ver/editar cadastro">Ver/editar cadastro</a></li>
+                </ul>
+            <?php endif; ?>
+        </td>
+    </tr>
+    
+    
+    <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
+      <td class="cancel-ranking-fieldset" data-saved="true">
+        <dl>
+          <dt><label>Justificativa <i>(obrigatório)</i></label></dt>
+          <dd class="field"><textarea name="cancel-ranking-note-<?php echo $index; ?>" id="cancel-ranking-note-<?php echo $index; ?>" class="cancel-ranking-note"><?php echo $appraisers['cancel']['note']; ?></textarea></dd>
+          <dd class="button"><a href="" title="Salvar" class="cancel-ranking-note-save">Salvar</a></dd>
+        </dl>
+      </td>
+    </tr>
+<?php
+  endforeach;
+?>
+  </tbody>
+<?php
+endif;
+?>
+</table>

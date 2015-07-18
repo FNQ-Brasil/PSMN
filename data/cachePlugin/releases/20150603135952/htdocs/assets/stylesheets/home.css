@@ -1,0 +1,83 @@
+/* BACKGROUND GRADIENT */
+/* BACKGROUND SIZE */
+/* BOX */
+/* BOX RGBA */
+/* BOX SIZING */
+/* COLUMNS */
+/* DOUBLE BORDERS */
+/* FLEX */
+/* FLIP */
+/* FONT FACE */
+/* OPACITY */
+/* OUTLINE RADIUS */
+/* RESIZE */
+/* ROTATE */
+/* TRANSFORM  */
+/* TRANSITION */
+/* TRIPLE BORDERS */
+/* line 3, ../sass/home.sass */
+#home-login {
+  width: 185px;
+  float: left;
+}
+/* line 6, ../sass/home.sass */
+#home-login a {
+  color: #666666;
+}
+/* line 8, ../sass/home.sass */
+#home-login a[href="/questionnaire/register"] {
+  display: block;
+  font-size: 17px;
+  margin: 33px 0 0 0;
+  text-decoration: underline;
+}
+/* line 13, ../sass/home.sass */
+#home-login a[href="/login/lost"] {
+  font-size: 11px;
+  margin: 0 0 0 4px;
+}
+/* line 16, ../sass/home.sass */
+#home-login fieldset {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  border-radius: 10px;
+  background-color: #f3f3f3;
+  margin: 17px 0 0 0;
+}
+/* line 21, ../sass/home.sass */
+#home-login fieldset label b {
+  font-weight: 500;
+}
+/* line 23, ../sass/home.sass */
+#home-login button {
+  margin: 19px 0 0 6px;
+}
+/* line 25, ../sass/home.sass */
+#home-login #home-login-label-senha {
+  margin: 27px 0 10px 0;
+}
+
+/* line 28, ../sass/home.sass */
+#home-text {
+  float: left;
+  width: 795px;
+  padding: 65px 150px 0 70px;
+}
+/* line 32, ../sass/home.sass */
+#home-text h2 {
+  font-weight: 600;
+  font-size: 20px;
+  margin: 0 0 18px 0;
+}
+/* line 36, ../sass/home.sass */
+#home-text p {
+  line-height: 16px;
+  margin: 0 0 15px 0;
+}
+
+/* line 40, ../sass/home.sass */
+#form-search button {
+  margin: 10px 0 0 23%;
+}

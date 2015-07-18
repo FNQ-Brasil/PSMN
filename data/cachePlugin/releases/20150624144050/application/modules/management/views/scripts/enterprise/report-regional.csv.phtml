@@ -1,0 +1,73 @@
+<?php
+//$this->setEncoding('UTF-8');
+echo "\xEF\xBB\xBF";
+
+function rr ($value)
+{
+    return str_replace(',','',str_replace(';', '', $value)); 
+}
+function rr2 ($value)
+{
+    return str_replace(',','.',$value); 
+}
+
+/**
+view usada para gerar conteudo do fetchall em .CSV
+*/
+//CONFIGURACOES
+$separador = ";";
+$novalinha = "\n";
+
+
+echo "Estado {$separador}";
+echo "Região{$separador}";
+echo "Escritório Regional{$separador}";
+echo "Inscritas{$separador}";
+echo "Candidatas{$separador}";
+echo "Verificadas{$separador}";
+echo "Vecedora Bronze{$separador}";
+echo "Vencedora Prata{$separador}";
+echo "Vencedora Ouro{$separador}";
+echo $novalinha;
+
+$i = 1;
+if (count($this->dataReport) >= 1) :
+   foreach ($this->dataReport as $dataRow) :
+    
+        $estado = rr2($dataRow->getUf());
+        $regiao = rr2($dataRow->getRegiao());
+        $escritorioRegional = rr2($dataRow->getRegionalDescription());
+        $inscritas = $dataRow->getInscritas();
+        $candidatas = $dataRow->getCandidatas();
+        $verificadas = '0';
+        $vencedoraBronze = '0';
+        $vencedoraPrata = '0';
+        $vencedoraOuro = '0';
+    
+        echo $estado;
+        echo $separador;
+        echo $regiao;
+        echo $separador;
+        echo $escritorioRegional;
+        echo $separador;
+        echo $inscritas;
+        echo $separador;
+        echo $candidatas;
+        echo $separador;
+        echo $verificadas;
+        echo $separador;
+        echo $vencedoraBronze;
+        echo $separador;
+        echo $vencedoraPrata;
+        echo $separador;
+        echo $vencedoraOuro;
+        echo $separador;
+
+        echo $novalinha; 
+        $i = $i + 1;
+    endforeach;
+    
+   echo $novalinha;
+
+endif;
+

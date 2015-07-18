@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Form Cadastro</title>
+	<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="../assets/css/main.css">
+  <link rel="stylesheet" type="text/css" href="../assets/css/cadastro.css">
+	<link rel="stylesheet" type="text/css" href="../assets/javascripts/select/select2.css">
+  <script type="text/javascript" src="../assets/javascripts/vendors/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="../assets/javascripts/vendors/jquery-ui-1.10.1.custom.min.js"></script>	
+  <script type="text/javascript" src="../assets/javascripts/vendors/underscore.js"></script>
+  <script type="text/javascript" src="../assets/javascripts/vendors/jquery.maskinput.js"></script>
+  <script type="text/javascript" src="../assets/javascripts/select/select2.js"></script>
+	<script type="text/javascript" src="../assets/javascripts/common.js"></script>
+</head>
+<body>
+  <div id="wrapper">
+    <div class="container12">
+      <div class="header">
+        <h1 id="logo"></h1>
+        <div class="breadcrumb">
+          <ul>
+            <li class="first">Voc&ecirc; est&aacute; em:</li>
+            <li class="step">Mulheres de neg&oacute;cio</li>
+            <li class="active">Editar Perfil</li>
+          </ul>
+        </div>
+        <span class="avatar"><img src="../assets/images/avatar.png" /></span>
+        <div class="clearfix"></div>
+      </div>   
+      <ul class="main-menu">
+           <li class="home"> 
+            <a href="">Inicio</a>
+             <ul>
+               <li>lorem ipsum</li>
+               <li>lorem ipsum</li>
+               <li  class="last"><a href="">Inicio</a></li>
+             </ul>
+           </li>
+           <li class="active inscricao">
+            <a href="javascript:void(0)">Inscri&ccedil;&atilde;o</a>
+             <ul>
+               <li class="completed">Dados da empresa <span class="completo"></span></li>
+               <li>Dados da candidata<span class="incompleto"></span></li>
+               <li class="last"><a href="">Inscri&ccedil;&atilde;o</a></li>
+             </ul>
+           </li>
+           <li class="inactive relato">
+            <a href="">Relato</a>
+             <ul>
+               <li>lorem ipsum</li>
+               <li>lorem ipsum</li>
+               <li>lorem ipsum</li>
+             </ul>
+           </li>
+           <li class="inactive questionario">
+            <a href="">Questionario</a>
+             <ul>
+               <li>lorem ipsum</li>
+               <li>lorem ipsum</li>
+               <li>lorem ipsum</li>
+             </ul>
+           </li>
+         </ul>   
+      <div class="content">
+        <h1 class="title">Inscri&ccedil;&atilde;o</h1>
+        <h4 class="subtitle">Loren ipsun sit loren ipsun sit loren sit loren ipsun sit loren sit loren </h4>
+        <div id="tabs">
+          <ul>
+            <li><a href="#tabs-1">Dados da Empresa</a></li>
+            <li><a href="#tabs-2">Dados da Candidata</a></li>
+          </ul>
+          <div id="tabs-1">
+           <fieldset>
+              <label class="label-control">Categoria do pr&ecirc;mio</label>  
+              <input type="radio" id="for-1" name="rb" />
+              <label class="label-inline" for="for-1">
+                <span class="radio-button"></span>
+                Pequenos neg&oacute;cios
+              </label>
+            
+              <input type="radio" id="for-2" name="rb" />
+              <label class="label-inline" for="for-2">
+                <span class="radio-button"></span>
+                Produtora Rural
+              </label>
+
+              <input type="radio" id="for-3" name="rb" checked="checked" />
+              <label class="label-inline" for="for-3">
+                <span class="radio-button"></span>
+                Microempreendendora Individual
+              </label>          
+            </fieldset>
+            <fieldset>
+              <div class="list-table-45">
+                <label class="label-control">Raz&atilde;o Social*</label>
+                <input class="input list-table-95 input-cnpj " type="text">            
+              </div>
+              <div class="list-table-45">
+                <label class="label-control">Nome Fantasia</label>
+                <input class="input list-table-95 input-text " type="text">            
+              </div>
+            </fieldset>
+            <fieldset>
+              <label class="label-control">Tipo de empreendimento</label>  
+              <input type="radio" id="for-4" name="rb2" />
+              <label class="label-inline" for="for-4">
+               <span class="radio-button"></span>
+               Empresa com cnpj*
+              </label>
+            
+              <input type="radio" id="for-5" name="rb2" checked="checked" />
+              <label class="label-inline" for="for-5">
+                <span class="radio-button"></span>
+                Produtora Rural
+              </label>          
+            </fieldset>
+            <fieldset>
+              <div class="help-block">Fornecer pelo menos 1 op&ccedil;&atilde;o dentre os registros</div>
+              <div class="list-table-30">
+                <label class="label-control">CNPJ</label>
+                <input class="input list-table-95 input-cnpj" type="text" placeholder="CNPJ">            
+              </div>         
+              <div class="list-table-30">
+                <label class="label-control">Inscri&ccedil;&atilde;o Estadual</label>
+                <input class="input list-table-95 input-inscricao" type="text" placeholder="Inscri&ccedil;&atilde;o Estadual">            
+              </div>         
+              <div class="list-table-30">
+                <label class="label-control">DAP</label>
+                <input class="input list-table-95 input-text " type="text" placeholder="DAP">            
+              </div>         
+            </fieldset>
+            <fieldset>
+              <div class="list-table-30">
+                <label class="label-control">Registro no Min. da Pesca</label>
+                <input class="input list-table-95 input-cnpj" type="text" placeholder="CNPJ">            
+              </div>         
+              <div class="list-table-30">
+                <label class="label-control">Abertura da empresa*</label>
+                <input class="input list-table-95 input-date" type="text" placeholder="  /    /     ">            
+              </div>         
+              <div class="list-table-30">
+                <label class="label-control">N&uacute;mero de empregados*</label>
+                <input class="input list-table-95 input-text " type="text" placeholder="N&uacute;mero de empregados">            
+              </div>         
+            </fieldset>
+          </div>
+          <div id="tabs-2">
+            <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+          </div>
+
+        </div>          
+
+      </div>  
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,507 @@
+@import _base
+
+.clearfix
+  clear: both
+
+.clearfix:after
+  height: 1%
+
+.header
+  clear: both
+  width: 100%
+
+.container12
+  clear: both
+  margin: 0 auto
+  position: relative
+    
+[class*="span"]
+  background: #ccc
+  text-align: center
+
+[class*="list-table"]
+  margin-right: 27px
+
+body
+  background: url('../images/bg_site.png') 0 0 repeat
+
+header
+  clear: both
+  max-height: 184px
+  min-height: 50px
+  margin: 0 0 15px 0
+
+.breadcrumb
+  margin: 36px 0 15px 0
+  width: 84%
+  display: block
+  float: left
+  ul
+    li
+      display: block
+      float: left
+      margin: 0 0 0 5px
+      padding: 7px
+      text-align: center
+
+    .first
+      font-style: italic
+
+    .step
+      background: #c9c6c5
+      &:after
+        background: #c9c6c5
+
+    .active
+      background: #7a5773
+      color: #fff
+
+#message-quest
+  background: #efefef
+  line-height: 30px
+  margin: 10px 0
+  color: #333
+  font-family: Arial
+  font-size: 14px
+  padding: 0 1em
+
+#logo
+  background: url("../images/logo.png") 0 0 no-repeat
+  margin: 15px 0 0
+  height: 85px
+  width: 203px
+
+.avatar
+  position: absolute
+  right: 0
+  top: 0
+  .name
+    +fontLato(15px)
+    clear: both
+    display: block
+    font-style: italic
+    font-weight: bold
+
+  .empresa
+    +fontLato(11px)
+    clear: both
+    display: block
+    font-weight: normal
+    margin: 13px 0
+  a
+    background: url("../images/btn_sair.png") 0 0 no-repeat
+    cursor: pointer
+    display: block
+    height: 24px
+    text-indent: -999em
+    width: 62px
+
+.main-menu
+  position: absolute
+  left: -50px
+  z-index: 2
+  li
+    border: 5px solid red
+    background: #f08d54
+    +background-image(linear-gradient(#f08d54, #f08d54))
+    border: 1px solid #d0561e
+    cursor: pointer    
+    height: 83px
+    position: relative
+    width: 90px
+    &:after
+      +absRT(-31px, 35%)
+      border-color: transparent transparent transparent #ec6d3f
+      border-style: solid
+      border-width: 15px
+      content: ""
+      display: block
+      width: 0
+    ul
+      li
+        display: none
+        float: left
+        height: 83px
+        width: 90px
+        a
+          display: block
+          width: 100%
+          height: 85px
+          padding: 10px 15px    
+  
+  .active
+    background: #886181
+    +background-image(linear-gradient(#886181, #6c4d65))
+    border: 1px solid #927385
+    &:after
+      +absRT(-31px, 35%)
+      border-color: transparent transparent transparent #6c4d65
+      border-style: solid
+      border-width: 15px
+      content: ""
+      display: block
+      width: 0
+    .last
+      background: #886181
+      +background-image(linear-gradient(#886181, #6c4d65))
+      border: 1px solid #927385
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#886181', endColorstr='#6c4d65',GradientType=0 )      
+      padding: 0
+      width: 93px
+
+      &:after
+        +absRT(91px, 31%)
+        border-color: transparent #886181 transparent transparent 
+        border-style: solid
+        border-width: 15px
+        content: ""
+        display: block
+        width: 0
+
+  .inactive
+    background: #e4e2e0
+    +background-image(linear-gradient(#e4e2e0, #dedbdd))
+    border: 1px solid #e4e2e0
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e4e2e0', endColorstr='#dedbdd',GradientType=0 )
+    opacity: 0.6
+    &:after
+      +absRT(-31px, 35%)
+      border-color: transparent transparent transparent #dedbdd
+      border-style: solid
+      border-width: 15px
+      content: ""
+      display: block
+      width: 0      
+  .home
+    a
+      background: url("../images/ico_home.png") center no-repeat
+      display: block
+      height: 80px
+      text-indent: -999em
+      width: 89px
+  
+  .open
+    background: #dfcfbd
+    +background-image(linear-gradient(#dfcfbd, #d7c3ac))
+    border: 1px solid #c6ac97
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dfcfbd', endColorstr='#d7c3ac',GradientType=0 )
+    a 
+      +fontBase(12px)
+      font-style: normal
+      text-decoration: none
+    .last
+      background: #f08d54
+      +background-image(linear-gradient(#f08d54, #ec6d3f))
+      border: 1px solid #d0561e
+      cursor: pointer    
+      padding: 0
+      width: 93px
+
+      &:after
+        +absRT(91px, 31%)
+        border-color: transparent #f08d54 transparent transparent
+        border-style: solid
+        border-width: 15px
+        content: ""
+        display: block
+        width: 0
+
+    ul
+      position: absolute
+      left: 89px
+      top: 0
+      width: auto
+
+      li
+        +fontLato(16px)
+        background: #eeeae5
+        border: 1px solid #d9d4d1
+        display: block
+        font-style: italic
+        font-weight: 400
+        text-align: center
+        width: 157px
+        &:hover
+          +background-image(linear-gradient( lighten(#f08d54, 20%) , lighten(#ec6d3f, 20%) ) )
+          &.last
+            +background-image(linear-gradient(#f08d54, #ec6d3f))
+
+        .completo
+          background: url("../images/ico_form_completo.png") 0 0 no-repeat
+          display: block
+          height: 21px
+          width: 23px
+          margin: 7px auto 0
+
+        .incompleto
+          background: url("../images/ico_form_incompleto.png") 0 0 no-repeat
+          display: block
+          height: 21px
+          width: 23px
+          margin: 7px auto 0
+        
+      .completed
+        background: #eeeae5
+        +background-image(linear-gradient(#eeeae5, #d7d3cf))
+        border: 1px solid #d9d4d1
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeae5', endColorstr='#d7d3cf',GradientType=1 )
+
+    &:after
+      display: none      
+
+  .inscricao
+
+    .link
+      background: url("../images/ico_inscricao.png") center no-repeat
+      display: block
+      height: 80px
+      text-indent: -999em
+      width: 89px  
+
+  .relato
+
+    .link
+      background: url("../images/ico_relato.png") center no-repeat
+      display: block
+      height: 80px
+      text-indent: -999em
+      width: 89px    
+
+  .questionario
+
+    .link
+      background: url("../images/ico_questionario.png") center no-repeat
+      display: block
+      height: 80px
+      text-indent: -999em
+      width: 89px
+
+.content
+  background: #ffffff  
+  border-left: 1px solid #e7e9e9
+  border-right: 1px solid #e7e9e9
+  padding: 40px 18px
+  min-height: 330px
+  position: relative
+  z-index: 1
+  margin-left: 60px
+
+.footer  
+  background: #e9e8e8
+  height: 220px
+  width: 100%
+  margin: -40px 0 0
+  padding: 40px 0 0
+
+  .inner-footer
+    margin: 0 auto
+    width: 910px
+
+    #signature
+      +fontLato(12px)
+      color: #999999
+      margin: 70px 0 0
+      float: left
+
+      strong
+        font-style: italic
+
+      a
+        background: url("../images/logo_vorttex.jpg") 0 0 no-repeat
+        cursor: pointer
+        display: block
+        float: left
+        height: 21px
+        text-indent: -999em
+        width: 67px
+        margin: -4px 10px 0 0
+
+    #logos
+      float: right
+      margin: 46px 0 0 0
+
+      a
+        margin: 0 0 0 20px
+
+      .fnq
+        background: url("../images/logo_fnq.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 29px
+        text-indent: -999em
+        width: 72px
+        margin: 15px 0 0
+
+      .rpw
+        background: url("../images/logo_rpw.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 59px
+        text-indent: -999em
+        width: 95px
+
+      .secretaria
+        background: url("../images/logo_secretaria_mulheres.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 16px
+        margin: 25px 0 0 15px
+        text-indent: -999em
+        width: 36px
+
+      .brasil
+        background: url("../images/logo_brasil.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 24px
+        margin: 19px 0 0 10px
+        text-indent: -999em
+        width: 76px
+
+      .sebrae
+        background: url("../images/logo_sebrae.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 44px
+        margin: 8px 0 0 10px
+        text-indent: -999em
+        width: 90px
+
+.ui-datepicker 
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+  background: #fff
+  border: 1px solid #f1f1f1
+  padding: .2em .2em 0
+  width: 222px
+  font-size: 12px
+  +box-shadow(0 0 5px #886180)
+
+  .ui-datepicker-title 
+    width: 180px
+    margin: 0 auto
+
+    select
+      width: 43%
+      margin: 0 5px 4px 4px
+  .ui-icon
+    cursor: pointer
+    
+  .ui-icon-circle-triangle-w
+    position: absolute
+    top: 4px
+    left: 2px
+    color: #886180
+    font-weight: 600
+
+  .ui-icon-circle-triangle-e
+    position: absolute
+    top: 4px
+    right: 2px
+    color: #886180
+    font-weight: 600
+
+  .ui-datepicker-calendar
+    margin: 0 0 0 -1px
+  thead
+    th
+      background: #f08a50
+      border: 1px solid #ffffff
+      color: #fff
+      text-align: center
+      padding: 4px 0
+  tbody
+    td
+      background: #f1f1f1
+      border: 1px solid #ffffff
+      padding: 3px 8px
+      text-align: center
+      a
+        color: #999999
+        text-decoration: none      
+    .ui-datepicker-today
+      background: #886180
+      a
+        color: #ffffff
+        text-decoration: none      
+
+.footer  
+  background: #e9e8e8
+  height: 220px
+  width: 100%
+  margin: -40px 0 0
+  padding: 40px 0 0
+
+  .inner-footer
+    margin: 0 auto
+    width: 910px
+
+    #signature
+      +fontLato(12px)
+      color: #999999
+      margin: 70px 0 0
+      float: left
+
+      strong
+        font-style: italic
+
+      a
+        background: url("../images/logo_vorttex.jpg") 0 0 no-repeat
+        cursor: pointer
+        display: block
+        float: left
+        height: 21px
+        text-indent: -999em
+        width: 67px
+        margin: -4px 10px 0 0
+
+    #logos
+      float: right
+
+      a
+        margin: 0 0 0 20px
+
+      .fnq
+        background: url("../images/logo_fnq.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 29px
+        text-indent: -999em
+        width: 72px
+        margin: 15px 0 0
+
+      .rpw
+        background: url("../images/logo_rpw.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 59px
+        text-indent: -999em
+        width: 95px
+
+      .secretaria
+        background: url("../images/logo_secretaria_mulheres.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 16px
+        margin: 25px 0 0 15px
+        text-indent: -999em
+        width: 36px
+
+      .brasil
+        background: url("../images/logo_brasil.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 24px
+        margin: 19px 0 0 10px
+        text-indent: -999em
+        width: 76px
+
+      .sebrae
+        background: url("../images/logo_sebrae.jpg") 0 0 no-repeat
+        display: block
+        float: left
+        height: 44px
+        margin: 8px 0 0 10px
+        text-indent: -999em
+        width: 90px
+
+@import quizz

@@ -1,0 +1,32 @@
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="pag_role_index">
+    <h1 class="center">
+        Gerenciamento de perfis :: <?php // leia-se: Gerenciamento de papéis  ?>
+        <?php echo ($this->request()->getActionName() == 'insert')? 'Inserir' : 'Editar'; ?> perfil  <?php // leia-se: papel ?>
+    </h1>
+
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+
+    <form class="normal" method="POST"
+        action="<?php echo $this->baseUrl(($this->request()->getActionName() == 'insert')? 'management/role/insert' : 'management/role/edit/id/' . $this->roleRow->getId()) ?>"
+        >
+		<fieldset>
+			<label id="roleName">Nome do perfil:</label> <?php // leia-se: Nome do papel ?>
+			<input type="text" id="roleName" name="roleName" value="<?php if ($this->roleRowData) { echo $this->roleRowData['roleName']; } ?>">
+		</fieldset>
+        <div class="clear"> </div>
+            <button class="large green" type="submit" style="float: right">
+                <span class="icon" data-icon="C"></span>
+                Salvar
+            </button>
+        <div class="clear"> </div>
+	</form>
+</div>

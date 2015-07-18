@@ -1,0 +1,21 @@
+<?php
+include_once 'includes/new-head.phtml';
+$request = $this->request();
+$controller = $request->getControllerName();
+$action = $request->getActionName();
+
+?>
+
+    <div class="content">
+        <?php
+            if ($this->request()->getParam('module') == 'management'
+                and !($this->request()->getParam('controller') == 'enterprise' and ($this->request()->getParam('action') == 'index' or $this->request()->getParam('action') == 'ranking'))) {
+                include APPLICATION_PATH . '/modules/management/views/scripts/menus/admin_menu.phtml';
+            }
+        ?>
+        <?php echo $this->layout()->content ?>
+    </div>
+
+<?php
+include_once 'includes/new-footer.phtml';
+?>

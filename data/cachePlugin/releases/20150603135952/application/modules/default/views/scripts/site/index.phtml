@@ -1,0 +1,118 @@
+<?php if ($this->messageError): ?>
+    <?php $this->headScript()->captureStart() ?>
+        alert("<?php echo $this->messageError; ?>");
+    <?php $this->headScript()->captureEnd() ?> 
+<?php endif; ?>
+<?php if (isset($this->originalRequest['resource'])): ?>
+    <?php $this->headScript()->captureStart() ?>
+        alert("É preciso se logar para este acesso.");
+    <?php $this->headScript()->captureEnd() ?> 
+<?php endif; ?>
+
+<div class="cf">
+    <div class="home col-4">
+        <div id="container" class="container" style="padding-bottom: 0">
+            <h1 class="alpha"><em><strong>Prêmio SEBRAE mulher de negócios</strong></em></h1>
+            <h2 class="beta">
+                <em>Sua trajetória pode abrir caminho<br> para milhares de outras mulheres</em>
+            </h2>
+            <br/>
+
+            <?php if($this->publicSubscriptionEnded) : ?>
+                <p>As inscrições para o Prêmio Sebrae Mulher de Negócios, ciclo 2014, estão encerradas. Agradecemos todas as empresárias que participaram esse ano.</p>
+                <p>O Prêmio Sebrae Mulher de Negócios reconhece e premia as melhores iniciativas do público feminino no empreendedorismo brasileiro. As candidatas concorrem a um troféu, ao selo de vencedora e a uma capacitação em território nacional, além de uma viagem internacional.</p>
+                <p>E se você já transformou seus sonhos em realidade e sua história de vida hoje é exemplo para outras mulheres que possuem o mesmo sonho, se prepare para o ciclo 2015. Ano que vem tem mais.</p>
+            <?php else : ?>
+                <p>Estão abertas as inscrições para o Prêmio Sebrae Mulher de Negócios, que reconhece e premia as melhores iniciativas do público feminino no empreendedorismo brasileiro. As candidatas concorrem a um troféu, ao selo de vencedora e a uma capacitação em território nacional, além de uma viagem internacional. O prazo final para se inscrever é 31 de julho de 2015. Não deixe para a última hora!</p>
+                <p>
+                    O Prêmio SEBRAE Mulher de Negócios tem como objetivo identificar, selecionar e premiar os relatos de vida de mulheres empreendedoras de todo o país, as quais transformaram seus sonhos em realidade e cuja história de vida hoje é exemplo para outras que possuem o mesmo sonho.
+                    <a href="#plus" class="showPlus"><i class="i ir bt-bolinha-plus">+</i></a>
+                </p>
+                <div id="plus" class="hidden">
+                    <p>O prêmio é dividido em três categorias:</p>
+                    <p><strong>Pequenos Negócios:</strong> microempresas e empresas de pequeno porte, e
+                        que estejam estabelecidas formalmente há pelo menos um ano (data
+                        de abertura anterior a 01/03/2014, conforme consta no CNPJ);</p>
+                    <p><strong>Produtor Rural:</strong> mulheres que explorem atividades agrícolas,
+                        pecuárias e/ou pesqueiras nas quais não sejam alteradas a
+                        composição e as características do produto in natura, e que estejam
+                        estabelecidas formalmente á, no mínimo, um ano. (Data de abertura
+                        anterior a 01/03/2014, conforme documento de registro legal
+                        pertinente: Inscrição Estadual de Produtor, ou Declaração de Aptidão
+                        ao PRONAF (DAP), ou CNPJ, ou Registro no Ministério da Pesca ou NIRF
+                        - Número de Inscrição do Imóvel Rural);</p>
+                    <p><strong> Micro Empreendedor Individual:</strong> mulheres que trabalhem por
+                        conta própria que tenha seu empreendimento legalizado, com
+                        faturamento máximo anual de até R$ 60.000,00 por ano, e não
+                        tenham participação em outra empresa como sócias ou titulares, e
+                        tenham até um(a) empregado(a) contratado(a) que receba o salário
+                        mínimo, ou o piso da categoria. (data de abertura anterior a 01/03/2014,
+                        conforme consta no CNPJ).</p>
+                </div>
+                <div class="register-warning">
+                    <p>Atenção!</p>
+                    <p>Caso você já tenha se cadastrado no sistema</p>
+                    <p>Sebrae Mulher de Negócios em outros anos,</p>
+                    <p>por favor, faça seu login, usando o acesso do</p>
+                    <p>topo da página, e atualize seus dados. Caso</p>
+                    <p>não tenha se cadastrado ainda, clique no link</p>
+                    <p>abaixo e efetue a sua inscrição.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php /* ?>
+        <div class="navegacao hidden">
+            <a href="#" id="up" style="margin-top: 30px;"><i class="i ir bt-up">up</i></a>
+            <a href="#" id="down"><i class="i ir bt-down">down</i></a>
+        </div>
+        <?php */ ?>
+        
+        <div>
+        </div>
+
+        <?php if($this->publicSubscriptionEnded) : ?>
+            <span class="alpha" style="margin-left: 30px; display: block">
+                Inscrições encerradas. <br />Aguarde o ciclo de <?php echo date('Y') ?>!
+            </span>
+        <?php else : ?>
+            <a type="button" href="<?php echo $this->baseUrl('/questionnaire/register'); ?>"
+               class="home bt-inscreva-se" style="margin-left: 30px;">Inscreva-se</a>
+        <?php endif; ?>
+        
+    </div>
+   <!--
+    <div class="col-3">
+        <div class="boxWhite rfSlider">
+            <div id="slideshow" class="slideshow">
+                <ul class="nav">
+                    <li><a href="#1">1</a></li>
+                    <li><a href="#2">2</a></li>
+                    <li><a href="#3">3</a></li>
+                </ul>
+                <div id="slides" class="slides">
+                    <div>
+                        <h2>Maria da Graça</h2>
+                        <h3>Mulher de Negócio do Mato Grosso</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat...</p>
+                        <p class="med"><a href="#cadastro">Preencha o cadastro <i class="i ir icon-seta_ver_mais">ver mais</i></a></p>
+                    </div>
+                    <div>
+                        <h2>Paula Junqueira</h2>
+                        <h3>Mulher de Negócio da Paraíba</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat...</p>
+                        <p class="med"><a href="#cadastro">Preencha o cadastro <i class="i ir icon-seta_ver_mais">ver mais</i></a></p>
+                    </div>
+                    <div>
+                        <h2>Bruna Santos</h2>
+                        <h3>Mulher de Negócio do Rio Grande do Sul</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat...</p>
+                        <p class="med"><a href="#cadastro">Preencha o cadastro <i class="i ir icon-seta_ver_mais">ver mais</i></a></p>
+                    </div>
+                </div>
+            </div>
+            <a href="#prev" class="prev"><i class="i ir bt-prev">prev</i></a>
+            <a href="#next" class="next"><i class="i ir bt-next">next</i></a>
+        </div>
+    </div>
+     -->
+</div>

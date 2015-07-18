@@ -1,0 +1,438 @@
+<?php
+$action = $this->action;
+$inserirCadastro = false;
+$filtroCandidatas = 'default';
+$filtroStatusAvaliacao = false;
+$verifiedFilter = false;
+
+switch ($action) {
+
+    case 'ranking':
+        $titulo = 'Avaliação Candidatas Estaduais';
+        break;
+    case 'classificadas':
+        $titulo = 'Avaliação Classificadas Estaduais';
+        $filtroCandidatas = false;
+        break;
+    case 'finalistas':
+        $titulo = 'Avaliação Finalistas Estaduais';
+        $filtroCandidatas = false;
+        break;
+    
+    case 'candidatas-nacional':
+        $titulo = 'Avaliação Candidatas Nacional';
+        $filtroCandidatas = false;
+        break;
+    case 'classificadas-nacional':
+        $titulo = 'Avaliação Classificadas Nacional';
+        $filtroCandidatas = false;
+        break;
+    case 'finalistas-nacional':
+        $titulo = 'Avaliação Finalistas Nacional';
+        $filtroCandidatas = false;
+        break;
+
+    case 'report-global':
+        $titulo = 'Panorama das Respostas';
+        break;
+    
+    case 'report-regional':
+        $titulo = 'Participantes por Escritório Regional';
+        $filtroCandidatas = false;
+        break;
+    
+    case 'report-categoria':
+        $titulo = 'Participantes por Setor';
+         $filtroCandidatas = false;
+        break;
+    
+    case 'report-categoria-premio':
+        $titulo = 'Participantes por Categoria do Prêmio';
+        $filtroCandidatas = false;
+        break;
+    
+    case 'report-digitador':
+        $titulo = 'Participantes por Digitador';
+         $filtroCandidatas = false;
+        break;
+    
+    case 'report-inscricoes':
+        $titulo = 'Preenchimento de Inscrições';
+        $filtroCandidatas = false;
+        break;
+    
+    case 'report-status-appraiser':
+        $titulo = 'Relatório Status Avaliação';
+        $filtroStatusAvaliacao = true;
+        break;
+
+    default:
+        $titulo = 'Inscrições';
+        $inserirCadastro = true;
+        $filtroCandidatas = 'mostrar';
+        $verifiedFilter = true;
+        break;
+}
+?>
+
+<form action="<?php echo $this->url(array('page' => $this->pageCount, 'format' => 'html')) ?>#lista" id="frm" method="GET">
+    <fieldset>
+        <input type="hidden" name="tokenizer" value="<?php echo rand(1, 10000); ?>" /> 
+        <input type="hidden" id="orderByValue" name="orderBy" value="" />
+        <input type="hidden" value="<?php echo $this->orderBy; ?>" />
+   </fieldset>
+    <fieldset>
+      <div class="list-table-20">
+        <label class="label-control" for="coop_name">Empresa:</label>
+        <input tabindex="1" id="coop_name" type="text" name="filter[coop_name]" size="18" maxlength="255" class="input list-table-100"
+               value="<?php echo isset($this->filter['coop_name'])? $this->filter['coop_name'] : ''; ?>" />
+      </div>
+
+      <div class="list-table-20">
+        <label class="label-control" for="cnpj">CNPJ:</label>
+        <input tabindex="2" id="cnpj" type="text" name="filter[cnpj]" size="18" maxlength="18" class="input list-table-100"
+               value="<?php echo isset($this->filter['cnpj'])? $this->filter['cnpj'] : ''; ?>" />
+      </div>
+
+      <div class="list-table-20">
+        <label class="label-control" for="president_name">Nome:</label>
+        <input tabindex="1" id="president_name" type="text" name="filter[president_name]" size="18" maxlength="255" class="input list-table-100"
+               value="<?php echo isset($this->filter['president_name'])? $this->filter['president_name'] : ''; ?>" />
+      </div>
+
+      <div class="list-table-20">
+        <label class="label-control" for="cpf">CPF:</label>
+        <input tabindex="2" id="cpf" type="text" name="filter[cpf]" size="14" maxlength="18" class="input list-table-100"
+               value="<?php echo isset($this->filter['cpf'])? $this->filter['cpf'] : ''; ?>" />
+      </div>
+    </fieldset>
+    <fieldset>
+      <div class="list-table-20">
+        <label class="label-control" for="employees_quantity">Número de empregados:</label>
+        <input tabindex="1" id="employees_quantity_name" type="text" name="filter[employees_quantity]" size="18" maxlength="255" class="input list-table-100"
+            value="<?php echo isset($this->filter['employees_quantity'])? $this->filter['employees_quantity'] : ''; ?>" />
+      </div>
+
+      <div class="list-table-20">
+        <label class="label-control" for="AnnualRevenue">Porte da Empresa:</label>
+        <select tabindex="26" data-placeholder="Escolha" id="AnnualRevenue" class="fancy {required:true}" style="width:100%;" name="filter[annual_revenue]">
+          <option value="">Todas</option>
+            <?php foreach (Vtx_Util_Array::annualRevenuePsmn() as $key => $annualRevenue) : ?>
+                <?php if ($this->filter['annual_revenue'] == $key): ?>
+                  <option value="<?php echo $key;?>" selected="selected"><?php echo $annualRevenue;?></option>
+                <?php else:?>
+                  <option value="<?php echo $key;?>"><?php echo $annualRevenue;?></option>
+                <?php endif;?>
+           <?php endforeach;?>
+        </select>               
+      </div>
+
+      <div class="list-table-20">
+        <label class="label-control" for="CategorySectorId">Setor:</label>
+        <select tabindex="27" data-placeholder="Escolha" id="CategorySectorId" class="fancy {required:true}"  style="width:100%;" name="filter[category_sector_id]">
+          <option value="">Todas</option>
+          <?php foreach (Vtx_Util_Array::categorySector() as $key => $categorySector) : ?>
+            <?php if ($key == $this->filter['category_sector_id']) : ?>
+              <option value="<?php echo $key;?>" selected="selected"><?php echo $categorySector;?></option>
+            <?php else : ?>
+              <option value="<?php echo $key;?>"><?php echo $categorySector;?></option>
+            <?php endif; ?>
+          <?php endforeach; ?>
+        </select>             
+      </div> 
+
+      <div class="list-table-20">
+        <label  class="label-control" for="EducationId">Nível de escolaridade:</label>
+        <select tabindex="36" data-placeholder="Escolha" id="EducationId" class="fancy" style="width:100%;" name="filter[education_id]">
+          <option value=""></option>
+          <?php foreach ($this->getAllEducations as $education) : ?>
+                <?php $education_id = (isset($this->filter['education_id'])?$this->filter['education_id']:null); ?>
+              <?php if ($education_id == $education->getId()): ?>
+                <option value="<?php echo $education->getId();?>" selected="selected"><?php echo $education->getDescription();?></option>
+              <?php else:?>
+                <option value="<?php echo $education->getId();?>"><?php echo $education->getDescription();?></option>
+              <?php endif;?>
+           <?php endforeach;?>
+        </select>           
+      </div>
+
+    </fieldset>
+
+    <fieldset>
+      <div class="list-table-20">
+        <label class="label-control" for="Faixa">Faixa etária:</label>
+        <select data-placeholder="Escolha" tabindex="3" id="Faixa" class="fancy" name="filter[faixa]" style="width: 100%;">
+            <option value="">Todas</option>
+            <?php foreach (Vtx_Util_Array::faixaIdadePSMN() as $key => $faixa) :?>
+                <?php $selected = ( $key == $this->filter['faixa'] )?'selected="selected"':''; ?>
+                    <option value="<?php echo $key;?>" <?php echo $selected; ?>>
+                        <?php echo $faixa[0];?>
+                    </option>
+            <?php endforeach; ?>
+        </select>            
+      </div>
+
+      <div class="list-table-20">
+        <?php if ($this->hasFilterRegional) : ?>
+<!-- Alterado pela SSI -->
+<!--        <label class="label-control" for="regional">Regional:</label>
+        <select data-placeholder="Escolha" tabindex="4" id="regional" class="fancy" name="filter[regional_id]" style="width: 100%;">
+            <option value=""><?php echo $this->regionalOption;?></option>
+            <?php foreach ($this->getAllRegional as $regional) :?>
+                <?php if ( $regional->getId() == $this->filter['regional_id'] ) :?>
+                    <option value="<?php echo $regional->getId();?>" selected="selected">
+                        <?php echo $regional->getDescription();?>
+                    </option>
+                <?php else : ?>
+                    <option value="<?php echo $regional->getId();?>">
+                        <?php echo $regional->getDescription();?>
+                    </option>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </select>
+-->
+        <?php endif; ?>
+      </div>
+
+      <div class="list-table-20">
+        <label class="label-control" for="RamoId">Ramo (CNAE):</label>
+        <select data-placeholder="Escolha" tabindex="8" id="RamoId" class="fancy" name="filter[metier_id]" style="width: 100%;">
+            <option value="">Todas</option>
+            <?php foreach ($this->getAllMetier as $metier) :?>
+                <?php if ( $metier->getId() == $this->filter['metier_id'] ) :?>
+                    <option value="<?php echo $metier->getId();?>" selected="selected">
+                        <?php echo $metier->getDescription();?>
+                    </option>
+                <?php else : ?>
+                    <option value="<?php echo $metier->getId();?>">
+                        <?php echo $metier->getDescription();?>
+                    </option>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </select>
+      </div>
+
+        
+      <div class="list-table-20">
+        <label class="label-control" for="CompetitionId">Concurso:</label>
+        <select data-placeholder="Escolha" tabindex="10" id="CompetitionId" class="fancy" name="filter[competition_id]" style="width: 100%;">
+            <!--option value="">Todos</option-->
+            <?php
+            $competitionId = Zend_Registry::get('configDb')->competitionId;
+            $competitionSelect = (isset($this->filter['competition_id']) and $this->filter['competition_id'])?$this->filter['competition_id']:null;
+            
+            ?>
+            <?php foreach ($this->getAllCompetition as $competition) :
+                if (
+                    (// $action != 'index' or
+                    $action == 'report-categoria' or
+                    $action == 'report-digitador' or
+                    $action == 'report-regional' or
+                    $action == 'report-inscricoes' or
+                    $action == 'report-global' or
+                    $action == 'report-status-appraiser'
+                    )
+                    and $competition->getId() != $competitionId
+                ){
+                    continue;
+                }
+                
+                ?>
+            
+            <?php $selectedPrograma = ( $competition->getId() == $competitionSelect )?'selected="selected"':'';?>
+            <option value="<?php echo $competition->getId();?>" <?php echo $selectedPrograma; ?>>
+                <?php echo $competition->getDescription();?>
+            </option>
+            <?php endforeach; ?>
+        </select>
+      </div>
+        
+        
+    </fieldset>
+    <fieldset>
+      <div class="list-table-20">
+        <label class="label-control" for="Uf">UF:</label>
+        <select data-placeholder="Escolha" tabindex="5" id="Uf" class="fancy" name="filter[state_id]" style="width: 100%;">
+            <option value="">Todos</option>
+            <?php foreach ($this->getAllStates as $states) : ?>
+            <?php $selectedState = (isset($this->filter['state_id']) && $states->getId() == $this->filter['state_id'])?'selected="selected"':''; ?>
+            <?php echo $selectedState; ?>
+            <option value="<?php echo $states->getId();?>" <?php echo $selectedState; ?>>
+                <?php echo $states->getUf();?>
+            </option>
+            <?php endforeach; ?>
+        </select>
+      </div>
+
+      <div class="list-table-20">
+        <label class="label-control" for="CityId">Cidade:</label>
+        <select data-placeholder="Escolha" tabindex="6" id="CityId" class="fancy" name="filter[city_id]" style="width: 100%;">
+            <option value="">Todas</option>
+            <?php if (isset($this->getAllCities)) : ?>
+            <?php foreach ($this->getAllCities as $cities) : ?>
+            <?php $selectedCity = ($cities->getId() == $this->filter['city_id'])?'selected="selected"':''; ?>
+            <?php echo $selectedCity; ?>
+            <option value="<?php echo $cities->getId();?>" <?php echo $selectedCity; ?>>
+                <?php echo $cities->getName();?>
+            </option>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </select>
+      </div>
+
+      <div class="list-table-20">
+        <label class="label-control" for="NeighborhoodId">Bairro:</label>
+        <select data-placeholder="Escolha" tabindex="7" id="NeighborhoodId" class="fancy" name="filter[neighborhood_id]" style="width: 100%;">
+            <option value="">Todos</option>
+            <?php if (isset($this->getAllNeighborhood)) : ?>
+            <?php foreach ($this->getAllNeighborhoods as $neighborhood) : ?>
+            <?php $selectedNeighborhood = ($neighborhood->getId() == $this->filter['neighborhood_id'])?'selected="selected"':''; ?>
+            <option value="<?php echo $neighborhood->getId();?>" <?php echo $selectedNeighborhood; ?>>
+                <?php echo $neighborhood->getName();?>
+            </option>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </select>
+      </div>
+
+
+    <?php if ($this->hasFilterStatus) : ?>
+      <div class="list-table-20">
+        <label class="label-control" for="Status">Ativo:</label>
+        <select data-placeholder="Escolha" tabindex="9" id="Status" class="fancy" name="filter[status]" style="width: 100%;">
+            <?php foreach (Vtx_Util_Array::status() as $key => $status) :?>
+                <?php $selected = ( $key == $this->filter['status'] )?'selected="selected"':''; ?>
+                    <option value="<?php echo $key;?>" <?php echo $selected; ?>>
+                        <?php echo $status;?>
+                    </option>
+            <?php endforeach; ?>
+        </select>
+      </div>
+    <?php endif; ?>
+    </fieldset>
+    <fieldset>
+        
+      <div class="list-table-20">
+        <label class="label-control" for="EnterpriseCategoryAward">Cat. Premio:</label>
+        <select data-placeholder="Escolha" tabindex="3" id="EnterpriseCategoryAward" class="fancy" name="filter[category_award_id]" style="width: 100%;">
+            <option value="">Todas</option>
+            <?php foreach ($this->getAllEnterpriseCategoryAward as $enterpriseCategoryAward) :?>
+            <?php $selectedECA = ( $enterpriseCategoryAward->getId() == $this->filter['category_award_id'] )?'selected="selected"':'';?>
+            <option value="<?php echo $enterpriseCategoryAward->getId();?>" <?php echo $selectedECA; ?>>
+                <?php echo $enterpriseCategoryAward->getDescription();?>
+            </option>
+            <?php endforeach; ?>
+        </select>            
+      </div>
+        <?php if ($filtroCandidatas == 'mostrar'): ?>
+            <div class="list-table-20">
+              <label class="label-control" for="DevolutivaFilter">Participantes:</label>
+              <select data-placeholder="Escolha" tabindex="11" id="DevolutivaFilter" class="fancy" name="filter[devolutiva]" style="width: 100%;">
+                  <option value="">Todos</option>
+                  <?php $devolutivaFiltro = isset($this->filter['devolutiva'])?$this->filter['devolutiva']:''; ?>
+                  <?php foreach (Vtx_Util_Array::participantes() as $key => $participante) :?>
+                      <?php if ( $key == $devolutivaFiltro ) : ?>
+                          <option value="<?php echo $key;?>" selected="selected"><?php echo $participante;?></option>
+                      <?php else : ?>
+                          <option value="<?php echo $key;?>"><?php echo $participante;?></option>
+                      <?php endif; ?>
+                  <?php endforeach; ?>
+              </select>
+            </div>
+        <?php else: ?>
+            <input type="hidden" value="2" name="filter[devolutiva]" />
+        <?php endif ?>
+        <?php if ($this->action == 'report-regional') : ?>
+            <div class="list-table-20">
+              <label class="label-control" for="Mostrar">Mostrar:</label>
+              <select tabindex="26" data-placeholder="Escolha" id="Mostrar" class="fancy {required:true}" style="width:100%;" name="filter[mostrarRegionais]">
+                    <option value="1">Regionais Estaduais</option>
+                    <option value="2" <?php echo $this->filter['mostrarRegionais'] == '2'? 'selected' : '' ?>>Panorama Nacional</option>
+              </select>           
+            </div>
+        <?php endif; ?>
+        <?php if ($this->action == 'report-global') :
+            $qstnId = isset($this->filter['qstn'])? $this->filter['qstn'] : null;
+            ?>
+          <div class="list-table-20">
+            <label class="label-control" for="Qstn">Questionário:</label>
+            <select tabindex="26" data-placeholder="Escolha" id="Qstn" class="fancy {required:true}" style="width:100%;" name="filter[qstn]">
+                <option value="59">Negócios</option>
+                <option value="60"<?php echo $qstnId==60? ' selected' : ''; ?>>Empreendorismo</option>
+            </select>           
+          </div>
+        <?php endif; ?>
+            
+        <?php
+            if (
+                ($this->action == 'report-status-appraiser')
+                or ($this->action == 'ranking') 
+                // or ($this->action == 'classificadas')
+            ) :
+            $appraiserIdFilter = isset($this->filter['appraiser_id'])? $this->filter['appraiser_id'] : null;
+        ?>
+          <div class="list-table-20">
+            <label class="label-control" for="Qstn">Avaliador:</label>
+            <select tabindex="26" data-placeholder="Escolha" id="AppraiserId" class="fancy" style="width:100%;" name="filter[appraiser_id]">
+                <option value="">Todos</option>
+                <?php foreach ($this->getAllAppraisers as $appraiser) : ?>
+                    <?php 
+                    $id = $appraiser->getId();
+                    $selectAppraiser = ($id == $appraiserIdFilter)? ' selected' : ''; 
+                    ?>
+                    <option value="<?php echo $id; ?>" <?php echo $selectAppraiser; ?>><?php echo $appraiser->getFirstName().' '.$appraiser->getSurname(); ?></option>
+                <?php endforeach; ?>
+            </select>
+          </div>
+        <?php endif; ?>
+            
+        <?php if ($filtroCandidatas == 'mostrar'): ?>
+            <div class="list-table-20">
+              <label class="label-control" for="CandidaturaFilter">Candidatura:</label>
+              <select data-placeholder="Escolha" id="CandidaturaFilter" class="fancy" name="filter[candidatura]" style="width: 100%;">
+                  <option value="">Todos</option>
+                  <?php 
+                    $candidaturaSel = isset($this->filter['candidatura'])?$this->filter['candidatura']:''; 
+                  ?>
+                <option value="C" <?php echo ($candidaturaSel=='C')?'selected="selected"':''; ?>>Completa</option>
+                <option value="I" <?php echo ($candidaturaSel=='I')?'selected="selected"':''; ?>>Incompleta</option>
+              </select>
+            </div>
+        <?php endif; ?>
+          
+        <?php if ($filtroStatusAvaliacao): ?>
+            <div class="list-table-20">
+              <label class="label-control" for="StatusAvaliacaoFilter">Status da Avaliação:</label>
+              <select data-placeholder="Escolha" id="StatusAvaliacaoFilter" class="fancy" name="filter[status_avaliacao]" style="width: 100%;">
+                  <option value="">Todos</option>
+                  <?php 
+                    $statusAvaliacaoSel = isset($this->filter['status_avaliacao'])?$this->filter['status_avaliacao']:''; 
+                  ?>
+                <option value="C" <?php echo ($statusAvaliacaoSel=='C')?'selected="selected"':''; ?>>Completa</option>
+                <option value="I" <?php echo ($statusAvaliacaoSel=='I')?'selected="selected"':''; ?>>Incompleta</option>
+              </select>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($verifiedFilter): ?>
+
+        <div class="list-table-20">
+          <label class="label-control" for="VerifiedSubscriptionFilter">Confirmado?</label>
+          <select data-placeholder="Escolha" id="VerifiedSubscriptionFilter" class="fancy" name="filter[verified_subscription]" style="width: 100%;">
+            <option value="">Todos</option>
+
+            <?php 
+              $selectedVerifiedSubscription = isset($this->filter['verified_subscription'])?$this->filter['verified_subscription']:'';
+            ?>
+
+            <option value="1" <?php if($selectedVerifiedSubscription==='1') echo 'selected="selected"'; ?>>Sim</option>
+            <option value="0" <?php if($selectedVerifiedSubscription==='0') echo 'selected="selected"'; ?>>Não</option>
+          </select>
+        </div>
+
+        <?php endif; ?>
+
+    </fieldset>  
+
+    <button tabindex="13" style="float: right; margin-top: -57px" type="submit" class="large btn-submit">Buscar</button>
+</form>

@@ -1,0 +1,118 @@
+<?php if ($this->messageError): ?>
+    <?php $this->headScript()->captureStart() ?>
+        alert("<?php echo $this->messageError; ?>");
+    <?php $this->headScript()->captureEnd() ?> 
+<?php endif; ?>
+<?php if (isset($this->originalRequest['resource'])): ?>
+    <?php $this->headScript()->captureStart() ?>
+        alert("É preciso se logar para este acesso.");
+    <?php $this->headScript()->captureEnd() ?> 
+<?php endif; ?>
+        
+<div class="cf">
+    <div class="home col-4">
+        <div id="container" class="container" style="padding-bottom: 0">
+            <h1 class="alpha"><em><strong>Prêmio SEBRAE mulher de negócios</strong></em></h1>
+            <h2 class="beta">
+                <em>Sua trajetória pode abrir caminho<br> para milhares de outras mulheres</em>
+            </h2>
+            <p>
+                O Prêmio SEBRAE Mulher de Negócios tem como objetivo identificar, selecionar e premiar os relatos de vida de mulheres empreendedoras de todo o país, as quais transformaram seus sonhos em realidade e cuja história de vida hoje é exemplo para outras que possuem o mesmo sonho.
+                <a href="#plus" class="showPlus"><i class="i ir bt-bolinha-plus">+</i></a>
+            </p>
+            <div id="plus" class="hidden">
+
+                
+
+                
+<p>
+                Para concorrer ao prêmio, é necessário ter mais de 18 anos.</p>
+<p>
+O prêmio é dividido em três categorias:</p>
+
+<p>
+
+    <strong>Pequenos Negócios:</strong> microempresas e empresas de pequeno porte, e
+
+que estejam estabelecidas formalmente há pelo menos um ano (data
+
+de abertura anterior a 01/03/2012, conforme consta no CNPJ);
+</p>
+<p>
+<strong>Produtor Rural:</strong> mulheres que explorem atividades agrícolas,
+pecuárias e/ou pesqueiras nas quais não sejam alteradas a
+composição e as características do produto in natura, e que estejam
+estabelecidas formalmente á, no mínimo, um ano. (data de abertura
+anterior a 01/03/2012, conforme documento de registro legal
+pertinente: Inscrição Estadual de Produtor, ou Declaração de Aptidão
+ao PRONAF, (DAP) ou CNPJ, ou Registro no Ministério da Pesca);
+</p>
+<p>
+
+    <strong> Micro Empreendedor Individual:</strong> mulheres que trabalhem por
+conta própria que tenha seu empreendimento legalizado, com
+faturamento máximo anual de até R$ 60.000,00 por ano, e não
+tenham participação em outra empresa como sócias ou titulares, e
+tenham até um (a) empregado(a) contratado(a) que receba o salário
+mínimo, ou o piso da categoria. (data de abertura anterior a 01/03/
+2012, conforme consta no CNPJ).
+</p>
+                
+                
+            </div>
+        </div>
+        <?php /* ?>
+        <div class="navegacao hidden">
+            <a href="#" id="up" style="margin-top: 30px;"><i class="i ir bt-up">up</i></a>
+            <a href="#" id="down"><i class="i ir bt-down">down</i></a>
+        </div>
+        <?php */ ?>
+        
+        <div>
+        </div>
+        
+        <a type="button" href="<?php echo $this->baseUrl('/questionnaire/register'); ?>" 
+           class="home bt-inscreva-se" style="margin-left: 30px;">Inscreva-se</a>
+        <?php /* ?>
+        <span class="alpha" style="margin-left: 30px; display: block">
+        Inscrições encerradas. <br />Aguarde o ciclo de 2014.
+        </span>
+        <?php */ ?>
+        
+    </div>
+   <!--
+    <div class="col-3">
+        <div class="boxWhite rfSlider">
+            <div id="slideshow" class="slideshow">
+                <ul class="nav">
+                    <li><a href="#1">1</a></li>
+                    <li><a href="#2">2</a></li>
+                    <li><a href="#3">3</a></li>
+                </ul>
+                <div id="slides" class="slides">
+                    <div>
+                        <h2>Maria da Graça</h2>
+                        <h3>Mulher de Negócio do Mato Grosso</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat...</p>
+                        <p class="med"><a href="#cadastro">Preencha o cadastro <i class="i ir icon-seta_ver_mais">ver mais</i></a></p>
+                    </div>
+                    <div>
+                        <h2>Paula Junqueira</h2>
+                        <h3>Mulher de Negócio da Paraíba</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat...</p>
+                        <p class="med"><a href="#cadastro">Preencha o cadastro <i class="i ir icon-seta_ver_mais">ver mais</i></a></p>
+                    </div>
+                    <div>
+                        <h2>Bruna Santos</h2>
+                        <h3>Mulher de Negócio do Rio Grande do Sul</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat...</p>
+                        <p class="med"><a href="#cadastro">Preencha o cadastro <i class="i ir icon-seta_ver_mais">ver mais</i></a></p>
+                    </div>
+                </div>
+            </div>
+            <a href="#prev" class="prev"><i class="i ir bt-prev">prev</i></a>
+            <a href="#next" class="next"><i class="i ir bt-next">next</i></a>
+        </div>
+    </div>
+     -->
+</div>

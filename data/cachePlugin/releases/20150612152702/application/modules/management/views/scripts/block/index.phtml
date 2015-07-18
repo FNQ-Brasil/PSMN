@@ -1,0 +1,123 @@
+<?php //echo $this->headScript()->appendFile($this->baseUrl('js/question/add.js')); ?>
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="">
+    <h1 class="center">Bloco</h1>
+    <a title="Voltar" id="back" href="<?php echo $this->baseUrl('management/'); ?>">Voltar</a>
+    
+    <?php if ($this->blockInsertSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Bloco inserido com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->blockUpdateSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Bloco atualizado com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->blockDeleteSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Bloco deletado com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->blockMoveSucess): ?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    <?php echo 'Bloco Movido com sucesso.'; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+
+    <?php if ($this->loggedAllowed('insert')): ?>
+        <a href="<?php echo $this->baseUrl('management/block/insert'); ?>" title="Criar Bloco" class="link"><span class="ico new large">Novo</span>Criar Bloco</a>
+    <?php endif; ?>
+<hr />
+
+<h3>filtro: Questionário </h3>
+    <form class="normal" method="POST" action="<?php echo $this->baseUrl('management/block/index/questionnaire_id/'); ?>">
+        <fiedset>
+            <label for="questionnaire_id"></label>
+            <select name="questionnaire_id" id="questionnaire_id" class="w400 fancy" onchange="action">
+                    <?php foreach ($this->getAllQuestionnaire as $questionnaire) : ?>
+                        <?php if ($this->questionnaireId == $questionnaire->getId()) :?>
+                            <option value="<?php echo $questionnaire->getId();?>" selected="selected"><?php echo $questionnaire->getId().' - '.$questionnaire->getDescription();?></option>
+                        <?php else: ?>
+                            <option value="<?php echo $questionnaire->getId();?>"><?php echo $questionnaire->getId().' - '.$questionnaire->getDescription();?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
+            <br class="clear" />
+            <br class="clear" />
+        </fiedset>
+        <div class="clear"> </div>
+        <button type="submit" class="save">Filtrar</button>
+        <div class="clear"> </div>
+	</form>
+
+    <table class="striped " border="0" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Questionário ID</th>
+                <th>Questionário</th>
+                <th>Bloco ID</th>
+                
+                <th>Ordem</th>
+                <th>Bloco</th>
+                <th>Ações</th>
+                <th>Mover</th>
+            </tr>
+        </thead>
+    <?php
+    if ( count($this->getAllBlock) > 0) :
+        foreach ($this->getAllBlock as $block) :
+        ?>
+            <tr>
+                <td><?php echo $block->getQuestionnaireId();?></td>
+                <td><?php echo $block->findParentQuestionnaire()->getDescription();?></td>
+                <td><?php echo $block->getId();?></td>
+                
+                <td><?php echo $block->getDesignation();?></td>
+                <td><?php echo $block->getValue();?></td>
+                <td>
+                    <?php if ($this->loggedAllowed('edit', 'management:privilege')): ?>
+                        <a href="<?php echo $this->baseUrl('management/block/edit/id/'.$block->getId()); ?>" alt="editar"><span class="ico edit">Editar</span></a>
+                    <?php endif; ?>
+                    <?php if ($this->loggedAllowed('delete', 'management:privilege')): ?>
+                        <a href="<?php echo $this->baseUrl('management/block/delete/id/'.$block->getId()); ?>"><span class="ico delete">Excluir</span></a>
+                    <?php endif; ?>
+                </td>
+                <td><a href="<?php echo $this->baseUrl('management/block/move/id/'.$block->getId()); ?>"><span class="ico insert">Mover</span></a></td>
+            </tr>
+        <?php
+        endforeach;
+        else :
+        ?>
+            <tr>
+                <td colspan="7"> Não há Blocos para este questionário.</td>
+            </tr>
+    <?php
+    endif;
+    ?>
+    </table>
+
+<hr />
+
+</div>

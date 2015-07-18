@@ -1,0 +1,91 @@
+#main
+  @extend .container
+  overflow: hidden
+  nav#content-menu
+    float: left
+    padding: 0 22px 0 0
+    width: 25%
+    overflow: hidden
+    ul
+      @extend .shadow-top-header
+      background-color: #EFEEEE
+      border-left: 1px solid #D0D0D0
+      border-right: 1px solid #fff
+      padding: 63px 14px 0 14px
+      position: relative
+      li
+        border-bottom: 1px solid #D0D0D0
+        border-top: 1px solid #fff
+        &:first-child
+          border-top: 1px solid transparent
+        a
+          color: #666
+          display: block
+          font-size: 12px
+          font-weight: 600
+          line-height: 15px
+          padding: 11px 8px
+          text-decoration: none
+  section
+    float: left
+    padding: 0 0 0 2.8%
+    width: 74%
+    margin: 0 1% 1% 0
+    position: relative
+    &.section-full-page
+      width: 100%
+      margin: 0
+    nav.breadcrumb
+      line-height: 44px
+      a
+        color: #999
+        font-size: 11px
+        text-decoration: none
+        &:hover, &:focus
+          color: #666
+          text-decoration: underline
+        &:after
+          content: " / "
+        &:last-child
+          &:after
+            content: ""
+
+  .section-nav
+    +size(55px, 100%)
+    +absLT(0,-10px)
+    +border-top-radius(10px)
+    border-top: 1px solid #ccc
+    background-color: #E3E3E2
+    background: url(/assets/images/tabs-nav-background.png) transparent repeat-x 0 -55px
+    line-height: 47px
+    a
+      +text-shadow(0 1px 0 #fff)
+      color: #666
+      display: block
+      float: left
+      font-size: 15px
+      text-align: center
+      text-decoration: none
+      width: 25%
+      &:hover
+        text-decoration: underline
+      &:focus
+        +box-shadow(0 0 10px #990)
+      &.active
+        +text-shadow(0 -1px 0 #000)
+        background-color: #0D437C
+        background: url(/assets/images/tabs-nav-background.png) repeat-x 0 0
+        color: #fff
+      &.inactive
+        color: #bbb
+        cursor: default
+        &:hover
+          text-decoration: none
+
+.box-content
+  +border-radius( 2px )
+  +box-shadow(2px 2px 2px #ddd)
+  background-color: #FFF
+  border: 1px solid #ccc
+  padding: 20px
+  position: relative

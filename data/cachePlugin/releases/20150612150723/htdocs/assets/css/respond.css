@@ -1,0 +1,149 @@
+#questionnaire-intro {
+    display: none;
+}
+
+.btn-submit.help{
+    background-color: #886181;
+    margin-right: 20px;
+}
+
+[data-question-id] .label .summary {
+    font-family: "Lato";
+    color: #666;
+    font-size: 18px;
+    display: block;
+    float: left;
+    font-style: italic;
+    height: 30px;
+    margin: -3px 15px 0 0;
+}
+
+[data-question-id] .label .details {
+    font-family: "Lato";
+    font-size: 16px;
+    background: #ef814b;
+    border-radius: 15px;
+    border: 0 none;
+    color: #fff;
+    cursor: pointer;
+    font-style: italic;
+    padding: 2px 15px;
+    position: relative;
+    line-height: 0;
+}
+
+.fb-content {
+    font-family: Lato;
+    color: #666;
+}
+
+.fb-content .header{
+    overflow: hidden;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.fb-content .header h1{
+    float: left;
+    margin-top: 10px;
+}
+
+.fb-content .header .close{
+    float: right;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    z-index: 8040;
+    background-image: url('/assets/images/vendor/fancybox/fancybox_sprite.png');
+}
+
+.fb-content h1 {
+    font-style: italic;
+    font-size: 18px;
+    color: #ef814b;
+}
+
+.fb-content p {
+    margin-bottom: 10px;
+    line-height: 22px;
+}
+
+.fb-content .helping-affirmations{
+    color: #ef814b;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.fb-content ol {
+    list-style: decimal;
+    margin-left: 25px;
+}
+
+.fb-content .example {
+    border: 1px #666 solid;
+    margin-right: 275px;
+    margin-bottom: 10px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.fb-content .example ul {
+    margin-left: 25px;
+}
+
+.fb-content ul {
+    list-style-image: url(/assets/images/fc-icon-checked.png);
+}
+
+.fb-content hr {
+    margin: 20px 0;
+}
+
+.fb-content li {
+    margin-left: 25px;
+    margin-bottom: 10px;
+}
+
+.fb-content div.close{
+    text-align: center;
+}
+
+.fb-content div.close button{
+    font-size: 16px;
+    float: none;
+}
+
+.fancybox-close{
+    display: none;
+}
+
+.helper-questions{
+    float:left;
+    margin-top: 10px;
+    font-family: Lato;
+    color: #666
+}
+
+.helper-questions .title-helper-questions{
+    color: #ef814b;
+    font-weight: bold;
+}
+
+.helper-questions ul{
+    background: transparent;
+    list-style-image: url(/assets/images/fc-icon-checked.png);
+    overflow: hidden;
+    height: 220px;
+    margin-bottom: 8px;
+}
+
+.helper-questions ul li{
+    font-size: 16px;
+    text-align: left;
+    margin-left: 25px;
+    margin-bottom: 10px;
+    float:none;
+    width: inherit;
+}
+
+.

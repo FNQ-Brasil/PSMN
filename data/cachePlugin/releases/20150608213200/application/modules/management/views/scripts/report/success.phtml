@@ -1,0 +1,39 @@
+<h1 class="center">Relato</h1>
+
+<?php if (isset($this->itemEditSuccess)):?>
+    <?php if ($this->itemEditSuccess):?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    Relato editado com sucesso.
+            <a data-icon="x" class="icon close" href="#close"></a>
+            <br />
+            <strong>Aguarde, redirecionando para a Devolutiva.</strong>
+            <br /><br />
+        </div>
+        <script>
+            window.location = "<?php echo $this->baseUrl('/questionnaire/respond/index/geraDevolutiva/1/menu-admin/1/enterprise-id-key/'.$this->enterpriseIdKey); ?>";
+        </script>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?php if (isset($this->itemInsertSuccess)):?>
+    <?php if ($this->itemInsertSuccess):?>
+        <div class="notice success">
+            <span data-icon="C" class="icon medium"></span>
+                    Relato cadastrado com sucesso.
+            <a data-icon="x" class="icon close" href="#close"></a>
+            <br />
+            <strong>Aguarde, redirecionando para a Devolutiva.</strong>
+            <br /><br />
+        </div>
+
+        <button tabindex="48" class="large green" type="button" style="float: right; margin-bottom: 20px"
+                onclick="window.location=BASE_URL+'/';">
+            <span class="icon" data-icon="C"></span> Ok
+        </button>
+        <script>
+            window.location = "<?php echo $this->baseUrl('/questionnaire/respond/index/geraDevolutiva/1/menu-admin/1/enterprise-id-key/'.$this->enterpriseIdKey); ?>";
+        </script>
+    <?php endif; ?>
+<?php endif; ?>
+

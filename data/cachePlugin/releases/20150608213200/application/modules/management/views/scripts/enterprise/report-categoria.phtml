@@ -1,0 +1,136 @@
+<?php
+$i = 0;
+?> 
+<div style="display: table">
+<div class="table-menu header">
+      <hgroup><a name="lista"></a><h2><?php echo $titulo; ?>
+
+          </h2>
+      </hgroup>
+     <?php if ($buttonExport): ?>
+      <div class="nav tools">
+        <p>Ferramentas:</p>
+        <ul>
+          <li><a href="<?php echo $this->baseUrl('management/enterprise/report-categoria/?' . $this->urlParaGerarCsv); ?>" target="_blank" title="Exportar empresas"><span>Exportar<i> empresas</i></span></a></li>
+        </ul>
+        <?php endif; ?>
+</div>
+<div class="table-container <?php echo ($fluid  ? 'fluid' : ''); ?>">
+<table class="table" style="width: 70%">
+  <thead>
+    <tr>
+      <th>Categoria</th>
+      <th>Inscritas</th>
+      <th>Candidatas</th>
+      <th>Verificadas</th>
+      <th>Vencedora <br> Bronze</th>
+      <th>Vencedora <br> Prata</th>
+      <th>Vencedora <br> Ouro</th>
+    </tr>
+  </thead>
+
+    <?php
+    $categoriaMpe = array(
+            '1' => 'Agronegócio',
+            '2' => 'Artesanato',
+            '3' => 'Comércio',
+            '4' => 'Indústria',
+            '5' => 'Serviços'
+        );
+    if (count($this->dataReport) >= 1): ?>
+  
+      <tbody>
+          
+        <?php
+        $dataInscritas = array(1 => 0,2 => 0,3 => 0,4 => 0,5 => 0);
+        $dataCandidatas = array(1 => 0,2 => 0,3 => 0,4 => 0,5 => 0);
+        $totalInscritas = $totalCandidatas =0;
+        foreach ($this->dataReport as $index => $dataRow):
+            $dataInscritas[$dataRow->getCategory()] = $dataRow->getSubscriptions();
+            $totalInscritas += $dataRow->getSubscriptions();
+            $dataCandidatas[$dataRow->getCategory()] = $dataRow->getCandidates();
+            $totalCandidatas += $dataRow->getCandidates();
+        ?>
+            <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="">
+                <td>
+                    <span class="left">
+                        <?php echo $dataRow->getCategory(); ?>
+                    </span>
+                </td>
+                <td class="middle"><span><?php echo $dataRow->getSubscriptions(); ?></span></td>
+                <td class="middle"><span><?php echo $dataRow->getCandidates(); ?></span></td>
+                <td class="middle"><span>0</span></td>
+                <td class="middle"><span>0</span></td>
+                <td class="middle"><span>0</span></td>
+                <td class="middle"><span>0</span></td>
+            </tr>
+            
+        <?php endforeach; ?>
+            
+            <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="">
+                <td>
+                    <span class="left">
+                        <strong>
+                            Total das categorias
+                        </strong>
+                    </span>
+                </td>
+                <td class="middle">
+                    <strong>
+                    <?php echo $totalInscritas; ?>
+                    </strong>
+                </td>
+                <td class="middle">
+                    <strong>
+                        <?php echo $totalCandidatas; ?>
+                    </strong>
+                </td>
+                <td class="middle"><strong>0</strong></td>
+                <td class="middle"><strong>0</strong></td>
+                <td class="middle"><strong>0</strong></td>
+                <td class="middle"><strong>0</strong></td>
+            </tr>
+            
+      </tbody>
+    <?php
+    endif;
+    ?>
+</table>
+</div>
+    
+<?php
+$i = 0;
+
+
+$this->headScript()->captureStart() ?>
+      var INSCRITAS = [], CANDIDATAS = [], INSCRITASPORCEN = [], CANDIDATASPORCEN = [];
+       <?php foreach ($dataInscritas as $dataQt): ?>
+                INSCRITAS.push(<?php echo $dataQt; ?>);
+                INSCRITASPORCEN.push(<?php echo round((float)((100*$dataQt)/$totalInscritas),0); ?>);
+       <?php endforeach; ?>
+       <?php foreach ($dataCandidatas as $dataQt): ?>
+                CANDIDATAS.push(<?php echo $dataQt; ?>);
+                CANDIDATASPORCEN.push(<?php echo round((float)((100*$dataQt)/$totalCandidatas),0); ?>);
+       <?php endforeach; ?>
+<?php
+$this->headScript()->captureEnd()
+?>
+<!--
+<div id="doughnutChart" class="hidden" style="width: 50%; float: left; margin-top: 1.5em">
+    <div class="table-menu header">
+        <hgroup><h2> Inscritas Estaduais </h2> </hgroup>
+    </div>
+    <div class="canvasWrapper">
+        <canvas id="doughnutChartCanvas" width="449" height="300"></canvas>		
+    </div>
+</div>
+
+<div id="doughnutChart2" class="hidden" style="width: 50%; float: left; margin-top: 1.5em">
+    <div class="table-menu header">
+    <hgroup><h2> Candidatas Estaduais </h2> </hgroup>
+    </div>
+    <div class="canvasWrapper">
+        <canvas id="doughnutChartCanvas2" width="449" height="300"></canvas>		
+    </div>-->
+</div>
+</div>

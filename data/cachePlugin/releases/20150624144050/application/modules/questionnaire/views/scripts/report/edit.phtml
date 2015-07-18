@@ -1,0 +1,76 @@
+<?php 
+if ($this->userAuth()->getRoleId() == $this->configRegistry()->acl->roleEnterpriseId) {
+    // echo '<h1 class="title 22x">Fim das inscrições.</h1>';
+    // return;
+}
+$this->headScript()
+    ->appendFile($this->baseUrl('js/questionnarie/report.js?dsaasd'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.metadata.js'))
+    ->prependFile($this->baseUrl('js/validation/jquery.validate.min.js'))
+    ->prependFile($this->baseUrl('js/validation/lib/jquery.form322.min.js'))
+    ;
+if ($this->request()->getParam('module') == 'management') {
+    include APPLICATION_PATH . '/modules/management/views/scripts/menus/admin_menu.phtml';
+} 
+$reportId = $this->reportId;
+$enterpriseIdKey = $this->enterpriseIdKey;
+$linkIdKey = ($enterpriseIdKey)?'/enterprise_id_key/'.$enterpriseIdKey:'';
+$readOnly = '';
+if (!$this->loggedAllowed('edit', 'questionnaire:report') and $this->loggedAllowed('acompanhareport', 'management:report')) {
+    $readOnly = ' readonly';
+}
+//$readOnly = ' readonly';
+$endereco = $this->addressEnterpriseRow;
+//var_dump($endereco);
+$endString ='';
+if ($endereco) {
+    $rua = $endereco->getStreetNameFull();
+    $numero = $endereco->getStreetNumber();
+    $cep = $endereco->getCep();
+    $cidade = $endereco->findParentCity()->getName();
+    $estado = $endereco->findParentState()->getUf();
+    $endString = $rua.', '.$numero.'<br />'.$cep.' - '.$cidade.' - '.$estado;
+}
+?>
+<div id="relato">
+    <h1 class="title">Relato
+        <?php if (isset($this->enterpriseRow)): ?>
+            <?php echo $this->escape($this->enterpriseRow->getSocialName()); ?>
+            (<?php echo $this->escape($this->enterpriseRow->getFantasyName()); ?>)
+        <?php endif; ?>
+    </h1>
+    <h3 class="subtitle"><?php echo $endString; ?></h3>
+    <h4 class="subtitle">Esta área permite que a Candidata realize a digitação do relato de sua história que a torna uma empreendedora.<br> Seu preenchimento é obrigatório. O relato deve ter de 3.000 a 7.140 caracteres e de 500 a 1.200 palavras.</h4>
+    <div id="msgError" class="notice error error-box autoScroll" style="z-index: 9999" data-name-scroll="msgError"><span class="icon small" data-icon="X"></span><b></b><a href="#close" class="icon close" data-icon="x"></a></div>
+    <form class="normal" method="POST" id="frmReport" 
+          action="<?php echo $this->baseUrl(($this->request()->getActionName() == 'insert')? 
+                  'questionnaire/report/insert'.$linkIdKey.'/format/json' : 
+                  'questionnaire/report/edit/report_id/' . $reportId.'/enterprise_id_key/'.$enterpriseIdKey.'/format/json'); ?>">
+        <fieldset style="margin-bottom: 0">
+          <input type="hidden" name="enterprise_id" readonly="readonly" 
+                 value="<?php if (isset($this->reportRowData['enterprise_id'])) { echo $this->reportRowData['enterprise_id']; } ?>">
+
+          <input type="text" name="title" placeholder="Título do relato" id="Title" 
+                 class="{required:true} input input-text input-title list-table-100 focus-bold-black" maxlength="50"
+                 value="<?php if (isset($this->reportRowData['title'])) { echo $this->reportRowData['title']; } ?>" <?php echo $readOnly;?>>
+
+          <input type="hidden" name="competition_id" id="CompetitionId" readonly="readonly" class="{required:true}"
+                 value="<?php if (isset($this->reportRowData['competition_id'])) { echo $this->reportRowData['competition_id']; } ?>"/>
+
+          <textarea name="report" id="Report" placeholder="Relato" <?php echo $readOnly;?> 
+              class="w300 description {required:true} list-table-100 focus-bold-black"><?php if (isset($this->reportRowData['report'])) {
+                  echo $this->reportRowData['report'];
+              } ?></textarea>
+          <div class="counters">Quantidade de Caracteres <span id="charCount">0</span> Quantidade de Palavras <span id="wordCount">0</span></div>
+        </fieldset>
+
+        <?php if ($this->loggedAllowed('edit', 'questionnaire:report')): ?>
+            <button class="large btn-submit" type="submit" style="float: right; font-size: 16px">
+                <span class="icon" data-icon=""></span> Salvar enviar relato
+            </button>
+        <?php endif; ?>
+       <p>&nbsp;</p>
+    </form>
+     <p>&nbsp;</p>    
+  </div>
+

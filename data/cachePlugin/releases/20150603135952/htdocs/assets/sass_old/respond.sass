@@ -1,0 +1,413 @@
+@import compass/css3
+@import _variables
+@import _mixins
+
+#content
+  #textoQuestao
+    overflow: hidden
+    padding: 0
+    text-align: justify
+    font-size: 12px
+    position: relative
+    margin-bottom: 0px
+  #progresso
+    +border-radius(5px)
+    +size(22px, 100%)
+    position: relative
+    text-align: left
+    z-index: 0
+    margin: 10px auto
+    background: #efeeee
+  #infoSalvo
+    +absRT(-5px, 18px)
+    color: #989B9A
+    font-size: 11px
+    font-weight: 500
+  #progresso hr
+    +border-radius(5px)
+    +absLT(5px, 4px)
+    +size(13px, 0%)
+    background-color: #aacc51
+    border: 2px solid #f3f3f3
+    margin: 0
+    padding: 0
+  h2
+    color: #555555
+    font-size: 14px
+    font-weight: 500
+  #textoQuestao p
+    color: #7b7b7b
+    margin-left: 42px
+    margin-right: 42px
+    &.questionDescribe
+      margin: 10px 0
+      color: #555
+      line-height: 16px
+      a
+        color: #00afe2
+      .hide
+        display: none
+  a.ajuda
+    background-image: url(#{$images}help.jpg)
+    background-repeat: no-repeat
+    text-indent: -999em
+    width: 50px
+    height: 50px
+    cursor: help
+    position: absolute
+    top: -50px
+    left: 655px
+    display: none
+  .questionTitle
+    font-weight: 600
+    margin: 0 0 0 60px
+    a
+      color: #00afe2
+    .hide
+      display: none
+  #topQuestionNumber
+    left: 0
+    position: absolute
+    top: 113px !important
+    display: none
+    font-size: 40px
+    color: #00afe2
+    font-weight: 600
+    z-index: 2
+
+#proxima
+  margin-top: 25px
+  float: right
+#back
+  float: left
+  margin: 15px 0 0 0
+#respond-next
+  float: right
+  margin: 15px 0 0 0
+#content
+  .bt
+    background: url("../img/mnu.png") transparent -135px -449px no-repeat
+    border: medium none
+    display: block
+    height: 48px
+    width: 124px
+    text-indent: -999em
+  .btSalvar
+    background-position: -260px -348px
+    width: 113px
+  .pag_privilege_edit .btSalvar, .pag_role_index .btSalvar
+    margin: 0 auto
+    margin-top: 35px
+  ul#questions
+    li
+      float: left
+      list-style: none outside none
+      margin: 0
+      width: 703px
+      min-height: 440px
+      padding: 0 0 54px
+      display: none
+      position: relative
+    ul
+      &.contentHelperTips
+        overflow: hidden
+        width: 590px
+        height: 365px
+        margin: 25px 0 0 25px
+        li
+          width: 590px
+          height: 395px
+          margin: 0
+          padding: 0
+          min-height: auto
+          float: none
+          text-align: center
+          .embed
+            height: 395px
+            overflow: auto
+            padding: 0
+            img
+              *max-height: 340px
+              *max-width: 100%
+          &.visible
+            display: block
+      &.ulTab1
+        text-align: left
+        a
+          color: #f9c300
+          cursor: default !important
+          font-size: 19px
+          background: url("../img/mnu.png") repeat-y scroll -598px -42px transparent
+          padding-left: 36px
+        li
+          min-height: inherit
+          padding: 10px 0 0 0
+          float: none
+          &.ok a
+            color: #79b194
+            background-position: -594px -11px
+        a:hover
+          text-decoration: none
+        li, ul.ulTabQuestions
+          display: block !important
+        li
+          &.questionItem, &.uniqueCriterion
+            display: none !important
+        ul
+          &.ulTabQuestionsNumbers
+            display: none !important
+          &.ulTabQuestions
+            margin-bottom: 0px
+    li form
+      padding-top: 10px
+      div
+        position: relative
+        padding: 3px 0
+        border-bottom: 10px solid #f3f3f3
+      input.radio
+        +absRT(0,0)
+        cursor: pointer
+        +opacity(0)
+        outline: 0
+      fieldset
+        padding: 15px 0
+        position: relative
+      div.evaluationArea
+        float: left
+        margin-top: 5px
+        label
+          padding-left: 35px
+          font-weight: bold
+          padding-bottom: 0
+        textarea
+          margin-left: 5px
+          height: 76px
+          width: 390px
+          margin-top: 6px
+    position: relative
+    width: 2812px
+    list-style: none outside none
+    margin: 30px 0 0 0
+    padding: 0
+  #contentQuestion
+    background-color: transparent
+    float: left
+    height: 100%
+    overflow: hidden
+    position: relative
+    width: 703px
+  ul#questions
+    li form label
+      color: #555555
+      display: block
+      font-size: 13px
+      font-weight: 600 
+      line-height: 17px
+      padding: 15px 10px 15px 58px
+      text-align: justify
+      cursor: pointer
+      &.focused
+        background-color: $bgColor2
+        &:hover
+          background-color: $bgColor2
+      &:hover
+        background-color: lighten($bgColor2, 40%)
+        b
+          color: #fff
+      &.focus
+        border-bottom: 2px dotted #AAAAAA
+      b
+        color: #C1C1C1
+        font-family: Verdana
+        font-size: 34px
+        font-weight: bold
+        left: 0
+        margin-top: -11px
+        position: absolute
+        top: 30px
+        left: 5px
+    div
+      &.divTypeText
+        background-color: transparent
+        padding: 10px
+        margin: 0 0 0 48px
+        border: none
+        label
+          font-size: 12px
+          background: transparent
+          margin: 0
+          padding: 0
+          font-weight: 500
+          float: none
+          &:hover
+            background: transparent
+        textarea
+          +border-radius(5px)
+          +single-box-shadow( darken( #e4e5db, 10% ), 1px, 2px, 0, 0, inset)
+          border: 1px solid transparent
+          line-height: 28px
+          padding: 0 5px
+          margin: 5px 0 10px 0
+          width: 100%
+          background-color: #e4e5db
+          line-height: 1.5em
+          height: 8em
+          &:focus
+            +box-shadow(0 0 7px $bgColor2, darken( #e4e5db, 30% ) -1px -2px 0 0 inset)
+            outline: none
+      &.hide
+        display: none
+      &.divTypeResult
+        overflow: hidden
+        input
+          width: 141px
+          margin-left: 5px
+          margin-right: 10px
+          margin-top: 5px
+          text-align: right
+        label
+          margin: 0
+          padding: 0
+  a.tip
+    color: #1a4771
+
+#tip
+  height: 286px
+  left: 0
+  position: absolute
+  top: 0
+  width: 685px
+  display: none
+
+#tipAjuda
+  height: 521px
+  left: 0
+  position: absolute
+  top: 0
+  width: 725px
+  display: none
+  z-index: 5002
+
+#tipDis
+  height: 636px
+  left: 0
+  position: absolute
+  top: 0
+  width: 728px
+  display: none
+  z-index: 5002
+
+#content
+  ul#questions li form #proxima
+    float: right
+    margin-top: 25px
+  form.qstnRespond
+    button.large
+      float: right
+      margin-top: 25px
+      margin-right: 21px
+    a.nextQuestion, input.chk
+      opacity: .0
+      filter: alpha(opacity = 0)
+      -ms-filter: 'alpha(opacity=0)'
+      outline: 0
+
+.qtip
+  width: 703px !important
+  margin-top: 18px !important
+
+.qtip-contentWrapper
+  border: none !important
+  background-color: transparent !important
+
+.qtip-content
+  background-color: transparent !important
+
+#content
+  ul#questions div.finishMsg
+    color: #00afe2
+    display: block
+    font-size: 14px
+    font-weight: bold
+    margin-left: 0
+    margin: 20px
+    text-align: center
+    line-height: 25px
+    width: 90%
+    margin: 0 auto
+    button.finishContinue
+      margin-top: 10px
+      margin-right: 6px
+    .bt
+      background-position: -365px -231px
+      height: 111px
+      margin: 0 auto
+      width: 170px
+      margin-bottom: 23px
+      margin-top: 23px
+    b.final
+      font-size: 16px
+    p.final
+      font-weight: normal
+    button.final
+      +button(14px, 23px)
+      margin-top: 18px
+      span
+        display: inline-block
+        margin-left: 0
+        top: -9px
+  #fantasyNameTitle
+    color: #50C38B
+    font-size: 17px
+    font-weight: bold
+    margin-top: 0px
+    text-align: center
+    display: none
+  #qstnTitle
+    margin-bottom: 1px
+  ul#questions
+    div.contentHelp
+      background-image: url(#{$images}help-box.png)
+      background-repeat: no-repeat
+      position: absolute
+      margin: 0px auto
+      display: block
+      top: -34px
+      padding: 0
+      width: 689px
+      left: 16px
+      z-index: 100500
+      height: 420px
+      display: none
+    a.closeContentHelp
+      display: block
+      height: 54px
+      right: 0
+      top: 0
+      width: 50px
+      position: absolute
+      text-indent: -999em
+      z-index: 1000
+    div.contentHelp button
+      &.icon span
+        top: -28px
+      &.fleft
+        +size(60px, 30px)
+        position: absolute
+        top: 40%
+        left: 5px
+        border: none
+        background: transparent
+        font-size: 50px
+        color: #fff
+        cursor: pointer
+      &.fright
+        +size(60px, 30px)
+        position: absolute
+        top: 40%
+        right: 51px
+        border: none
+        background: transparent
+        font-size: 50px
+        color: #fff
+        cursor: pointer

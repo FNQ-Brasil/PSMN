@@ -1,0 +1,52 @@
+<?php
+$includeFile = 'lista-empresas.phtml';
+$permissionRespondAll = (
+    $this->loggedAllowed('index', 'questionnaire:respond')
+    and $this->loggedAllowed('answer', 'questionnaire:respond')
+    and $this->loggedAllowed('not-coop-responding', 'management:questionnaire')
+    );
+?>
+<main>
+    <div id="main" class="listagem-empresa <?php // echo $extraMainClass; ?>"  style="margin-top:20px">
+        <section class="section-full-page">
+            <div class="box-content form-tab">
+                
+                <?php if($this->getAllEnterpriseNacional) : ?>
+                    <div class="table-menu header">
+                        <?php
+                        $total = count($this->getAllEnterpriseNacional);
+                        $label_total = (($total > 0) ? implode(' ', array(
+                          $total, implode('', array('empresa', (($total > 1) ? 's' : '')))
+                        )) : 'Nenhuma empresa com agendamento de visita no momento.');
+                        ?> 
+                        <hgroup>
+                            <a name="lista"></a><h2>Avaliação Etapa Nacional - <span><?php echo $label_total; ?></span></h2>
+                        </hgroup>
+                    </div>
+                    <div class="table-container">
+                        <?php include 'lista-empresas-nacional.phtml'; ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if ($this->getAllEnterprise) : ?>
+                    <div class="table-menu header" style="margin-top: 1em">
+                        <?php
+                        $total = count($this->getAllEnterprise);
+                        $label_total = (($total > 0) ? implode(' ', array(
+                          $total, implode('', array('empresa', (($total > 1) ? 's' : '')))
+                        )) : 'Nenhuma empresa com agendamento de visita no momento.');
+                        ?> 
+                        <hgroup>
+                            <a name="lista"></a><h2>Avaliação Etapa Estadual - <span><?php echo $label_total; ?></span></h2>
+                        </hgroup>
+                    </div>
+                    <div class="table-container">
+                        <?php include $includeFile; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="clear"></div>
+        </section>
+    </div>
+    <div id="areaIframe"></div>
+</main>

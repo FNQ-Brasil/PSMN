@@ -1,0 +1,30 @@
+[class*="span"]
+	float: left
+	min-height: 40px
+	line-height: 40px
+	margin-left: 30px
+
+.container12
+	width: 930px
+
+.row 
+	margin: 10px 0
+	*zoom: 1
+
+.row:before, .row:after 
+	display: table
+	line-height: 0
+	content: ""
+
+.row:after 
+	clear: both
+
+.breadcrumb
+	ul
+		+fontBase(12px)
+
+$class-slug: list-table- !default
+@for $i from 1 through 20
+	.#{$class-slug}#{$i*5}
+		float: left
+		width: 0% + ( $i * 5 )

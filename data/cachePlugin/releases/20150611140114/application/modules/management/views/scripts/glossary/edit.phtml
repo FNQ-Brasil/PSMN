@@ -1,0 +1,36 @@
+<?php 
+include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
+?>
+<div id="content" class="">
+    <h1 class="center">
+        Glossário
+    </h1>
+    <a title="Voltar" id="back" href="<?php echo $this->baseUrl('management/glossary/'); ?>">Voltar</a>
+
+    <?php if ($this->messageError): ?>
+        <div class="notice error">
+            <span data-icon="X" class="icon medium"></span>
+                <?php echo $this->messageError; ?>
+            <a data-icon="x" class="icon close" href="#close"></a>
+       </div>
+    <?php endif; ?>
+
+    <form class="normal" method="POST" action="<?php echo $this->baseUrl(($this->request()->getActionName() == 'insert')? 'management/glossary/insert' : 'management/glossary/edit/id/' . $this->glossaryRow->getId()); ?>">
+        <input type="hidden" name="id" value="<?php if($this->glossaryId) echo $this->glossaryId;?>">
+        <fieldset>
+            <label for="term">Termo: </label>
+                <input type="text" name="term" id="term" value="<?php if ($this->glossaryRowData) { echo $this->glossaryRowData['term']; } ?>">
+            <hr class="clear" />
+
+            <label for="description">Descrição: </label>
+                <textarea name="description" id="description" class="w220"><?php if ($this->glossaryRowData) echo $this->glossaryRowData['description']; ?></textarea>
+            <hr class="clear" />
+
+        </fieldset>
+        <div class="clear"> </div>
+            <button class="large green" type="submit" style="float: right">
+                <span class="icon" data-icon="C"></span> Salvar
+            </button>
+        <div class="clear"> </div>
+	</form>
+</div>
