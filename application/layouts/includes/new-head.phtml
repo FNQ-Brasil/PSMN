@@ -36,11 +36,20 @@ if(Zend_Auth::getInstance()->hasIdentity()){
         echo /* $this->headMeta() . */ $this->headTitle()->setSeparator(' - ');
         ?>
 
+        <?php
+            include_once 'facebook_pixels/base.phtml';
+            include_once 'facebook_pixels/remarketing.phtml';
+        ?>
+
         <!--[if (gte IE 6)&(lte IE 8)]>
         <script src="<?php echo $this->baseUrl('assets/javascripts/libraries/html5shiv/html5shiv.js') ?>" type="text/javascript"></script>
         <![endif]-->
     </head>
     <body class="<?php echo 'pg-' . $this->request()->getModuleName() . '-' . $this->request()->getControllerName() . '-' . $this->request()->getActionName(); ?>"><a id="top-of-page"></a>
+
+        <?php include 'google_analytics/base.phtml' ?>
+        <?php include 'google_analytics/remarketing.phtml' ?>
+
         <div id="wrapper">
             <div id="menu-top">
                 <p>Ir para:</p>
@@ -124,10 +133,10 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                         <li class="submenu"><a href="#" onclick="return false;" class="cancel-modal">Relatórios</a>
 
                             <ul>
-                                <!--<?php if ($this->loggedAllowed('report-categoria', 'management:enterprise')): ?>
+                                <?php if ($this->loggedAllowed('report-categoria', 'management:enterprise')): ?>
                                     <li><a href="<?php echo $this->baseUrl('management/enterprise/report-categoria') ?>">Participantes por Setor</a></li>
                                 <?php endif; ?>
-                                <?php if ($this->loggedAllowed('report-digitador', 'management:enterprise')): ?>
+                                <!--<?php if ($this->loggedAllowed('report-digitador', 'management:enterprise')): ?>
                                     <li><a href="<?php echo $this->baseUrl('management/enterprise/report-digitador') ?>">Participantes por Digitador</a></li>
                                 <?php endif; ?>-->
                                 <?php if ($this->loggedAllowed('report-regional', 'management:enterprise')): ?>

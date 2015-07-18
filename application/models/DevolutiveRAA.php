@@ -13,7 +13,7 @@ class Model_DevolutiveRAA extends Vtx_FPDF_FPDF
         $this->public_path = Zend_Registry::get('config')->paths->public;
         $this->headerTittle = $arrHeader['title'];
 
-        //define('FPDF_FONTPATH', APPLICATION_PATH_LIBS . '/Fpdf/font/'); 
+        define('FPDF_FONTPATH', APPLICATION_PATH_LIBS . '/Fpdf/font/'); 
 
         $devolutiveTexts = new Zend_Config_Ini(
             APPLICATION_PATH . '/configs/devolutive.ini', APPLICATION_ENV

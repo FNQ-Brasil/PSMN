@@ -1003,7 +1003,6 @@ class Model_Enterprise {
         } else {
             $generalPoints = '-';
         }
-
         return $generalPoints;
     }
 
@@ -1033,6 +1032,11 @@ class Model_Enterprise {
 
     public function getAllForRegionalsReport($loggedInUser, $filter){
         $query = $this->dbTable_Enterprise->getQueryForRegionalsReport($loggedInUser, $filter);
+        return $this->dbTable_Enterprise->fetchAll($query);
+    }
+
+    public function getAllForSectorsReport($loggedUserId, $filter){
+        $query = $this->dbTable_Enterprise->getQueryForSectorsReport($loggedUserId, $filter);
         return $this->dbTable_Enterprise->fetchAll($query);
     }
 
@@ -1074,5 +1078,14 @@ class Model_Enterprise {
     private function checkEmailWhitelist($email){
         $whitelist = new Model_Whitelist('email');
         return $whitelist->matches($email);
+    }
+    
+    function getEnterpriseCheckerEnterprisePontosFortes($enterpriseId, $competitionId = null)
+    {
+        if (!$competitionId) {
+            $competitionId = Zend_Registry::get('configDb')->competitionId;
+        }
+        exit('aqui');
+        return $this->dbTable_Enterprise->getEnterpriseCheckerEnterprisePontosFortes($enterpriseId, $competitionId);
     }
 }

@@ -9,8 +9,10 @@ $programaId = Zend_Registry::get('configDb')->competitionId;
 if ($idKey) {
     $arrEtapas = $this->terminoEtapas();
 }
-?>
 
+print_r($controller);
+print_r($action);
+?>
 <ul class="main-menu" style="left: -91px; top: 0">
 <?php
 if ($this->loggedAllowed('not-coop-responding', 'management:questionnaire')

@@ -37,7 +37,11 @@
              <span class="label-value">
                 <?php
                     if ($score->getPontosGeral() != '-') {
-                        echo number_format($score->getPontosGeral()*100, 1 , ',', '.') . '%';
+                        //echo number_format($score->getPontosGeral()*100, 1 , ',', '.') . '%';
+                      $NegocioTotal =  number_format($score->getNegociosTotal()*1/2, 1, '.', ',');                      
+                      $MediaTotal =  number_format($score->getMediaPontos(), 1 , '.', ',');
+                      
+                      echo number_format(($NegocioTotal + $MediaTotal), 1 , ',', '.');
                     }
                 ?>
              </span>
@@ -47,7 +51,7 @@
              <label class="label-control">Pontos Negócios</label>
              <span class="label-value">
                 <?php
-                  echo number_format($score->getNegociosTotal()*10, 1 , ',', '.').'%';
+                  echo number_format($score->getNegociosTotal()*1/2, 1 , ',', '.').'%';
                   ?>
              </span>
            </div>

@@ -42,3 +42,5 @@ include_once $views_base_path . 'ConfigRegistry.php';
 include_once $views_base_path . 'Acl.php';
 include_once $views_base_path . 'SubscriptionConfirmationCheck.php';
 include_once 'Zend/Controller/Action/Helper/Json.php';
+include_once 'Zend/Filter/Alpha.php';
+include_once 'Zend/View/Helper/Action.php';

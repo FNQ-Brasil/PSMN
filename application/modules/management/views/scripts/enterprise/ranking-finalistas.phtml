@@ -1,8 +1,9 @@
 <?php
-$this->headScript()
-    ->appendFile($this->baseUrl('js/management/appraiser/list.js?x1'))
-;
+$this->headScript()->appendFile($this->baseUrl('js/management/appraiser/list.js?x1'));
 ?>
+
+
+
 <table class="table">
   <caption></caption>
   <thead>
@@ -14,10 +15,12 @@ $this->headScript()
       <th>Prata</th>
       <th>Bronze</th>
       <th class="appraisers-cancel">Desclassificar</th>
-      <th>P. Geral<br><b style="font-family: Arial; ">+</b> Bônus</th>
-      <th>Bônus</th>
+      <th>Pontuação</br>Final</th>
+	  <th>Nota <br>Verificador <br>Questionário <br>de Auto Aval.</br>Negócios</th>
+	  <th>Nota <br>Verificador <br>Questionário <br>de Visita</th>
+	  <th>Nota <br>Verificador <br>Critério <br>de Avaliação</th> 
       <th style="padding: 30px 5px 21px;">Devolver P/<br>Verificador</th>
-      <th>Relat.<br>Interno</th>
+      <th>Relat.<br>Interno</th>    
       <th>Pontos<br>Negócios</th> 
       <th>Média<br>Relato</th>
       <th>Prêmio</th>
@@ -28,9 +31,31 @@ $this->headScript()
     </tr>
   </thead>
 <?php if (count($this->getAllEnterprise) >= 1): ?>
-  <tbody>
+  <tbody>  
 <?php
-  foreach ($this->getAllEnterprise as $index => $enterprise):
+
+ foreach ($this->getAllEnterprise as $index => $enterprise):  
+  
+  $QtdPontosFortes = $enterprise->getQtdePontosFortes();
+  
+  if($QtdPontosFortes == 0)   $QtdPontosFortes = '0'; 
+  if($QtdPontosFortes == 1)   $QtdPontosFortes = '2'; 
+  if($QtdPontosFortes == 2)   $QtdPontosFortes = '4'; 
+  if($QtdPontosFortes == 3)   $QtdPontosFortes = '6'; 
+  if($QtdPontosFortes == 4)   $QtdPontosFortes = '8'; 
+  if($QtdPontosFortes == 5)   $QtdPontosFortes = '10'; 
+  if($QtdPontosFortes == 6)   $QtdPontosFortes = '12'; 
+  if($QtdPontosFortes == 7)   $QtdPontosFortes = '14'; 
+  if($QtdPontosFortes == 8)   $QtdPontosFortes = '16'; 
+  if($QtdPontosFortes == 9)   $QtdPontosFortes = '17'; 
+  if($QtdPontosFortes == 10)  $QtdPontosFortes = '18'; 
+  if($QtdPontosFortes == 11)  $QtdPontosFortes = '19'; 
+  if($QtdPontosFortes == 12)  $QtdPontosFortes = '20'; 
+  
+  $NotaAutoAvalVerificador = (1600/16);
+  $NotaQuestVisitaVerificador = $this->getAllApeEvaluationVerificador->getPontosFinal();
+  $PontuacaoFinal =  (($NotaAutoAvalVerificador/5) + ($NotaQuestVisitaVerificador/1.66666) + $QtdPontosFortes);  
+  
     $raa = $enterprise->getDevolutivePath();
     $socialName = $enterprise->getSocialName();
     $fantasyName = $enterprise->getFantasyName();
@@ -125,28 +150,50 @@ $this->headScript()
             <?php echo ($verificadores['cancel']['status'] ? 'checked="checked"' : ''); ?> />
         <a href="" title="Editar justificativa" class="cancel-ranking-note-edit">(editar justificativa)</a>
       </td>
+<td class="middle">
+	<dl>
+		<dt>
 
-      <td class="middle">
-          <?php
-            if ($enterprise->getPontosGeral() != '-') {
-                echo number_format($enterprise->getPontosGeral()*100, 1 , ',', '.') . '%';
-            }
-        ?>
-      </td>
-      <td class="middle">
+          <?php            
+             echo number_format($PontuacaoFinal, 1 , ',', '.');            
+          ?>                 
+        </dt>
+	</dl>
+</td>
+<td class="middle">
+	<dl>
+		<dt>
         <?php 
-            if ($qtPf === false) {
-                echo '0';
-            } elseif ($qtPf >= 8) {
-                echo '20%';
-            }  elseif ($qtPf >= 5) {
-                echo '10%';
-            } else {
-                echo '0';
-            }
-
-        ?>
-      </td>
+        printf($NotaAutoAvalVerificador) ?>                    
+        </dt>
+	</dl>
+</td>
+<td class="middle">
+	<dl>
+		<dt>		
+        <?php printf($NotaQuestVisitaVerificador) ?>                    
+        </dt>
+	</dl>
+</td>
+<td class="middle">
+	<dl>
+		<dt>
+         <?php if($enterprise->getQtdePontosFortes() == 0) echo '0'?>
+         <?php if($enterprise->getQtdePontosFortes() == 1) echo '2'?>
+         <?php if($enterprise->getQtdePontosFortes() == 2) echo '4'?>
+         <?php if($enterprise->getQtdePontosFortes() == 3) echo '6'?>
+         <?php if($enterprise->getQtdePontosFortes() == 4) echo '8'?>
+         <?php if($enterprise->getQtdePontosFortes() == 5) echo '10'?>
+         <?php if($enterprise->getQtdePontosFortes() == 6) echo '12'?>
+         <?php if($enterprise->getQtdePontosFortes() == 7) echo '14'?>
+         <?php if($enterprise->getQtdePontosFortes() == 8) echo '16'?>
+         <?php if($enterprise->getQtdePontosFortes() == 9) echo '17'?>
+         <?php if($enterprise->getQtdePontosFortes() == 10) echo '18'?>
+         <?php if($enterprise->getQtdePontosFortes() == 11) echo '19'?>
+         <?php if($enterprise->getQtdePontosFortes() == 12) echo '20'?>
+        </dt>
+	</dl>
+</td>      
       <td class="middle">
           <div style="width: 265px; height: 41px; display: block; position: relative; clear: both">
             <ul class="devolver" style="width: 100%; float:left;  margin: 0; margin: 4px; margin-bottom: 0px">
@@ -192,13 +239,10 @@ $this->headScript()
             <a href="<?php echo $this->baseUrl("management/appraiser/internal-report/enterprise-id-key/{$enterprise->getIdKey()}/competition-id/{$competitionId}"); ?>#report" target="_blank" title="Relatório Interno" class="download-raa" target="blank">Interno</a>
           </dt>
         </dl>
-      </td>
-      
-
-      
+      </td>     
       <td class="middle"><span>
           <?php
-            echo number_format($enterprise->getNegociosTotal()*10, 1 , ',', '.').'%';
+            echo number_format($enterprise->getNegociosTotal()*1/2, 1 , ',', '.').'%';
             ?>
           </span></td>
 

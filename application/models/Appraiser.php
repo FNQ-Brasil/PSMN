@@ -15,6 +15,9 @@ class Model_Appraiser
         $this->DbAppraiser = DbTable_AppraiserEnterprise::getInstance();
         $this->DbChecker = DbTable_CheckerEnterprise::getInstance();
         $this->DbEnterprise = DbTable_Enterprise::getInstance();
+        $this->DbApeEvaluation = DbTable_ApeEvaluation::getInstance();
+        $this->DbCheckerEvaluation = DbTable_CheckerEvaluation::getInstance();
+        $this->DbApeEvaluationVerificador = DbTable_ApeEvaluationVerificador::getInstance();         
     }
     
     public function getTable()
@@ -86,6 +89,8 @@ class Model_Appraiser
 
     public function setCheckerToEnterprise($data)
     {
+        
+        
         $enterpriseId   = $data['enterprise_id'];
         $checkerId    = $data['checker_id'];
         $programaId     = $data['programa_id'];
@@ -264,6 +269,7 @@ class Model_Appraiser
             
             foreach ($questions as $question) {
                 //$question['peso']
+               
                 $questionId = $question['Id'];
                 if (!isset($answers[$questionId]) and !$linhas1[$questionId] and !$linhas2[$questionId]) {
                     $finalizacaoSucesso = false;
@@ -290,9 +296,11 @@ class Model_Appraiser
                     $pontosFinal += ($question['Peso'] * 0.5); //50%
                 } elseif (isset($answers[$questionId]) and $answers[$questionId] == 'S') {
                     $pontosFinal += ($question['Peso'] * 1); //100%
-                }
+                }                    
+                
             }
-
+            
+            
             if ($conclusao) {
                 $evaluationRow->setConclusao($conclusao)
                     ->setConclusaoDate(New Zend_Db_Expr('NOW()'))
@@ -372,18 +380,14 @@ class Model_Appraiser
         $criteriosError = $evaluationQuestionsError = array();
 
         Zend_Registry::get('db')->beginTransaction();
-        try {
-            $evaluationRow->setStatus('I')->save();
+        try {           
+            
+            $evaluationRow->setStatus('I')->save();            
 
             $tbCheckerEvaluation->delete(array(
                 'CheckerEnterpriseId = ?' => $checkerEnterpriseId
             ));
-            
-            if ($conclusao) {
-                $evaluationRow->setConclusao($conclusao)
-                    ->setConclusaoDate(New Zend_Db_Expr('NOW()'))
-                    ->save();
-            }
+                       
             $qtdePontosForte = 0;
             foreach ($evaluationQuestions as $question) {
                 $questionId = $question['Id'];
@@ -393,15 +397,25 @@ class Model_Appraiser
                     continue;
                 }
                 $resposta = isset($answers[$questionId])? $answers[$questionId] : null;
-                if ($resposta == 'F') {
+                if ($resposta == 'F') {                    
+                                     
                     $qtdePontosForte++;
                 }
+               
                 $checkerEntRow = $tbCheckerEvaluation->createRow()
                     ->setCheckerEnterpriseId($checkerEnterpriseId)
                     ->setQuestionCheckerId($questionId)
                     ->setResposta($resposta)
-                    ->setCheckerEvaluationTypeId(2);
+                    ->setCheckerEvaluationTypeId(2); 
+               
                 $checkerEntRow->save();
+            }           
+            
+            if ($conclusao) {
+                $evaluationRow->setConclusao($conclusao)
+                ->setConclusaoDate(New Zend_Db_Expr('NOW()'))
+                ->setQtdePontosFortes($qtdePontosForte)
+                ->save();
             }
             
             $criterioAnterior = '';
@@ -418,6 +432,7 @@ class Model_Appraiser
                     continue;
                 }
                 
+                                
                 $checkerEntRow = $tbCheckerEvaluation->createRow()
                     ->setCheckerEnterpriseId($checkerEnterpriseId)
                     ->setCriterionNumber($criterio)
@@ -426,8 +441,10 @@ class Model_Appraiser
                 $checkerEntRow->save();
             }
 
-            if ($finalizar and $finalizacaoSucesso and $conclusao) {
-                $evaluationRow->setQtdePontosFortes($qtdePontosForte)
+            if ($finalizar and $finalizacaoSucesso and $conclusao and $qtdePontosForte) {
+                
+                $evaluationRow
+                    ->setQtdePontosFortes($qtdePontosForte)
                     ->setStatus('C')->save();
             }
 
@@ -452,4 +469,110 @@ class Model_Appraiser
         }
         return $this->DbEnterprise->getEnterpriseScoreAppraisersData($enterpriseId, $competitionId);
     }
+    function getEnterpriseScoreAppraiserAnwserAvaliatorData($enterpriseId, $competitionId = null)
+    {
+        if (!$competitionId) {
+            $competitionId = Zend_Registry::get('configDb')->competitionId;
+        }
+        return $this->DbApeEvaluation->getEnterpriseScoreAppraiserAnwserAvaliatorData($enterpriseId, $competitionId);
+    }
+    
+    function getCheckerEvaluations($enterpriseId, $competitionId = null)
+    {
+        if (!$competitionId) {
+            $competitionId = Zend_Registry::get('configDb')->competitionId;
+        }
+        return $this->DbCheckerEvaluation->getCheckerEvaluations($enterpriseId, $competitionId);
+    }
+ 
+    public function saveApeEvaluationVerificador(
+        $questions, $evaluationRow, $answers = array(), $conclusao = '', $finalizar = false
+    ) {                
+        $tbApeEvaluationVerificador = DbTable_ApeEvaluationVerificador::getInstance();
+        $appraiserEnterpriseId = $evaluationRow->getId();
+        $pontosFinal = 1;
+        $finalizacaoSucesso = true;
+        $questionsError = array();
+           
+        Zend_Registry::get('db')->beginTransaction();
+        try {
+            
+            $evaluationRow->setStatus('I')->save();   
+            
+            $tbApeEvaluationVerificador->delete(array(
+                'AppraiserEnterpriseId = ?' => $appraiserEnterpriseId
+            ));
+
+            foreach ($questions as $question) {
+                $questionId = $question['Id'];              
+                
+                if (!isset($questionId)) {
+                    $finalizacaoSucesso = false;
+                    $questionsError[$question['Bloco']][$question['Criterio']][$question['QuestaoLetra']] = array();
+                    continue;
+                }
+               
+                if (!isset($questionId)
+                    or ($questionId != 1)) 
+                {
+                    $finalizacaoSucesso = false;
+                    $questionsError[$question['Bloco']][$question['Criterio']][$question['QuestaoLetra']] = array();
+                }               
+                
+                if (isset($questionId) and $questionId == 2) {
+                    $pontosFinal += ($question['Peso'] * 0.5); //50%
+                } elseif (isset($answers[$questionId]) and $answers[$questionId] == 3) {
+                    $pontosFinal += ($question['Peso'] * 1); //100%                   
+                }
+                
+                $respostas = isset($answers[$questionId])? $answers[$questionId] : null;
+                
+                $appraiserEntRow = $tbApeEvaluationVerificador->createRow()
+                ->setAppraiserEnterpriseId($appraiserEnterpriseId)
+                ->setAvaliacaoPerguntaId($questionId)
+                ->setResposta($respostas)
+                ->setDate(New Zend_Db_Expr('NOW()'))                
+                ->setPontosFinal($pontosFinal);
+                $appraiserEntRow->save();
+            }           
+            
+            if ($conclusao) {
+                $evaluationRow
+                ->setConclusao($conclusao)
+                ->setConclusaoDate(New Zend_Db_Expr('NOW()'))                
+                ->save();
+            }
+    
+            if ($finalizar and $finalizacaoSucesso and $conclusao) {
+                $evaluationRow->setStatus('C')->setPontos($pontosFinal)->save();
+            }
+    
+            Zend_Registry::get('db')->commit();
+    
+            return array(
+                'status' => true,
+                'finalizacaoSucesso' => $finalizacaoSucesso,
+                'questionsError' => $questionsError
+            );
+        } catch (Vtx_UserException $e) {
+            Zend_Registry::get('db')->rollBack();
+            return array(
+                'status' => false,
+                'messageError' => $e->getMessage(),
+                'questionsError' => $questionsError
+            );
+        } catch (Exception $e) {
+            Zend_Registry::get('db')->rollBack();
+            throw new Exception($e);
+        }
+    }
+    
+    function getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $competitionId = null)
+    {
+        if (!$competitionId) {
+            $competitionId = Zend_Registry::get('configDb')->competitionId;
+        }
+        return $this->DbApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $competitionId);
+    }
+    
 }

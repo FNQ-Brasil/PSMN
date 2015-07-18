@@ -14,8 +14,9 @@ class Management_AvaliacaoController extends Vtx_Action_Abstract
         $this->view->etapa = $etapa = $this->_getParam('etapa', 'estadual');
         
         $this->evaluationRow = $this->Appraiser->isPermit(
-            $this->enterpriseRow->getId(), $this->userAuth->getUserId(),
-            $this->programId, $etapa
+            //$this->enterpriseRow->getId(), $this->userAuth->getUserId(),
+            //$this->programId , $etapa            
+            $this->enterpriseRow->getId(), $this->userAuth->getUserId(), $this->programId
         );
         if (!$this->evaluationRow or $this->evaluationRow->getStatus() == 'C') {
             throw new Exception('Não autorizado');

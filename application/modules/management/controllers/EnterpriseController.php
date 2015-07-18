@@ -10,6 +10,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
     protected $EmailMessage;
     protected $WinningNotification;
     protected $modelQuestionnaire;
+    protected $ApeEvaluationVerificador;
 
     public function init() {
         $this->_helper->getHelper('ajaxContext')
@@ -40,12 +41,16 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->WinningNotification = new Model_WinningNotification;
         $this->State = new Model_State;
         $this->modelQuestionnaire = new Model_Questionnaire();
-
+        $this->AppraiserVerificador = new Model_ApeEvaluationVerificador();        
+        $this->ApeEvaluationVerificador = new Model_ApeEvaluationVerificador();
+        
+        
         $this->autoavaliacaoId = Zend_Registry::get('configDb')->qstn->currentAutoavaliacaoId;
         $this->roleAppraiserId = Zend_Registry::get('config')->acl->roleAppraiserId;
         $this->roleVerificadorId = Zend_Registry::get('config')->acl->roleVerificadorId;
         $this->showAppraisersFilter = false;
         $this->competitionId = Zend_Registry::get('configDb')->competitionId;
+        //$this->pointsRanking = new Model_PointsRanking();
     }
 
     public function indexAction() {
@@ -62,7 +67,9 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $Neighborhood = new Model_Neighborhood;
         $Regiao = new Model_Regiao;
         $modelEnterpriseCategoryAward = new Model_EnterpriseCategoryAward;
-
+        $enterprise = new Model_Enterprise();
+        $ApeEvaluationVerificador = new Model_ApeEvaluationVerificador();
+                
         $format = $this->_getParam('format');
         $this->view->getAllEducations = $this->Education->getAll();
         if ($format == 'csv') {
@@ -71,7 +78,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
             $this->incluirJoinPontuacao = '1';
             $this->incluirJoinRegional = '1';
         }
-
+        
         set_time_limit(720); //6 minutos
 
         $ns = new Zend_Session_Namespace('respond');
@@ -82,11 +89,11 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->view->getAllEnterpriseCategoryAward = $modelEnterpriseCategoryAward->getAll();
         $this->view->getAllRegiao = $Regiao->getAll();
         $this->view->getAllMetier = $model_Metier->getAll();
-
+        $this->view->getAllApeEvaluationVerificador = $ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(766); 
 
         $this->view->isRanking = isset($this->view->isRanking) ? $this->view->isRanking : false;
         $this->filterAdditional = isset($this->filterAdditional) ?
-                $this->filterAdditional : $this->_getParam('filter');
+        $this->filterAdditional : $this->_getParam('filter');
 
         $filter = $this->filterAdditional;
         $this->view->filter = $filter;
@@ -148,7 +155,12 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
 
         if($this->tipoRelatorio != 'inscricoes' || $format == 'csv'){
             $this->view->getAllEnterprise = $this->Enterprise->getAllByColAE(
-                $this->paramsBuscaServiceArea[0], $this->paramsBuscaServiceArea[1], $this->autoavaliacaoId, $count, $page, $filter, $orderBy, $format, $fetchReturn, $this->tipoRelatorio, $groupBy
+                $this->paramsBuscaServiceArea[0], 
+                $this->paramsBuscaServiceArea[1], 
+                $this->autoavaliacaoId, 
+                $count, $page, $filter, $orderBy, 
+                $format, $fetchReturn, 
+                $this->tipoRelatorio, $groupBy
             );
         } else {
             $loggedUserId = $this->userAuth->getUserId();
@@ -156,6 +168,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         }
 
         $this->view->modelEntCategoryAward = new Model_EnterpriseCategoryAwardCompetition();
+                
     }
 
     /**
@@ -325,7 +338,10 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->view->isRanking = true;
         $this->tipoRelatorio = 'finalistas';
         $this->showAppraisersFilter = false;
-        $this->_helper->viewRenderer->setRender('index');
+        $this->view->getAllApeEvaluationVerificador = $this->ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(1, null);
+                
+        $this->_helper->viewRenderer->setRender('index');        
+        
         self::indexAction();
 
         $format = $this->_getParam('format');
@@ -335,6 +351,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
     }
 
     public function finalistasNacionalAction() {
+        
         $this->incluirJoinRegionalForce = false;
         $filter = $this->_getParam('filter', null);
         $filter['devolutiva'] = '2';
@@ -345,12 +362,27 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->view->isRanking = true;
         $this->tipoRelatorio = 'finalistas-nacional';
         $this->showAppraisersFilter = false;
+        //$this->view->getAllApeEvaluationVerificador = $this->ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(1, null);
+        
         $this->_helper->viewRenderer->setRender('index');
+        
         self::indexAction();
 
         if(isset($filter['competition_id'])) {
             $userId = $this->userAuth->getUserId();
+            
             $this->view->getAllEnterprise = $this->Enterprise->getAllForNationalCandidates($userId, $filter);
+            
+           foreach($this->view->getAllEnterprise as $key=>$value){
+               //$this->view->getAllApeEvaluationVerificador[$value['Id']] = $this->ApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($value['Id']);
+               echo $value['Id'].'<br/> asd';
+           }
+           exit('aeeeeee');
+            
+            
+            $this->view->getAllApeEvaluationVerificador2 = $this->ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(766);
+            
+            
         } else {
             $this->view->getAllEnterprise = array();
         }
@@ -378,6 +410,9 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->fetchReturn = 'all';
         $this->tipoRelatorio = 'report-categoria';
         self::indexAction();
+
+        $this->view->getAllEnterprise = $this->Enterprise->getAllForSectorsReport($this->userAuth->getUserId(), $filter);
+
         $this->view->dataReport = $this->view->getAllEnterprise;
     }
 
@@ -507,7 +542,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         }
     }
 
-    public function appraisreAction() {
+    public function appraiserAction() {
 
     }
 

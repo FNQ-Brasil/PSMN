@@ -182,7 +182,8 @@ class Questionnaire_RegisterController extends Vtx_Action_Abstract
         $logCadastradoPor = $modelLogCadastroEmpresa
             ->getLogCadastroEmpresaByEnterpriseId($enterpriseRow->getId());
         $cadastroNome = 'Site';
-        $cadastroCriadoEm = '00:00:00';
+        $cadastroCriadoEm = '00:00:00';               
+        
         if ($logCadastradoPor) {
             if ($logCadastradoPor->getUserIdLog() != $userLocalityRow->getUserId()) {
                 $cadastroNome = $User->getUserById($logCadastradoPor->getUserIdLog())->getFirstName();

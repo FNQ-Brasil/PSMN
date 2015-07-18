@@ -3,25 +3,6 @@ $currentBlockIdNegocios = Zend_Registry::get('configDb')->qstn->currentBlockIdNe
 $currentBlockIdEmpreendedorismo = Zend_Registry::get('configDb')->qstn->currentBlockIdEmpreendedorismo;
 $edit = (isset($this->itemEditSuccess) and $this->itemEditSuccess)?true:false;
 $insert = (isset($this->itemInsertSuccess) and $this->itemInsertSuccess)?true:false;
-    if ($insert) {
-    ?>
-        <script type="text/javascript">
-        var fb_param = {};
-        fb_param.pixel_id = '6008963567005';
-        fb_param.value = '0.00';
-        fb_param.currency = 'BRL';
-        (function(){
-          var fpw = document.createElement('script');
-          fpw.async = true;
-          fpw.src = '//connect.facebook.net/en_US/fp.js';
-          var ref = document.getElementsByTagName('script')[0];
-          ref.parentNode.insertBefore(fpw, ref);
-        })();
-        </script>
-        <noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/offsite_event.php?id=6008963567005&amp;value=0&amp;currency=BRL" /></noscript>
-    <?php
-    }
-// ->appendFile($this->baseUrl('js/address/capital.js'))
 ?>
 <h1 class="title">Candidata</h1>
 
@@ -87,7 +68,6 @@ if ($this->hasEligibility != 0) {
     <?php endif; ?>
 
     <?php if ($insert) : ?>
-        <?php include_once '../application/layouts/includes/facebook_pixels/register_finished.phtml'; ?>
         <div class="notice success">
             <span data-icon="C" class="icon medium"></span>
                     Seu cadastro foi concluído com sucesso. Entre com sua senha abaixo ou posteriormente na página inicial.
@@ -111,3 +91,11 @@ if ($this->hasEligibility != 0) {
     </script>
     <?php endif; ?>
 
+<?php include_once '../application/layouts/includes/facebook_pixels/register_finished.phtml'; ?>
+
+<script>
+  $(function(){
+    registerModule.pushGAPageview('/questionnaire/register#success');
+    registerModule.trackGARegisterSuccessConversion();
+  });
+</script>

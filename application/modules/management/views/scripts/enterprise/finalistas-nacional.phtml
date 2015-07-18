@@ -14,7 +14,10 @@ $this->headScript()
       <th>Prata</th>
       <th>Bronze</th>
       <th class="appraisers-cancel">Desclassificar</th>
-      <th>Pontos Geral<br/>Sem Bônus</th>
+      <th>Pontuação</br>Final</th>
+	  <th>Nota <br>Verificador <br>Questionário <br>de Auto Aval.</br>Negócios</th>
+	  <th>Nota <br>Verificador <br>Questionário <br>de Visita</th>
+	  <th>Nota <br>Verificador <br>Critério <br>de Avaliação</th> 
       <th>Relat.<br>Interno</th>
       <th>Pontos<br>Negócios</th>
       <th>Prêmio</th>
@@ -27,7 +30,30 @@ $this->headScript()
 <?php if (count($this->getAllEnterprise) >= 1): ?>
   <tbody>
 <?php
+
   foreach ($this->getAllEnterprise as $index => $enterprise):
+  
+  $QtdPontosFortes = 1; //$enterprise->getQtdePontosFortes();
+  
+  if($QtdPontosFortes == 0)   $QtdPontosFortes = '0';
+  if($QtdPontosFortes == 1)   $QtdPontosFortes = '2';
+  if($QtdPontosFortes == 2)   $QtdPontosFortes = '4';
+  if($QtdPontosFortes == 3)   $QtdPontosFortes = '6';
+  if($QtdPontosFortes == 4)   $QtdPontosFortes = '8';
+  if($QtdPontosFortes == 5)   $QtdPontosFortes = '10';
+  if($QtdPontosFortes == 6)   $QtdPontosFortes = '12';
+  if($QtdPontosFortes == 7)   $QtdPontosFortes = '14';
+  if($QtdPontosFortes == 8)   $QtdPontosFortes = '16';
+  if($QtdPontosFortes == 9)   $QtdPontosFortes = '17';
+  if($QtdPontosFortes == 10)  $QtdPontosFortes = '18';
+  if($QtdPontosFortes == 11)  $QtdPontosFortes = '19';
+  if($QtdPontosFortes == 12)  $QtdPontosFortes = '20';
+  
+  $NotaAutoAvalVerificador = 100;
+  $NotaQuestVisitaVerificador = $this->getAllApeEvaluationVerificador2->getPontosFinal();
+  
+  $PontuacaoFinal =  (($NotaAutoAvalVerificador/5) + ($NotaQuestVisitaVerificador/1.66666) + $QtdPontosFortes);
+    
     $raa = $enterprise->getDevolutivePath();
     $fantasyName = $enterprise->getFantasyName();
     $cnpj = trim($enterprise->getCnpj());
@@ -97,10 +123,53 @@ $this->headScript()
         <a href="" title="Editar justificativa" class="cancel-ranking-note-edit">(editar justificativa)</a>
       </td>
 
-      <td class="middle">
-          <?php if ($generalPoints != '-') echo $generalPoints; ?>
-      </td>
+<td class="middle">
+	<dl>
+		<dt>
 
+          <?php            
+             echo number_format($PontuacaoFinal, 1 , ',', '.');            
+          ?>                 
+        </dt>
+	</dl>
+</td>
+<td class="middle">
+	<dl>
+		<dt>
+        <?php 
+        printf($NotaAutoAvalVerificador) ?>                    
+        </dt>
+	</dl>
+</td>
+<td class="middle">
+	<dl>
+		<dt>		
+        <?php printf($NotaQuestVisitaVerificador) ?>                    
+        </dt>
+	</dl>
+</td>
+<td class="middle">
+	<dl>
+		<dt>
+		<?php 
+		
+		?> 
+         <?php if($enterprise->getQtdePontosFortes() == 0) echo '0'?>
+         <?php if($enterprise->getQtdePontosFortes() == 1) echo '2'?>
+         <?php if($enterprise->getQtdePontosFortes() == 2) echo '4'?>
+         <?php if($enterprise->getQtdePontosFortes() == 3) echo '6'?>
+         <?php if($enterprise->getQtdePontosFortes() == 4) echo '8'?>
+         <?php if($enterprise->getQtdePontosFortes() == 5) echo '10'?>
+         <?php if($enterprise->getQtdePontosFortes() == 6) echo '12'?>
+         <?php if($enterprise->getQtdePontosFortes() == 7) echo '14'?>
+         <?php if($enterprise->getQtdePontosFortes() == 8) echo '16'?>
+         <?php if($enterprise->getQtdePontosFortes() == 9) echo '17'?>
+         <?php if($enterprise->getQtdePontosFortes() == 10) echo '18'?>
+         <?php if($enterprise->getQtdePontosFortes() == 11) echo '19'?>
+         <?php if($enterprise->getQtdePontosFortes() == 12) echo '20'?>
+        </dt>
+	</dl>
+</td>            
       <td class="middle" style="height: 43px;">
         <dl>
           <dt>

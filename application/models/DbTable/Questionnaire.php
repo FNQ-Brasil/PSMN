@@ -398,7 +398,6 @@ class DbTable_Questionnaire extends Vtx_Db_Table_Abstract
     
     public function getQuestionsAnsweredByUserId($QstnId, $UserId, $fetch = 'all', $blockId = false)
     {       
-        //
         $query = $this->select()
             ->setIntegrityCheck(false)
             ->from(
@@ -426,9 +425,9 @@ class DbTable_Questionnaire extends Vtx_Db_Table_Abstract
             ->where('QTR.Id = ?', $QstnId)
             ->where('ANS.UserId = ?', $UserId);
 
-        if ($blockId) {
-            $query->where('BLK.Id = ?', $blockId);
-        }
+        //if ($blockId) {
+          //  $query->where('BLK.Id = ?', $blockId);
+        //}
             $query->group('QST.Id')
             ->order('QST.Designation');
 

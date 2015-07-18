@@ -65,6 +65,7 @@ class Management_AppraiserController extends Vtx_Action_Abstract
             null, null, $this->autoavaliacaoId, $count, $page,
             $filter, $orderBy, null, 'all', 'lista-avaliador'
         );
+                
         $this->view->getAllEnterpriseNacional = $this->Enterprise->getAllByColAE(
             null, null, $this->autoavaliacaoId, $count, $page,
             $filter, $orderBy, null, 'all', 'lista-avaliador-nacional'
@@ -93,7 +94,7 @@ class Management_AppraiserController extends Vtx_Action_Abstract
         $this->view->getAllEnterprise = $this->Enterprise->getAllByColAE(
             null, null, $this->autoavaliacaoId, $count, $page,
             $filter, $orderBy, null, 'all', 'checker-list'
-        );
+        );               
     }
 
     public function editAction()

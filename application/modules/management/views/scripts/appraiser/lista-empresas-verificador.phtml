@@ -7,14 +7,19 @@
       <th>UF</th>
       <th>RAA</th>
       <th>Relat.<br>Interno</th>
-      <th>Verificar</th>
-      <th>Status</th>
+      <th>Verificar <br>Questionário <br>de Auto Aval.</br> Negócios</th>
+      <th>Verificar <br>Questionário <br>de Visita</th>
+      <th>Verificar <br>Critério <br>de Avaliação</th>
+      <th>Gerar <br>Relatório <br>de Avaliação</th>
+      <th>Status</th> 
+      <th>Enviar <br>ao Gestor</th>
     </tr>
   </thead>
 <?php
 if (count($this->getAllEnterprise) >= 1):
 ?>
   <tbody>
+ 
 <?php
 $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
   foreach ($this->getAllEnterprise as $index => $enterprise) :
@@ -32,7 +37,16 @@ $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
 
     $survey = $this->baseUrl('/management/verificacao/index/enterprise-id-key/' 
         . $enterprise->getIdKey());
-        
+    
+    $verificarCriterio = $this->baseUrl('/management/verificacao/criterioavaliacao/enterprise-id-key/' 
+        . $enterprise->getIdKey());
+    
+    $verificarquestionarioNegocio = $this->baseUrl('/management/verificacao/questionarionegocio/enterprise-id-key/' 
+        . $enterprise->getIdKey(). '/block/'. Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios);
+    
+    $GerarRelatorio = $this->baseUrl();
+    $EnviarGestor = $this->baseUrl();
+    
 ?>
     <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
       <td>
@@ -65,19 +79,54 @@ $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
           </dt>
         </dl>
       </td>
-      <td class="middle">
+            <td class="middle">
         <dl>
             <dt>
-                <a href="<?php echo $survey; ?>" title="Avaliar" 
-                   class="answer-survey" >Avaliar</a>
+                <a href="<?php echo $verificarquestionarioNegocio; ?>" title="Verificar Questionário de Negócios" 
+                   class="answer-survey" >Verificar Questionário de Negócios
+                </a>
             </dt>
         </dl>
       </td>
-            <td>
+      <td class="middle">
+        <dl>
+            <dt>
+                <a href="<?php echo $survey; ?>" title="Verificar Questionário de Visita" 
+                   class="answer-survey" >Verificar Questionário de Visita</a>
+            </dt>
+        </dl>
+      </td>
+
+      <td class="middle">
+        <dl>
+            <dt>
+                <a href="<?php echo $verificarCriterio; ?>" title="Critério de Avaliação" 
+                   class="answer-survey" >Critério de Avaliação</a>
+            </dt>
+        </dl>
+      </td>
+
+      <td class="middle">
+        <dl>
+            <dt>
+                <a href="<?php echo $GerarRelatorio; ?>" title="Gerar Relatório de Avaliação" 
+                   class="answer-survey" >Gerar relatório de Avaliação</a>
+            </dt>
+        </dl>
+      </td>      
+      <td>
           <?php
             echo Vtx_Util_PsmnAvaliacao::statusReport($avaliacaoStatus);
           ?>
       </td>
+      <td class="middle">
+        <dl>
+            <dt>
+                <a href="<?php echo $EnviarGestor; ?>" title="Enviar ao Gestor" 
+                   class="answer-survey" >Enviar ao Gestor</a>
+            </dt>
+        </dl>
+      </td>      
     </tr>
 <?php endforeach; ?>
   </tbody>

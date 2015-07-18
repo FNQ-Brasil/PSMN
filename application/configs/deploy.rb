@@ -2,13 +2,13 @@ require 'capistrano/ext/multistage'
 require 'rvm/capistrano'
 require 'bundler/capistrano'
 
-set :stages, %w{development homolog production}
+set :stages, %w{homolog production}
 
 set :application, 'psmn'
-set :user, 'rafa'
+set :user, 'psmn'
 
 set :scm, :git
-set :repository, '.'
+set :repository, 'ssh://git@200.201.182.126:2293/fnq/psmn.git'
 set :deploy_to, "/home/#{user}/apps/#{application}"
 set :deploy_via, :remote_cache
 
@@ -52,7 +52,7 @@ namespace :bundle do
   task :install do
     run <<-CMD
       cd #{release_path} &&
-      bundle install --gemfile #{release_path}/Gemfile --path #{shared_path}/bundle --without test
+      bundle install --gemfile #{release_path}/Gemfile --path #{shared_path}/bundle --without development test
     CMD
   end
 end

@@ -82,7 +82,8 @@
             ?>
               <div id="<?php echo $pesos[$contPesos++]; ?>" class="answer">
                 <span class="face"></span>
-                <input type="radio" value="<?php echo $alternativeId; ?>" name="question[<?php echo $questionId; ?>]" id="alternativeItem<?php echo $alternativeId; ?>" tabindex="-1" <?php echo $disabled ?>/>
+                <input type="radio" value="<?php echo $alternativeId; ?>" name="question[<?php echo $questionId; ?>]" 
+                id="alternativeItem<?php echo $alternativeId; ?>" tabindex="-1" <?php echo $disabled ?>/>
                 <label class="label-inline" for="alternativeItem<?php echo $alternativeId; ?>">
                   <span class="radio-button"></span>
                   <?php echo $alternative['AlternativeValue']; ?>

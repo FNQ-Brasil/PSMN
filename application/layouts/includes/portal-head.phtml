@@ -29,20 +29,12 @@ header("X-UA-Compatible: IE=edge,chrome=1");
         $this->headTitle()->prepend('Mulher de Negócios - Prêmio Sebrae');
         echo /*$this->headMeta() .*/ $this->headTitle()->setSeparator(' - ');
     ?><link href="/favicon.ico" rel="shortcut icon" />
-    <script type="text/javascript">
-    var fb_param = {}; fb_param.pixel_id = '6008963572205'; fb_param.value = '0.00'; fb_param.currency = 'BRL';
-    (function(){
-      var fpw = document.createElement('script'); fpw.async = true; fpw.src = '//connect.facebook.net/en_US/fp.js';
-      var ref = document.getElementsByTagName('script')[0]; ref.parentNode.insertBefore(fpw, ref);
-    })();
-    </script>
-    <noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/offsite_event.php?id=6008963572205&amp;value=0&amp;currency=BRL" /></noscript>
 
     <?php
-      if($action == 'index') {
-        include_once 'facebook_pixels/page_views.phtml';
-        include_once 'facebook_pixels/remarketing.phtml';
-      }
+      include_once 'facebook_pixels/base.phtml';
+      include_once 'facebook_pixels/remarketing.phtml';
     ?>
 </head>
 <body>
+    <?php include 'google_analytics/base.phtml' ?>
+    <?php include 'google_analytics/remarketing.phtml' ?>

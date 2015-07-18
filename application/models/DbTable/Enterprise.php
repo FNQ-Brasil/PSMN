@@ -80,7 +80,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
 
         $incluirJoinRegional = (isset($filter['incluir_join_regional']) and $filter['incluir_join_regional'] == '1')?true:false;
 
-        $camposEnderecoEmpresa = ($format == 'csv') ?
+                $camposEnderecoEmpresa = ($format == 'csv') ?
             array('StreetNameFull', 'StreetNumber', 'StreetCompletion','Cep') : null;
 
         $query = $this->select()
@@ -127,7 +127,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             )
             ->joinLeft(array('ECS' => 'EnterpriseCategorySector'), 'ECS.Id = E.CategorySectorId',array('DescriptionCategorySector' => 'Description'))
         ;
-
+            
         $this->appendVerifiedJoin($query);
 
         //avaliadores
@@ -593,28 +593,15 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         );
 
         $esaJoinCond = 'ESA.StateId = AE.StateId OR ESA.CityId = AE.CityId OR ESA.NeighborhoodId = AE.NeighborhoodId';
-        $ceJoinCond = "CE.EnterpriseId = E.Id AND CE.ProgramaId = ECAC.CompetitionId AND CE.Status = 'C'";
-        $eprJoinCond = 'EPR.EnterpriseIdKey = E.IdKey AND EPR.ProgramaId = ECAC.CompetitionId';
 
-        $query = $this->getBaseQuery($filter)
+        $query = $this->getReportBaseQuery($filter)
             ->joinLeft(array('ESA' => 'ServiceArea'), $esaJoinCond, null)
             ->joinLeft(array('R' => 'Regional'), 'R.Id = ESA.RegionalId', null)
-            ->joinLeft(array('R2' => 'Regiao'), 'R2.Id = R.RegiaoId', null)
-            ->joinLeft(array('CE' => 'CheckerEnterprise'), $ceJoinCond, null)
-            ->joinLeft(array('EPR' => 'EnterpriseProgramaRank'), $eprJoinCond, null)
-        ;
+            ->joinLeft(array('R2' => 'Regiao'), 'R2.Id = R.RegiaoId', null);
 
-        $query->reset(Zend_Db_Select::COLUMNS)->columns("
-            S.Uf,
-            R2.Descricao AS Region,
-            R.Description AS Regional,
-            COUNT(E.Id) AS Subscriptions,
-            SUM(IF(EXE.DevolutivePath IS NOT NULL and EXE.DevolutivePath <> '', 1, 0)) AS Candidates,
-            COUNT(CE.Id) AS 'Verifieds',
-            SUM(coalesce(EPR.ClassificadoBronze,0)) + SUM(coalesce(EPR.ClassificadoBronzeNacional,0)) AS 'BronzeMedals',
-            SUM(coalesce(EPR.ClassificadoPrata,0)) + SUM(coalesce(EPR.ClassificadoPrataNacional,0)) AS 'SilverMedals',
-            SUM(coalesce(EPR.ClassificadoOuro,0)) + SUM(coalesce(EPR.ClassificadoOuroNacional,0)) AS 'GoldMedals'
-        ");
+        $query->reset(Zend_Db_Select::COLUMNS)->columns(
+            "S.Uf,R2.Descricao AS Region,R.Description AS Regional," . $this->getReportBaseSelectColumns()
+        );
 
         if($filter['mostrarRegionais'] == '2') $resultsPanoramaFilter = "R.Estadual IS NOT NULL OR R.National = 'S'";
         else $resultsPanoramaFilter = "R.Estadual IS NULL AND R.National = 'N'";
@@ -631,6 +618,73 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         $query->group('R.Id');
 
         $query->order(array('Uf','Region','Regional'));
+
+        return $query;
+    }
+
+    private function getReportBaseQuery($filter){
+        $ceJoinCond = "CE.EnterpriseId = E.Id AND CE.ProgramaId = ECAC.CompetitionId AND CE.Status = 'C'";
+        $eprJoinCond = 'EPR.EnterpriseIdKey = E.IdKey AND EPR.ProgramaId = ECAC.CompetitionId';
+
+        $query = $this->getBaseQuery($filter)
+            ->joinLeft(array('CE' => 'CheckerEnterprise'), $ceJoinCond, null)
+            ->joinLeft(array('EPR' => 'EnterpriseProgramaRank'), $eprJoinCond, null)
+        ;
+
+        return $query;
+    }
+
+    private function getReportBaseSelectColumns(){
+        return "
+            COUNT(E.Id) AS Subscriptions,
+            SUM(IF(EXE.DevolutivePath IS NOT NULL and EXE.DevolutivePath <> '', 1, 0)) AS Candidates,
+            COUNT(CE.Id) AS 'Verifieds',
+            SUM(coalesce(EPR.ClassificadoBronze,0)) + SUM(coalesce(EPR.ClassificadoBronzeNacional,0)) AS 'BronzeMedals',
+            SUM(coalesce(EPR.ClassificadoPrata,0)) + SUM(coalesce(EPR.ClassificadoPrataNacional,0)) AS 'SilverMedals',
+            SUM(coalesce(EPR.ClassificadoOuro,0)) + SUM(coalesce(EPR.ClassificadoOuroNacional,0)) AS 'GoldMedals'
+        ";
+    }
+
+    public function getQueryForSectorsReport($loggedUserId, $filter){
+        $filter = $this->setDefaultFiltersValue($filter);
+
+        $relatedRegionalsRestriction = $this->getRelatedRegionalsRestrictionForRegionalJoinAccordWithUserPermission(
+            $loggedUserId,
+            $filter['regional_id']
+        );
+
+        $query = $this->getReportBaseQuery($filter)
+            ->joinInner(array('ECS' => 'EnterpriseCategorySector'), 'ECS.Id = E.CategorySectorId', null)
+        ;
+
+        $query->reset(Zend_Db_Select::COLUMNS)->columns(
+            "ECS.Description AS Category," . $this->getReportBaseSelectColumns()
+        );
+
+        $query->where("E.Status = 'A'");
+
+        if($relatedRegionalsRestriction) {
+            $query->where("
+                EXISTS (
+                    SELECT *
+                    FROM ServiceArea AS ESA
+                    INNER JOIN Regional AS ER ON ER.Id = ESA.RegionalId
+                    WHERE ER.Status = 'A'
+                    AND (
+                        ESA.StateId = AE.StateId
+                        OR ESA.CityId = AE.CityId
+                        OR ESA.NeighborhoodId = AE.NeighborhoodId
+                    )
+                    AND ER.Id IN ($relatedRegionalsRestriction)
+                )
+            ");
+        }
+
+        $this->appendQueryFilters($query, $loggedUserId, $filter, true);
+
+        $query->group('ECS.Id');
+
+        $query->order('ECS.Description');
 
         return $query;
     }
@@ -1117,7 +1171,9 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 'EXE.DevolutivePath','EXE.EvaluationPath', 'EXE.FinalScore',
                 'FirstNameAvaliadorTer'=>'UTer.FirstName','LoginAvaliadorTer'=>'UTer.Login',
                 'FirstNameAvaliadorSec'=>'USec.FirstName','LoginAvaliadorSec'=>'USec.Login',
-                'FirstNameAvaliadorPri'=>'U.FirstName','LoginAvaliadorPri'=>'U.Login'
+                'FirstNameAvaliadorPri'=>'U.FirstName','LoginAvaliadorPri'=>'U.Login',
+                'QtdePontosFortes'=>'CE.QtdePontosFortes'
+                
             ));
         if ($queryBeg) {
             $query->columns(array('PontosEmpreendedorismo'=>new Zend_Db_Expr("($queryBeg)")));
@@ -1490,7 +1546,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             ->where("EXE.ProgramaId = ?", $competitionId)
         ;
         return $query;
-    }
+    }   
 
     public function getEnterpriseScoreAppraisersData($enterpriseId, $competitionId) {
         $configDb = Zend_Registry::get('configDb');
@@ -1608,9 +1664,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 'FirstNameChecker' => 'CheckerUsr.FirstName',
                 'LoginChecker' => 'CheckerUsr.Login'
             ))
-            ->where("EXA.ProgramaId = ?", $competitionId)
-        ;
-
+            ->where("EXA.ProgramaId = ?", $competitionId);
         #echo '<!-- '.$query->__toString().' -->'; echo '<pre>'; echo $query; die;
         return $this->fetchRow($query);
     }
@@ -1719,4 +1773,53 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
 
         return strlen($groupByString) > 0 ? $groupByString : null;
     }
+
+    public function getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $competitionId) {
+        $configDb = Zend_Registry::get('configDb');
+    
+        $query = $this->select()
+        ->setIntegrityCheck(false)
+        ->from(array('APEN' => 'AppraiserEnterprise'), null)
+        ->where('APEV.AppraiserEnterpriseId = ?', $enterpriseId)
+        ->join(
+            array('APEV' => 'ApeEvaluationVerificador'), 'APEN.Id = APEV.AppraiserEnterpriseId',null
+        )
+        ->join(
+            array('AVPE' => 'AvaliacaoPerguntas'), 'APEV.AvaliacaoPerguntaId = AVPE.ID',null
+        );
+    
+        $query->reset(Zend_Db_Select::COLUMNS)
+        ->columns(array(
+            'APEN.USERID',
+            'APEN.AppraiserTypeId',
+            'APEV.AppraiserEnterpriseId',
+            'APEV.AvaliacaoPerguntaId',
+            'APEV.Resposta',
+            'APEV.PontosFinal',
+            'AVPE.Criterio',
+            'AVPE.BLOCO',
+            'AVPE.QuestaoLetra'
+        ))
+        ;
+        return $this->fetchRow($query);
+    }
+    
+    public function getEnterpriseCheckerEnterprisePontosFortes($enterpriseId, $competitionId) {
+        
+        
+        $configDb = Zend_Registry::get('configDb');
+    
+        $query = $this->select()
+        ->setIntegrityCheck(false)
+        ->from(array('CHE' => 'CheckerEnterprise'), null)
+        ->where('CHE.EnterpriseId = ?', $enterpriseId);
+    
+        $query->reset(Zend_Db_Select::COLUMNS)
+        ->columns(array(
+            'CHE.QtdePontosFortes'
+        ));
+        return $this->fetchRow($query);
+    }
+    
+    
 }

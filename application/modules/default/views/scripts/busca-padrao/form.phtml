@@ -174,7 +174,8 @@ switch ($action) {
 
       <div class="list-table-20">
         <?php if ($this->hasFilterRegional) : ?>
-        <label class="label-control" for="regional">Regional:</label>
+<!-- Alterado pela SSI -->
+<!--        <label class="label-control" for="regional">Regional:</label>
         <select data-placeholder="Escolha" tabindex="4" id="regional" class="fancy" name="filter[regional_id]" style="width: 100%;">
             <option value=""><?php echo $this->regionalOption;?></option>
             <?php foreach ($this->getAllRegional as $regional) :?>
@@ -189,6 +190,7 @@ switch ($action) {
                 <?php endif; ?>
             <?php endforeach; ?>
         </select>
+-->
         <?php endif; ?>
       </div>
 

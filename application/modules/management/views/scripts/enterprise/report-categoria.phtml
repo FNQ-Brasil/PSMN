@@ -46,19 +46,19 @@ $i = 0;
         $dataCandidatas = array(1 => 0,2 => 0,3 => 0,4 => 0,5 => 0);
         $totalInscritas = $totalCandidatas =0;
         foreach ($this->dataReport as $index => $dataRow):
-            $dataInscritas[$dataRow->getCategoriaId()] = $dataRow->getInscritas();
-            $totalInscritas += $dataRow->getInscritas();
-            $dataCandidatas[$dataRow->getCategoriaId()] = $dataRow->getCandidatas();
-            $totalCandidatas += $dataRow->getCandidatas();
+            $dataInscritas[$dataRow->getCategory()] = $dataRow->getSubscriptions();
+            $totalInscritas += $dataRow->getSubscriptions();
+            $dataCandidatas[$dataRow->getCategory()] = $dataRow->getCandidates();
+            $totalCandidatas += $dataRow->getCandidates();
         ?>
             <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="">
                 <td>
                     <span class="left">
-                        <?php echo $categoriaMpe[$dataRow->getCategoriaId()]; ?>
+                        <?php echo $dataRow->getCategory(); ?>
                     </span>
                 </td>
-                <td class="middle"><span><?php echo $dataRow->getInscritas(); ?></span></td>
-                <td class="middle"><span><?php echo $dataRow->getCandidatas(); ?></span></td>
+                <td class="middle"><span><?php echo $dataRow->getSubscriptions(); ?></span></td>
+                <td class="middle"><span><?php echo $dataRow->getCandidates(); ?></span></td>
                 <td class="middle"><span>0</span></td>
                 <td class="middle"><span>0</span></td>
                 <td class="middle"><span>0</span></td>

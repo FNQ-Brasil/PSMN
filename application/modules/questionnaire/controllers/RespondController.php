@@ -27,8 +27,8 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
     {
         if (!Zend_Auth::getInstance()->hasIdentity()) {
             return;
-        }
-
+        }        
+        
         $this->_helper->getHelper('contextSwitch')
              ->addActionContext('question', array('json'))
              ->addActionContext('answer', array('json'))

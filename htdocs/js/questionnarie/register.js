@@ -210,9 +210,68 @@ var registerModule = (function () {
         }
     }
 
-     return {
-        init: function() {
+    var pushGAPageview = function(url){
+        if(window._gaq) _gaq.push(['_trackPageview', url]);
+    }
 
+    var trackGARegisterPresidentConversion = function(){
+        getGAConversionScript(function(){
+            pushGAConversion({
+                google_conversion_id: 965670021,
+                google_conversion_language: "en",
+                google_conversion_format: "3",
+                google_conversion_color: "ffffff",
+                google_conversion_label: "oOTaCK_slVwQhem7zAM",
+                google_remarketing_only: false
+            });
+        });
+    }
+
+    var trackGARegisterSuccessConversion = function(){
+        getGAConversionScript(function(){
+            pushGAConversion({
+                google_conversion_id: 965670021,
+                google_conversion_language: "en",
+                google_conversion_format: "3",
+                google_conversion_color: "ffffff",
+                google_conversion_label: "LkbKCKib71YQhem7zAM",
+                google_remarketing_only: false
+            });
+        });
+    }
+
+    var getGAConversionScript = function(callback){
+        if(window.google_trackConversion) {
+            callback();
+        } else {
+            $.getScript('//www.googleadservices.com/pagead/conversion_async.js').success(callback);
+        }
+    }
+
+    var pushGAConversion = function(data){
+        window.google_trackConversion(data);
+    }
+
+    var setFormStepChangeTriggers = function(){
+        $('a[href=\\#tabs-1]').on('click',function(){
+            pushGAPageview('/questionnaire/register#enterprise');
+        });
+
+        var at_enterprise_form = $('a[href=\\#tabs-1]').length > 0;
+        if(at_enterprise_form) pushGAPageview('/questionnaire/register#enterprise');
+
+        $('#ui-id-2').on('click',function(){
+            window._fbq.push(['track', '6025441638765', {'value':'0.00','currency':'BRL'}]);
+            pushGAPageview('/questionnaire/register#president');
+            trackGARegisterPresidentConversion();
+        });
+    }
+
+     return {
+        pushGAPageview: pushGAPageview,
+        trackGARegisterSuccessConversion: trackGARegisterSuccessConversion,
+
+        init: function() {
           $uf = $('#Uf');
           $city = $('#CityId');
           $cepSearch = $('#CepSearch');
@@ -718,7 +777,9 @@ var registerModule = (function () {
               $('#Cnae').val( value )
               $('#psmn_modal_overlay').click()
               $('#CompanyHistory').focus()
-            })
+            });
+
+            setFormStepChangeTriggers();
         return this;
         }
     };

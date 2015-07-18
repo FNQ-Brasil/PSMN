@@ -24,8 +24,6 @@ $competitionId = (isset($this->filter['competition_id']))? $this->filter['compet
 
 $isCurrentCompetition = ($this->competitionId == $competitionId)?TRUE:FALSE;
 
-
-
 switch ($action) {
     case 'ranking':
         $titulo = 'Ranking Candidatas Estaduais';
@@ -138,7 +136,7 @@ switch ($action) {
        </div>
     <?php endif; ?>
 
-    <?php echo $this->buscaPadrao($this->filter); ?>
+    <?php echo $this->buscaPadrao($this->filter); ?>    
 
     <?php if ($this->getAllEnterprise and $this->getAllEnterprise instanceof Zend_Paginator): ?>
         <div class="table-menu header">
