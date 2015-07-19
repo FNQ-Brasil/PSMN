@@ -51,8 +51,6 @@ class Cli_QueueController extends Vtx_Action_Abstract
         
         //Recupera msgs emails em estado de espera, prontas para disparo              
         $all = $this->emailQueue->getAll($limit);
-       /* print_r($all);
-        die;*/
         $this->view->all = $all;
         
         //faz disparos e atualiza status da mensagem

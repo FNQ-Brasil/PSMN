@@ -84,6 +84,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             array('StreetNameFull', 'StreetNumber', 'StreetCompletion','Cep') : null;
 
         $query = $this->select()
+            ->distinct()
             ->setIntegrityCheck(false)
             ->from(array('E' => 'Enterprise'), $camposEmpresa)
             ->join(
@@ -397,8 +398,6 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         */
 
 //         echo $query->__toString(); die;
-//         echo '<pre>'; print_r($filter); die;
-
         return $this->fetch($query, $fetch);
     }
 
@@ -542,7 +541,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         return $query;
     }
 
-    public function getAllForNationalCandidates($loggedUserId, $filter){
+    public function getAllForNationalCandidates($loggedUserId, $filter){        
         $competitionId = $filter['competition_id'];
         if(!$competitionId) $competitionId = date('Y');
 

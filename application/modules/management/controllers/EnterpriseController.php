@@ -54,6 +54,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
     }
 
     public function indexAction() {
+        
         if (!isset($this->tipoRelatorio)) {
             $this->tipoRelatorio = 'inscricoes';
         }
@@ -154,6 +155,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $fetchReturn = isset($this->fetchReturnForce) ? $this->fetchReturnForce : (isset($this->fetchReturn) ? $this->fetchReturn : 'paginator' );
 
         if($this->tipoRelatorio != 'inscricoes' || $format == 'csv'){
+            
             $this->view->getAllEnterprise = $this->Enterprise->getAllByColAE(
                 $this->paramsBuscaServiceArea[0], 
                 $this->paramsBuscaServiceArea[1], 
@@ -352,7 +354,8 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
 
     public function finalistasNacionalAction() {
         
-        $this->incluirJoinRegionalForce = false;
+     //   $this->incluirJoinRegionalForce = false;
+
         $filter = $this->_getParam('filter', null);
         $filter['devolutiva'] = '2';
         $this->filterAdditional = $filter;
@@ -372,16 +375,17 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
             $userId = $this->userAuth->getUserId();
             
             $this->view->getAllEnterprise = $this->Enterprise->getAllForNationalCandidates($userId, $filter);
-            
-           foreach($this->view->getAllEnterprise as $key=>$value){
-               //$this->view->getAllApeEvaluationVerificador[$value['Id']] = $this->ApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($value['Id']);
-               echo $value['Id'].'<br/> asd';
-           }
-           exit('aeeeeee');
-            
-            
-            $this->view->getAllApeEvaluationVerificador2 = $this->ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(766);
-            
+                                  
+           foreach($this->view->getAllEnterprise as $key => $value){
+               
+               $IdEntrepriseNacional = $value['Id'];
+               $CompetitionId = $filter['competition_id'];
+               
+               $QtdePontosFortes =  $this->ApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId);
+               $PontosFinal = $this->view->getAllApeEvaluationVerificador->getPontosFinal();               
+               $this->view->getAllEnterprisePontosFortes = $QtdePontosFortes;
+               $this->view->getAllEnterprisePontosFinal = $PontosFinal;               
+           }         
             
         } else {
             $this->view->getAllEnterprise = array();

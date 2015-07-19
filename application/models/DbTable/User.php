@@ -335,7 +335,6 @@ class DbTable_User extends Vtx_Db_Table_Abstract
             ->limit($limit)        
         ;
         echo $query."\n\n";
-        //exit('---------------------------fim');
         $objResult = $this->fetchAll($query);
         
 		return $objResult;
@@ -380,7 +379,6 @@ class DbTable_User extends Vtx_Db_Table_Abstract
             ->limit($limit)        
         ;
         echo $query."\n\n";
-        //exit('---------------------------fim');
         $objResult = $this->fetchAll($query);
         
 		return $objResult;

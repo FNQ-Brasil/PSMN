@@ -90,6 +90,7 @@ class Management_AppraiserController extends Vtx_Action_Abstract
 
         $filter['incluir_join_pontuacao'] = '1';
         $filter['checker_id'] = $auth->getIdentity()->getUserId();
+        
         // List Coop by Verificador
         $this->view->getAllEnterprise = $this->Enterprise->getAllByColAE(
             null, null, $this->autoavaliacaoId, $count, $page,
