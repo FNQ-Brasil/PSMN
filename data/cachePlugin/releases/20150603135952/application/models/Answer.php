@@ -229,6 +229,7 @@ class Model_Answer
     
     public function hasChange($answerId, $newAnswer, $alternativeRow) 
     {
+        
         DbTable_Alternative::getInstance();
         $oldAnswerRow = $this->getAnswerById($answerId);
             

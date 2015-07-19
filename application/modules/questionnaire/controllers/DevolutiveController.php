@@ -39,6 +39,7 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
     {
         $this->_helper->getHelper('contextSwitch')
              ->addActionContext('index', array('json'))
+             ->addActionContext('verificacao', array('json'))
              ->setAutoJsonSerialization(true)
              ->initContext();
 
@@ -85,10 +86,12 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
        }         
         
         
-        if (!$this->getRequest()->isPost()) {
+        /*if (!$this->getRequest()->isPost()) {
             return;
         }
-
+         * 
+         */
+        
         $this->questionnaire_id = $this->_getParam('qstn');
 
         if(!$this->questionnaire_id){
@@ -113,7 +116,7 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
         //$user_id = Zend_Auth::getInstance()->getIdentity()->getUserId();
         $user_id = $this->enterprise->getUserIdByIdKey($this->_getParam('enterprise-id-key'));
         //$user_id = $this->_getParam('enterprise-user');
-        
+       
         $enterprise = $this->enterprise->getEnterpriseByUserId($user_id);
         $enterpriseId = $enterprise->getId();
 
@@ -181,7 +184,7 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
         */
 
         $devolutiveAlreadyExists = $this->Devolutive->devolutivaJaExiste();
-
+        
         $devolutivePath = $this->Devolutive->makePdfDevolutive();
       
         if ($geraProtocolo) { //se protocolo foi gerado
@@ -222,7 +225,182 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
         
     } //end action
 
-    
+    public function verificacaoAction(){
+        
+       $seconds = 360; //3 minutos
+       set_time_limit($seconds); 
+       $limit = $this->_getParam('limit');
+       $enterpriseProgramaIdMaiorQue = $this->_getParam('maiorque');
+       
+       //mpe9 / mpe9 
+       if ( isset($limit) && isset($enterpriseProgramaIdMaiorQue) ) {
+
+            /**************************************************************/
+            //Ex: http://site-ambiente/questionnaire/devolutive/index/?limit=10&maiorque=96 
+            $QUEM_FARA_PROCESSAMENTO = "Pontuacao_Em_Massa"; //Devolutiva_Em_Massa
+            $this->Devolutive->setStartProcessamentoEmMassa(true);
+            //execucao em massa de geracao devolutiva
+            $this->cligrava($limit, $enterpriseProgramaIdMaiorQue, $QUEM_FARA_PROCESSAMENTO);
+            exit;
+       }         
+        
+        
+        /*if (!$this->getRequest()->isPost()) {
+            return;
+        }
+         * 
+         */
+        
+        $this->questionnaire_id = $this->_getParam('qstn');
+        
+
+        if(!$this->questionnaire_id){
+            $this->questionnaire_id = $this->Questionnaire->getCurrentExecution()->getId();
+        }
+        
+        ////////////////////////
+        // Calcula Pontuacao Caracteristica Empreendedora
+        //        $n = new Model_BlockEnterpreneurGrade();
+        //        $QuestionnaireId=50;
+        //        $BlockId=60;
+        //        $UserId=2;        
+        //        $CompetitionId = 2013;
+        //        $x = $n->execProcPontuacaoGrade($QuestionnaireId, $BlockId, $UserId, $CompetitionId  );
+        //        //$x = $n->getBlockById(105);
+        //        var_dump($x);
+        //        die;
+        ////////////////////////
+        
+        $questionnaire_id = $this->questionnaire_id;
+        
+        //$user_id = Zend_Auth::getInstance()->getIdentity()->getUserId();
+        $user_id = $this->enterprise->getUserIdByIdKey($this->_getParam('enterprise-id-key'));
+        //$user_id = $this->_getParam('enterprise-user');
+        
+        $enterprise = $this->enterprise->getEnterpriseByUserId($user_id);
+        $enterpriseId = $enterprise->getId();
+        
+        //desabilita layout
+        $this->_helper->layout()->disableLayout(); 
+        $this->_helper->viewRenderer->setNoRender(true);
+
+        //recupera e valida questionario
+        
+        if (!$this->recuperaValidaQuestionario($questionnaire_id)) {
+            $this->view->questionnaire_id = "";
+            throw new Exception($this->_messagesError['questionnaireNotExists']);
+            return;
+        }
+
+        //relatoNotAnswered        
+        if (!$this->report->getCurrentEnterpriseReportByEnterpriseId($enterpriseId)) {
+            $this->view->questionnaire_id = "";
+            $this->view->messageError = $this->_messagesError['relatoNotAnswered'];
+            //echo 'relato nao respondido: '.$this->view->messageError;
+            return;
+        }
+        
+        
+        
+        //verifica se questoes foram respondidas
+        if (!$this->verificaQuestoesRespondidas($questionnaire_id, $user_id)) {
+            $this->view->questionnaire_id = "";
+            $this->view->messageError = $this->_messagesError['questionnaireNotFullyAnswered'];
+            return;
+        }
+
+        //permissoes de acesso
+        $userLogged = Zend_Auth::getInstance()->getIdentity();       
+        
+        $this->loggedUserId = $userLogged->getUserId();
+        
+        $permissionEvaluationOfResponse = $this->Acl->isAllowed(
+            $userLogged->getRole(), 'management:questionnaire', 'evaluation-of-response'
+        );
+        
+        //seta dados para objeto Devolutive
+        $this->Devolutive->setDevolutiveId($this->devolutive_id);
+        $this->Devolutive->setIsRA($permissionEvaluationOfResponse);
+        $this->Devolutive->setQuestionnaireId($questionnaire_id);
+        $this->Devolutive->setUserId($user_id);
+        
+        //ids dos blocos sao setados
+        $this->validaBlocosQuestionario($questionnaire_id);
+        
+        
+        
+        $competitionId = Zend_Registry::get('configDb')->competitionId;
+        
+        
+        
+        //exec procedures        
+        $this->processaCaracteristicaEmpreendedora($questionnaire_id,
+                                                   $user_id,
+                                                   $this->Devolutive->getBlockIdEmpreendedorismo(), 
+                                                   $competitionId  
+                                                   );
+       
+        /** faz geracao e processamento do Protocolo Id da devolutiva  **/
+        $geraProtocolo = $this->modelProtocolo->geracaoDoProtocolo( $this->view, $this->Devolutive, $this->Execution ,new Model_User(), $questionnaire_id, 
+                                                                    $user_id, $this->loggedUserId, $competitionId , $permissionEvaluationOfResponse
+                                                                   );
+        
+       /**
+        * model responsavel pelas regras negocio de geracao da devolutiva
+        */
+
+        $devolutiveAlreadyExists = $this->Devolutive->devolutivaJaExiste();
+        
+        
+        $devolutivePath = $this->Devolutive->makePdfDevolutive();
+        
+        if ($geraProtocolo) { //se protocolo foi gerado
+            //grava caminho da devolutiva gerada na tabela de protocolo devolutiva
+            $this->modelProtocolo->updateDevolutivaPath($devolutivePath, $this->Devolutive->getProtocoloIdDevolutiva());
+        }
+        
+        //valores default para Pontuacao
+        $this->Devolutive->configuraGravaPontuacaoExecution($user_id);
+        
+        
+        //recupera pontuacao e processa pontuacao
+        $this->Devolutive->processaPontuacaoBlocosDeUmQuestionario();
+          
+        if(!$devolutiveAlreadyExists){
+            $pdf = new Report_Devolutive_PDF($this->Devolutive, APPLICATION_PATH.'/../htdocs'.$devolutivePath);
+            $pdf->saveToFile();
+        }
+        
+        if ($devolutivePath and $geraProtocolo) {
+            $modelLogCadastroEmpresa = new Model_LogCadastroEmpresa();
+            // Insere LOG de quem gerou o PDF.
+            $modelLogCadastroEmpresa->createLogDevolutiva(
+                $this->loggedUserId, $enterpriseId
+            );
+        }
+          
+        //informa url onde o pdf da devolutiva foi gravado
+        if ($devolutivePath) {
+            
+             $this->view->itemSuccess = true;
+             $this->view->devolutive = $devolutivePath;
+             
+             //link para regerar a devolutive
+             $this->view->regerar_devolutive =  $this->view->baseUrl('questionnaire/respond')
+                . "/index/geraDevolutiva/1/regerar/1/enterprise-id-key/" . $this->_getParam('enterprise-id-key');
+             $this->view->permissaoCadastrar = $this->Acl->isAllowed($this->auth->getIdentity()->getRole(), 'management:enterprise', 'cadastro');
+          
+             
+             return;
+        }
+        $this->view->messageError = 'Náo foi possível a geração da devolutiva.';
+        
+        
+        
+        
+          
+        
+    }//and action
     
     /**
      * geracao em massa de devolutiva via browser

@@ -122,7 +122,7 @@
           </div>          
           
            <label class="label-control"> Comentário: </label>
-
+           <textarea name="comentarioItemverificador<?php echo $alternativeId; ?>" style="width: 500px; height: 110px;"></textarea>
           
           <div class="clearfix"></div>
           

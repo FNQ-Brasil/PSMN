@@ -14,8 +14,10 @@ $this->headScript()->captureStart() ?>
 ?>
 
   <?php
+    
     $answered = array();
     $answered_items = array();
+    if(isset($this->answeredByUserId)){
     foreach ($this->answeredByUserId as $answer):
       $answered[] = $answer['Id'];
       $answered_items[$answer['Id']] = array(
@@ -33,6 +35,7 @@ $this->headScript()->captureStart() ?>
     <?php
       endif;
     endforeach;
+    }
   ?>
   var QUESTION_ANSWERED = [<?php echo implode(', ', $answered); ?>];
   var QUESTION_ANSWERED_ITEMS = {};
@@ -60,7 +63,7 @@ $this->headScript()->captureStart() ?>
   var QSTN_ID = <?php echo isset($this->qstnRespondId) ? $this->qstnRespondId : ''; ?>;
   var PERMISSION_EVALUATION_OF_RESPONSE = <?php echo $this->permissionEvaluationOfResponse? 1 : 0 ?>;
   var SPEEDY_TRANSITION = <?PHP echo (Zend_Auth::getInstance()->getIdentity()->getRoleId()==Zend_Registry::get('config')->acl->roleDigitadorId)? 0 : 450; ?>;
-  var startDate = '<?php echo date('H:i:s'); ?>';
+  var startDate = "<?php echo date('H:i:s'); ?>";
   var PROGRAMA_ID = <?php echo isset($this->programaId) ? $this->programaId : Zend_Registry::get('configDb')->competitionId; ?>;
   var CURRENT_BLOCK_ID = <?php echo isset($this->blockId) ? $this->blockId : Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios; ?>;
   

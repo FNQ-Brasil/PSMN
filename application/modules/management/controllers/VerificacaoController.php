@@ -7,14 +7,23 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
     public function init()
     {
         $this->userAuth = Zend_Auth::getInstance()->getIdentity();
+        
+        $this->_helper->getHelper('contextSwitch')
+             ->addActionContext('question', array('json'))
+             ->addActionContext('answer', array('json'))
+             ->setAutoJsonSerialization(true)
+             ->initContext();
+
         $this->programId = Zend_Registry::get('configDb')->competitionId;
         $this->Enterprise = new Model_Enterprise;
+        $this->EnterpriseReport = new Model_EnterpriseReport();
         $this->Appraiser = new Model_Appraiser; 
         
         $this->Block = new Model_Block();
         $this->Questionnaire = new Model_Questionnaire();
         $this->Question = new Model_Question();
-        
+        $this->Answer = new Model_Answer();
+        $this->Alternative = new Model_Alternative();
 
         /* Verificação se o verificador tem permissao */
       
@@ -176,15 +185,24 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
       {
           
           if(!$this->subscriptionPeriodIsOpen()) return;
-      
-        
-          
           $this->view->papelEmpresa = ($this->userLogged->getRoleId() == Zend_Registry::get('config')->acl->roleEnterpriseId)?'true':'false';
+          $ns = new Zend_Session_Namespace('verificacao');
+            
+            $this->enterpriseIdKey = $this->_getParam('enterprise-id-key',null);
+
+            $this->enterpriseUserId = ($this->enterpriseIdKey)?
+                    $this->Enterprise->getUserIdByIdKey($this->enterpriseIdKey):null;
+            
+            if ($this->enterpriseUserId) {
+                $ns->enterpriseUserId = $this->enterpriseUserId;
+            } else {
+                $this->enterpriseUserId = $ns->enterpriseUserId;
+            }
           $this->view->user_id = $this->enterpriseUserId;
           $this->view->respondQuestionOk = false;
           $this->view->itemSuccess = false;
           $this->view->respondRowData = $dataPosted = $this->_getAllParams();
-      
+          
           //Não respondeu nada.
           if (!isset($this->view->respondRowData['alternative_id'])
               or $this->view->respondRowData['alternative_id'] == ''
@@ -220,7 +238,7 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
           
           $respondRowData['answer_value'] = isset($respondRowData['answer_value'])?
           trim($respondRowData['answer_value']) : '';
-      
+          
           $respondRowData = $this->Answer->filterAnswerForm($respondRowData)->getUnescaped();
           $respondRowData['aaresult_value'] = ''; // resposta com resultado anual
       
@@ -251,8 +269,9 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
       
           if ($isAnswered['status']) {
               $answerId = $isAnswered['objAnswered']->getAnswerId();
-      
-              if ($this->Answer->hasChange($answerId, $respondRowData/ $alternativeRow)) {
+              
+              if ($this->Answer->hasChange($answerId, $respondRowData, $alternativeRow)) {
+                  
                   $answer = $this->Answer->updateAnswer($answerId, $respondRowData, $alternativeRow);
                   $setExecutionProgress = true;
               } else {
@@ -283,10 +302,12 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
           $this->view->respondQuestionOk = true;
           $this->view->respondRowData = array();
           $this->view->itemSuccess = true;
+          return;
       }      
       
       public function questionarionegocioAction()
       {
+          
           $commentQuestions = $this->Appraiser->getQuestions();          
           $evaluationQuestions = DbTable_QuestionChecker::getInstance()->fetchAll('QuestionTypeId = 5', 'Designation');
       

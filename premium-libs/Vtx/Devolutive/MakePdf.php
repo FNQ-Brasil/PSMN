@@ -260,7 +260,6 @@ class Vtx_Devolutive_MakePdf extends Vtx_FPDI_FPDI   #Vtx_FPDF_FPDF
         } catch (Excception $e) {
             
         }
-        $result = true;
         
         return $result;
         

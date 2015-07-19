@@ -429,9 +429,16 @@ class Model_Questionnaire
         $this->Eligibility = new Model_Eligibility();
         
         $enterpriseRow = DbTable_Enterprise::getInstance()->fetchRow(array('Id = ?' => $enterpriseId));
+       
+        if(isset($this->Eligibility->diagnosticoId)){
+            $digID = $this->Eligibility->diagnosticoId;
+        }else{
+            $digID = 0;
+        }
         
         switch ($questionnaireId) {
-            case $this->Eligibility->diagnosticoId : 
+            
+            case $digID : 
                 if (!$enterpriseRow->getDiagnosticoEligibility()) {
                     return false;
                 }
@@ -443,6 +450,7 @@ class Model_Questionnaire
                 }
                 break;
         }
+        
         return true;
     }
     

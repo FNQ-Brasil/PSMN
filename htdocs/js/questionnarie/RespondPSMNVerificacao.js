@@ -292,8 +292,8 @@ var respondModule = (function () {
                     $status = true;
                 if ($answers.checked.element.length) {
                     $answers.checked.parent = $answers.checked.element.parents('.answer');
-
-                    $answers.complement.field.val('');
+                    
+                    //$answers.complement.field.val('');
                     $answers.complement.wrapper.find($answers.complement.error.classname).fadeOut().remove();
 
                     if ($status) {
@@ -334,7 +334,8 @@ var respondModule = (function () {
 
                                     if(data.updateDevolutive){
                                         var url = [
-                                            '/questionnaire/respond/index/geraDevolutiva/1/regerar/1',
+                                            '/management/verificacao/index/geraDevolutiva/1/regerar/1',
+                                            //'/questionnaire/respond/index/geraDevolutiva/1/regerar/1',
                                             '/enterprise-id-key/', ENTERPRISE_ID_KEY
                                         ].join('');
 

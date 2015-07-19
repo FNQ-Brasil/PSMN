@@ -19,7 +19,7 @@ class Model_ExecutionPontuacao
     }
 
     public function createExecutionPontuacao($data, $blocoDoQuestionario)
-    {
+    {        
         DbTable_ExecutionPontuacao::getInstance()->getAdapter()->beginTransaction();
         
         try {
