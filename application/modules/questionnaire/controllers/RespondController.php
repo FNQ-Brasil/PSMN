@@ -108,12 +108,15 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
 
     public function indexAction()
     {
+        
         //Definicao de que CompetitionId é o mesmo que programaId para PSMN
         //19/06/2013: Everton, thiago, Marco
-        $programaId = $this->competitionId; 
+        
+        $programaId = $this->competitionId;
         
         $enterpriseId = $this->modelUserLocality->getUserLocalityByUserId($this->enterpriseUserId)->getEnterpriseId();
         $hasECAC = $this->modelECAC->hasECAC($enterpriseId,$this->competitionId);
+        
         if (!$hasECAC) { 
             throw new Exception('access denied');
             return;
@@ -137,15 +140,18 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
         if (!$this->view->qstnCurrent) {
             throw new Exception('Nenhum questionário ativo.');
         }
+        
         /* @TODO verificar se o bloco passado pertence ao questionário corrente que tem q ser pego por config */
         
         //$this->view->blockQuestions = $this->Block->getQuestionsByBlockIdForView($blockId);
         
         //recupera do CACHE ou MODEL
         $this->view->blockQuestions = $this->Block->cacheOrModelBlockById($blockId);
+        
 
         //var_dump('blockQuestions: ',$this->view->blockQuestions);
         //echo "<br><br>";
+        
         
         
         $this->view->blockCurrent = $this->Block->getDbTable()->find($blockId)->current();
@@ -154,23 +160,26 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
         $this->view->papelEmpresa = ($this->userLogged->getRoleId() == Zend_Registry::get('config')->acl->roleEnterpriseId)?'true':'false';
         $this->view->user_id = $this->enterpriseUserId;
         $this->view->enterpriseIdKey = $this->enterpriseIdKey;
-
+        
         //$enterpriseId = $this->Enterprise->getEnterpriseByUserId($this->enterpriseUserId)->getId();
-        /*
+        
+        
         if (!$this->Questionnaire->verifyQuestionnaireEligibility($this->view->qstnRespondId, $enterpriseId)) {
+            
             $this->view->messageError = "Você não possui elegibilidade para o questionário escolhido.";
             return;
-        }*/
+        }
         
         /* Caso geração de devolitiva, redireciona */
         if ($this->_getParam('geraDevolutiva')) {
+            
             if ($this->_getParam('menu-admin')) {
                 $this->view->isViewAdmin = true;
                 $this->_helper->_layout->setLayout('new-qstn');
             }
             //regerar devolutiva
             $regerar = $this->_getParam('regerar');
-            if ($regerar) {                
+            if ($regerar) {
                 //exclui o link da ultima devolutiva gerada
                 $modelExec = new Model_Execution();
                 $execution = $modelExec->getExecutionByUserAndPrograma($this->enterpriseUserId, $programaId);
@@ -184,7 +193,8 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
             $this->_forward('index', 'devolutive', 'questionnaire');
             return;
         }
-
+        
+        
         if (!$this->Questionnaire->verifyQuestionnaireRolePeriod($this->view->qstnRespondId,$this->userLogged->getRoleId())) {
             $this->view->messageError = "Você não possui permissão de acesso para o questionário escolhido.";
             return;
@@ -193,6 +203,7 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
         $this->view->answeredByUserId = $this->Questionnaire->getQuestionsAnsweredByUserId(
             $this->view->qstnRespondId, $this->enterpriseUserId, $blockId
         );
+        
         
         $this->view->periodoRespostas = true;
         if (!$this->Questionnaire->isQuestionnaireExecution($this->view->qstnRespondId)) {
@@ -312,6 +323,7 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
         $this->view->respondQuestionOk = true;
         $this->view->respondRowData = array();
         $this->view->itemSuccess = true;
+        
     }
 
     /**

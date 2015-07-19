@@ -169,7 +169,7 @@ class Vtx_Devolutive_Tipo_PSMN_PSMN {
      */
     public function initTipo() {
         $result = false;
-
+        
         //cria diretorio no filesystem, para gravar pdf
         $this->makepdf->preparaFileSystemParaDevolutiva();
 
@@ -183,7 +183,8 @@ class Vtx_Devolutive_Tipo_PSMN_PSMN {
         );
 
         //faz geracao do pdf
-
+        $result = true;
+        
         $result = $this->makePdfDevolutivePSMN();
 
         return $result;
@@ -214,7 +215,7 @@ class Vtx_Devolutive_Tipo_PSMN_PSMN {
         //$this->makepdf->Presentation();
         //apresentacao PSMN
         new Vtx_Devolutive_Tipo_PSMN_ApresentacaoPsmnPdf($this->makepdf, $this->devolutive);
-
+        
         // Dados Cadastrais do avaliado
         //$this->makepdf->EnterpriseData();        
         //// Primeira parte
@@ -229,7 +230,7 @@ class Vtx_Devolutive_Tipo_PSMN_PSMN {
         //$offSet = $this->makepdf->ConteudoBlocoDevolutive($arr1, $arr2, $arr3); 
         // negocios
         $offSet = new Vtx_Devolutive_Tipo_PSMN_ConteudoBlocoNegociosPdf($this->makepdf, $this->devolutive);
-
+        
         //// Segunda parte da Devolutiva, Conteudo do bloco 2, do questionario
         //$pdf->SecondPart($arrCriteriaGes, $offSet, $this->makepdf->getStrPathRadar() , $scorePart1=0, $scorePart2=0);
         //empreendedorismo
@@ -249,7 +250,7 @@ class Vtx_Devolutive_Tipo_PSMN_PSMN {
         ####################################################    
         //retirado empreendedorismo
         $parte2 = new Vtx_Devolutive_Tipo_PSMN_DevolutiveParte2Pdf($this->makepdf);
-
+        
         //faz renderizacao do arquivo PDF atraves da lib FPDF e FPDI
         $urldevolutiva = $this->renderizaPdf();
 
@@ -265,13 +266,12 @@ class Vtx_Devolutive_Tipo_PSMN_PSMN {
 
         if($to != null && $to != ''){
             $userName = $this->modelUser->getUserById($this->devolutive->getUserId())->getFirstName();
-            $link = $_SERVER['HTTP_ORIGIN'].''.$this->devolutive->getPublicDir().$this->devolutive->getArqName();
-
+            $link = $_SERVER['HTTP_HOST'].'/'.$this->devolutive->getPublicDir().$this->devolutive->getArqName();
             $context = 'devolutive_notification';
             $searches = array(':date',':name',':link');
             $replaces = array(date('d/m/Y'),$userName,$link);
             $recipients = array($to);
-
+            
             Manager_EmailMessage::createByEmailDefinitionWithRecipients($context,$searches,$replaces,$recipients);
         }
     }

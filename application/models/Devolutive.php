@@ -90,6 +90,7 @@ class Model_Devolutive
      */
     public function makePdfDevolutive() 
     {
+        
         //checa se devolutiva pdf ja existe
         $existsArchive = $this->devolutivaJaExiste();
 
@@ -114,7 +115,7 @@ class Model_Devolutive
     public function persisteTipoDevolutiva(){
             
         //Quetionários de devolutiva tipo Autoavaliacao devem ter 2 blocos
-
+        
         switch($this->getDevolutiveId()) {
             // case 1 = Tipo do questionario diagnostico.
             case 1 :
@@ -132,7 +133,9 @@ class Model_Devolutive
             // case 3 = Tipo PSMN (Mulhere de Negocio)
             case 3 :
                 $psmn = new Vtx_Devolutive_Tipo_PSMN_PSMN($this);
+                
                 $result = $psmn->initTipo();
+                
                 return $result;
                 break;
             default : 
@@ -169,6 +172,7 @@ class Model_Devolutive
      */
     public function processaPontuacaoBlocosDeUmQuestionario()
     {
+        
         $userId = $this->getUserId();
         $questionnaireId = $this->getQuestionnaireId();
 
@@ -201,8 +205,10 @@ class Model_Devolutive
                 $this->setArrPunctuationNeg($arrPunctuationNeg);
 
                 //grava Pontuacao para Bloco Negocios, para este usuario.
+                
                 $IdPontuacaoExecution = $this->gravaPontuacaoParaBlocoNegocios($executionId);
                 $this->printVariavelSeProcessamentoEmMassa( " --> IdNegociosExecutionPontuacao: [".$IdPontuacaoExecution."]");
+                
             } else {
                 $this->printVariavelSeProcessamentoEmMassa("N");
             }
@@ -219,6 +225,7 @@ class Model_Devolutive
      */    
     public function gravaPontuacaoParaBlocoNegocios($executionId)
     {
+        
         $result = 0;
 
         //variaveis setadas em 
@@ -274,7 +281,7 @@ class Model_Devolutive
             } else {
                 $result = $erow['messageError'];
             }
-            
+
         }
         
         return $result;

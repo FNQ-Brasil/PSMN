@@ -46,7 +46,7 @@ $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
     
     $GerarRelatorio = $this->baseUrl();
     $EnviarGestor = $this->baseUrl();
-    
+    $this->headScript()->appendFile($this->baseUrl('js/management/devolutive_verificacao.js'))
 ?>
     <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
       <td>
@@ -109,7 +109,7 @@ $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
       <td class="middle">
         <dl>
             <dt>
-                <a href="<?php echo $GerarRelatorio; ?>" title="Gerar Relatório de Avaliação" 
+                <a onclick="generateDevolutive(<?php echo Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios; ?>,'<?php echo $enterprise->getIdKey(); ?>')" title="Gerar Relatório de Avaliação" 
                    class="answer-survey" >Gerar relatório de Avaliação</a>
             </dt>
         </dl>
