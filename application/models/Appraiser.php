@@ -448,7 +448,7 @@ class Model_Appraiser
                     ->setStatus('C')->save();
             }
 
-            Zend_Registry::get('db')->commit();
+          Zend_Registry::get('db')->commit();
 
             return array(
                 'status' => true,
@@ -461,6 +461,7 @@ class Model_Appraiser
             throw new Exception($e);
         }
     }
+    
     
     function getEnterpriseScoreAppraisersData($enterpriseId, $competitionId = null)
     {
@@ -484,6 +485,7 @@ class Model_Appraiser
         }
         return $this->DbCheckerEvaluation->getCheckerEvaluations($enterpriseId, $competitionId);
     }
+    
  
     public function saveApeEvaluationVerificador(
         $questions, $evaluationRow, $answers = array(), $conclusao = '', $finalizar = false

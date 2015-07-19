@@ -81,6 +81,8 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
                 $conclusao, 
                 $finalizar
                 );
+                
+             
         
         // no caso de finalizacao da avaliacao, porém com campos notas faltando
         if ($finalizar and !$save['finalizacaoSucesso'] and $save['status']) {

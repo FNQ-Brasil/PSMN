@@ -65,11 +65,15 @@ class Management_AppraiserController extends Vtx_Action_Abstract
             null, null, $this->autoavaliacaoId, $count, $page,
             $filter, $orderBy, null, 'all', 'lista-avaliador'
         );
-                
+        
+                        
         $this->view->getAllEnterpriseNacional = $this->Enterprise->getAllByColAE(
             null, null, $this->autoavaliacaoId, $count, $page,
             $filter, $orderBy, null, 'all', 'lista-avaliador-nacional'
         );
+        
+        
+        
     }
     
     /**
@@ -94,8 +98,9 @@ class Management_AppraiserController extends Vtx_Action_Abstract
         $this->view->getAllEnterprise = $this->Enterprise->getAllByColAE(
             null, null, $this->autoavaliacaoId, $count, $page,
             $filter, $orderBy, null, 'all', 'checker-list'
-        );               
-    }
+        );  
+        
+     }
 
     public function editAction()
     {
@@ -226,6 +231,7 @@ class Management_AppraiserController extends Vtx_Action_Abstract
         $objAppraiser = $AppraiserModel->setCheckerToEnterprise($data);
         
          $this->view->itemSuccess = true;
+         
     }
     
     public function deleteAction()
@@ -246,6 +252,7 @@ class Management_AppraiserController extends Vtx_Action_Abstract
  
     public function internalReportAction()
     {
+        
         $enterpriseKey = $this->_getParam('enterprise-id-key');
         $competitionId = $this->_getParam('competition-id',null);
         $enterpriseRow = $this->Enterprise->getEnterpriseByIdKey($enterpriseKey);

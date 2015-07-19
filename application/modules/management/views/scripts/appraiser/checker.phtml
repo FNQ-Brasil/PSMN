@@ -10,8 +10,7 @@ $permissionRespondAll = (
     <div id="main" class="listagem-empresa <?php // echo $extraMainClass; ?>"  style="margin-top:20px">
         <section class="section-full-page">
             <div class="box-content form-tab">
-
-                <?php if($this->getAllEnterprise) : ?>
+               <?php if($this->getAllEnterprise) : ?>
                     <div class="table-menu header">
                         <?php
                         $total = count($this->getAllEnterprise);
@@ -20,6 +19,7 @@ $permissionRespondAll = (
                         )) : 'Nenhuma empresa com listada para verificação no momento.');
                         ?> 
                         <hgroup>
+                            
                             <a name="lista"></a><h2>Verificação Etapa Estadual - <span><?php echo $label_total; ?></span></h2>
                         </hgroup>
                     </div>

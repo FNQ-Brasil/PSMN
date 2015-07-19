@@ -13,6 +13,7 @@
       <th>Gerar <br>Relatório <br>de Avaliação</th>
       <th>Status</th> 
       <th>Enviar <br>ao Gestor</th>
+      
     </tr>
   </thead>
 <?php
@@ -23,12 +24,15 @@ if (count($this->getAllEnterprise) >= 1):
 <?php
 $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
   foreach ($this->getAllEnterprise as $index => $enterprise) :
-
+ 
+    
     $raa = $enterprise->getDevolutivePath();
     $scoreGestao = '';//$enterprise->getProgressGestao();
     $fantasyName = $enterprise->getFantasyName();
     $socialName = $enterprise->getSocialName();
     $avaliacaoStatus = $enterprise->getCheckerStatus();
+    
+    
 
     $CNPJ = trim($enterprise->getCnpj());
     $CPF = trim($enterprise->getCpfUser());
@@ -114,19 +118,26 @@ $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
             </dt>
         </dl>
       </td>      
-      <td>
+      <td style="padding:5px;">
           <?php
+                  
             echo Vtx_Util_PsmnAvaliacao::statusReport($avaliacaoStatus);
           ?>
       </td>
+      
       <td class="middle">
         <dl>
             <dt>
+            <?php
+            if($avaliacaoStatus != "N" && $avaliacaoStatus != "I"):
+            ?>
                 <a href="<?php echo $EnviarGestor; ?>" title="Enviar ao Gestor" 
                    class="answer-survey" >Enviar ao Gestor</a>
+             <?php endif; ?>      
             </dt>
         </dl>
-      </td>      
+      </td>
+      
     </tr>
 <?php endforeach; ?>
   </tbody>
