@@ -3,6 +3,7 @@ $this->headScript()->appendFile($this->baseUrl('js/management/avaliacao_PontosFo
 
 $addressEnterprise = $this->enterprise->findAddressEnterprise()->current();
 $enterpriseState = $addressEnterprise->findParentState();
+$model_apevaluationverificador = new Model_ApeEvaluationVerificador();
 
 
 $blocoAnterior = ''; 
@@ -105,8 +106,16 @@ endforeach;
                           </div>
 								<div class="answer-option"
 									style="min-height: 54px; width: 110px;">
+                               <?php
+                               
+                               //echo $this->enterprise->getId();
+                               //var_dump($this->respostas[$questionAvaliacao->getId()]);exit;
+                                //$checked = "";
+                                //$resposta = $model_apevaluationverificador->verificaRespostaCriterio($this->enterprise->getId(),$this->respostas[$questionAvaliacao->getId()],null);
+                               // $checked = (isset($resposta) and $resposta[$this->respostas[$questionAvaliacao->getId()]] == 'F')? ' checked="checked"' : '';  
+                                ?>                         
                                 <?php
-                                    $checked = (isset($this->respostas[$questionAvaliacao->getId()]) and $this->respostas[$questionAvaliacao->getId()]['Resposta'] == 'F')? ' checked' : '';
+                                   $checked = (isset($this->respostas[$questionAvaliacao->getId()]['QuestionCheckerId']) && $this->respostas[$questionAvaliacao->getId()]['Resposta'] == 'F')? ' checked' : '';
                                 ?>                                
                               <input <?php echo $checked; ?>
 										type="radio" data-percentage="10" class="option radio"

@@ -32,6 +32,29 @@ function getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $compet
         }
         return $this->DbApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $competitionId);
     }
+    
+    public function verificaResposta($enterpriseId,$perguntaId, $competitionId = null){
+        if (!$competitionId) {
+            $competitionId = Zend_Registry::get('configDb')->competitionId;
+            
+        }
+        
+        return $this->DbApeEvaluationVerificador->verificaResposta($enterpriseId, $perguntaId,$competitionId);
+        
+        
+    }
+    
+    
+    public function verificaRespostaCriterio($enterpriseId,$perguntaId, $competitionId = null){
+        if (!$competitionId) {
+            $competitionId = Zend_Registry::get('configDb')->competitionId;
+            
+        }
+        
+        return  $this->DbApeEvaluationVerificador->verificaRespostaCriterio($enterpriseId, $perguntaId,$competitionId);
+        
+        
+    }
 
     function getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId)
     {

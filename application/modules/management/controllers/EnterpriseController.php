@@ -90,7 +90,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->view->getAllEnterpriseCategoryAward = $modelEnterpriseCategoryAward->getAll();
         $this->view->getAllRegiao = $Regiao->getAll();
         $this->view->getAllMetier = $model_Metier->getAll();
-        $this->view->getAllApeEvaluationVerificador = $ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(766); 
+        $this->view->getAllApeEvaluationVerificador = $ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData($enterprise->getId()); 
 
         $this->view->isRanking = isset($this->view->isRanking) ? $this->view->isRanking : false;
         $this->filterAdditional = isset($this->filterAdditional) ?
@@ -375,7 +375,6 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
             $userId = $this->userAuth->getUserId();
             
             $this->view->getAllEnterprise = $this->Enterprise->getAllForNationalCandidates($userId, $filter);
-                                  
            foreach($this->view->getAllEnterprise as $key => $value){
                
                $IdEntrepriseNacional = $value['Id'];
@@ -386,6 +385,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
                $this->view->getAllEnterprisePontosFortes = $QtdePontosFortes;
                $this->view->getAllEnterprisePontosFinal = $PontosFinal;               
            }         
+
             
         } else {
             $this->view->getAllEnterprise = array();

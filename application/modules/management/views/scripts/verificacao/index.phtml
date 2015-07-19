@@ -10,9 +10,13 @@ $criterioAnterior = '';
 $qsts = array();
 $blocos = array();
 $criterios = array(); 
-
+$model_apevaluationverificador = new Model_ApeEvaluationVerificador();
 //Questoes
 foreach ($this->questoes as $k => $questao):
+    
+    
+    $questaoLetra = $questao->getQuestaoLetra();
+    
     $bloco = $questao->getBloco();
     $criterio = $questao->getCriterio();
     if ($bloco != $blocoAnterior) {
@@ -31,8 +35,16 @@ foreach ($this->questoes as $k => $questao):
     $criterioAnterior = $criterio;
   
     endforeach;
+    
+    
 ?>
+<?php
 
+ //print_r($this->respostas);
+ //print_r($this->respostas["$blockId$criterioId$questaoLetra"]['ans']);
+ //exit;
+
+?>
 <h1 class="title"><a name="anchor"></a>VERIFICADOR - Avaliação do Relato</h1>
 <form action="" method="POST" id="frmAvaliacao" class="avaliacao">
 
@@ -103,9 +115,12 @@ foreach ($this->questoes as $k => $questao):
 	  </div>
            <div class="answer-option">
               <?php
-                $checked = (isset($this->respostas[$questaoId]) and $this->respostas[$questaoId]['Resposta'] == 'D')? ' checked' : '';
+              $checked = "";
+              $resposta = $model_apevaluationverificador->verificaResposta($this->enterprise->getId(),$questaoId);
+              $checked = (isset($resposta) and $resposta[$questaoId] == 'D')? ' checked="checked"' : '';  
               ?>
-                  <input type="radio" value="1"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="option radio" data-percentage="0" />
+                  <input type="radio" value="1" <?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="option radio" data-percentage="0" />
+                  
                   <label style="background: none !important;" for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="label-inline radio">
                     Não Evidenciado
                   </label>
@@ -113,7 +128,7 @@ foreach ($this->questoes as $k => $questao):
                 </div>
                 <div class="answer-option">
                   <?php
-                    $checked = (isset($this->respostas[$questaoId]) and $this->respostas[$questaoId]['Resposta'] == 'A')? ' checked' : '';
+                    $checked = (isset($resposta) and $resposta[$questaoId] == 'A')? ' checked="checked"' : '';
                   ?>
                   
                   <input type="radio" value="2"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-b" class="option radio" data-percentage="50" />
@@ -125,9 +140,10 @@ foreach ($this->questoes as $k => $questao):
                 <div class="answer-option">
                 
                   <?php
-                    $checked = (isset($this->respostas[$questaoId]) and $this->respostas[$questaoId]['Resposta'] == 'S')? ' checked' : '';
+                  
+                    $checked = (isset($resposta) and $resposta[$questaoId] == 'S')? ' checked="checked"' : '';
                   ?>
-                  <input type="radio" value="3"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-c" class="option radio" data-percentage="100" />
+                  <input type="radio" value="3" <?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-c" class="option radio" data-percentage="100" />
                   
                   
                   <label for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-c" class="label-inline radio">

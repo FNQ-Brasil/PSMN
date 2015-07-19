@@ -392,8 +392,9 @@ class Model_Enterprise {
                 $valuesAddress, $colAddress, $questionnaireId, $fetchReturn, $filter, $orderBy, $format, $tipoRelatorio,
                 $groupBy
         );
-
+        
         return $data;
+        
     }
 
     public function getAllForParticipationNotification($filter) {
