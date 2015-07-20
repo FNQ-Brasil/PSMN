@@ -106,20 +106,19 @@ class DbTable_ApeEvaluationVerificador extends Vtx_Db_Table_Abstract
         return array($data);
     }
 
-    public function getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId) {    
-    
+    public function getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId)
+    {
         $configDb = Zend_Registry::get('configDb');
-    
-        $query = $this->select()
-        ->setIntegrityCheck(false)
-        ->from(array('CHE' => 'CheckerEnterprise'), null)
-        ->where('CHE.EnterpriseId = ?' , $IdEntrepriseNacional)
-        ->where('CHE.ProgramaId = ?' , $CompetitionId);
+                
+                $query = $this->select()
+                ->setIntegrityCheck(false)
+                ->from(array('CHE' => 'CheckerEnterprise'),null)
+                ->where('CHE.EnterpriseId = ?' , $IdEntrepriseNacional)
+                ->where('CHE.ProgramaId = ?', $CompetitionId);
         
-        $query->reset(Zend_Db_Select::COLUMNS)
-        ->columns(array(
-            'CHE.QtdePontosFortes'
-        ));
-        return $this->fetchRow($query);
-    }        
+                $query->reset(Zend_Db_Select::COLUMNS)
+                ->columns(array('CHE.QtdePontosFortes'));
+                
+                return $this->fetchRow($query);
+    }
 }

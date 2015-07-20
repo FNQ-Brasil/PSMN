@@ -6,12 +6,14 @@ var devolutiveModule = (function () {
     var $main;
     var generateDevolutive = function(e) {
         //e.preventDefault();
+        console.log(ENTERPRISE_ID_KEY);
+        console.log(QSTN_ID);
         $.ajax({
             url: BASE_URL + '/questionnaire/devolutive/index/format/json/',
             type: 'post',
             cache: false,
             dataType: 'json',
-            data: {'qstn': QSTN_ID, 'enterprise-id-key': ENTERPRISE_ID_KEY}
+            data: {'enterprise-id-key': ENTERPRISE_ID_KEY}
         }).done(function(json, $statusText, jqXHR) {
             if (!($statusText == 'success') || !json.itemSuccess) {
                 $('#tituloDevolutiva').html('Devolutiva');

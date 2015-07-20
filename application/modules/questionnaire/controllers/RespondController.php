@@ -164,11 +164,13 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
         //$enterpriseId = $this->Enterprise->getEnterpriseByUserId($this->enterpriseUserId)->getId();
         
         
-        if (!$this->Questionnaire->verifyQuestionnaireEligibility($this->view->qstnRespondId, $enterpriseId)) {
+        /*if (!$this->Questionnaire->verifyQuestionnaireEligibility($this->view->qstnRespondId, $enterpriseId)) {
             
             $this->view->messageError = "Você não possui elegibilidade para o questionário escolhido.";
             return;
         }
+         * 
+         */
         
         /* Caso geração de devolitiva, redireciona */
         if ($this->_getParam('geraDevolutiva')) {
@@ -179,6 +181,7 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
             }
             //regerar devolutiva
             $regerar = $this->_getParam('regerar');
+            
             if ($regerar) {
                 //exclui o link da ultima devolutiva gerada
                 $modelExec = new Model_Execution();
@@ -187,18 +190,20 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
                 $execution->save();
             }            
             
-            
             $this->view->questionnaireId = $this->view->qstnRespondId;
             $this->view->enterpriseUserId = $this->enterpriseUserId;
-            $this->_forward('index', 'devolutive', 'questionnaire');
+            $this->renderScript('devolutive/index.phtml');
+            //$this->_forward('index', 'devolutive', 'questionnaire', array('geraDevolutiva'=>1));
             return;
         }
         
-        
-        if (!$this->Questionnaire->verifyQuestionnaireRolePeriod($this->view->qstnRespondId,$this->userLogged->getRoleId())) {
+        //Retirar depois
+        /*if (!$this->Questionnaire->verifyQuestionnaireRolePeriod($this->view->qstnRespondId,$this->userLogged->getRoleId())) {
             $this->view->messageError = "Você não possui permissão de acesso para o questionário escolhido.";
             return;
         }
+         * 
+         */
         
         $this->view->answeredByUserId = $this->Questionnaire->getQuestionsAnsweredByUserId(
             $this->view->qstnRespondId, $this->enterpriseUserId, $blockId

@@ -44,6 +44,10 @@ $this->headScript()
   print_r($this->getAllApeEvaluationVerificador->getPontosFinal());
   
   
+      
+  $QtdePontosFortes = $this->getAllEnterprisePontosFortes->getQtdePontosFortes();
+  
+ 
   $QtdPontosFortes = $QtdePontosFortes;
   
   if($QtdPontosFortes == 0)   $QtdPontosFortes = '0';
@@ -163,7 +167,6 @@ $this->headScript()
 	<dl>
 		<dt>
 		<?php 
-		
 		?> 
          <?php if($QtdePontosFortes == 0) echo '0'?>
          <?php if($QtdePontosFortes == 1) echo '2'?>

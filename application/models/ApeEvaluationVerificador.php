@@ -56,9 +56,9 @@ function getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $compet
         
     }
 
-    function getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId)
-    {
-        return $this->DbApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId);
-    }
- 
+  function getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId)
+  {
+      return $this->DbApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId);      
+  }
+
 }
