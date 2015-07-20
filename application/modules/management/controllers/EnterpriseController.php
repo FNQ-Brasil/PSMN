@@ -73,6 +73,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
                 
         $format = $this->_getParam('format');
         $this->view->getAllEducations = $this->Education->getAll();
+       
         if ($format == 'csv') {
             //$this->view->getAllPosition = $this->modelPosition->getAll();
             $this->_dorelatorio();
@@ -154,6 +155,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $fetchReturn = isset($this->fetchReturnForce) ? $this->fetchReturnForce : (isset($this->fetchReturn) ? $this->fetchReturn : 'paginator' );
 
         if($this->tipoRelatorio != 'inscricoes' || $format == 'csv'){
+           
             
             $this->view->getAllEnterprise = $this->Enterprise->getAllByColAE(
                 $this->paramsBuscaServiceArea[0], 
@@ -163,6 +165,9 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
                 $format, $fetchReturn, 
                 $this->tipoRelatorio, $groupBy
             );
+            
+            
+            
         } else {
             $loggedUserId = $this->userAuth->getUserId();
             $this->view->getAllEnterprise = $this->Enterprise->getPaginatorForSubscriptions($loggedUserId, $filter, $count, $page);
@@ -364,7 +369,6 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->view->isRanking = true;
         $this->tipoRelatorio = 'finalistas-nacional';
         $this->showAppraisersFilter = false;
-        //$this->view->getAllApeEvaluationVerificador = $this->ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(1, null);
         
         $this->_helper->viewRenderer->setRender('index');
         

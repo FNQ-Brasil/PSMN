@@ -377,7 +377,7 @@ class Model_Enterprise {
     $format = 'html', $fetchReturn = 'paginator', $tipoRelatorio = 'inscricoes', $groupBy=null
     ) {
         if ($fetchReturn == 'paginator') {
-
+            
             $query = $this->dbTable_Enterprise->getAll(
                     $valuesAddress, $colAddress, $questionnaireId, 'select', $filter, $orderBy, $format, $tipoRelatorio,
                     $groupBy
@@ -387,7 +387,7 @@ class Model_Enterprise {
                             ->setItemCountPerPage($count ? $count : null)
                             ->setCurrentPageNumber($offset ? $offset : 1);
         }
-
+        
         $data = $this->dbTable_Enterprise->getAll(
                 $valuesAddress, $colAddress, $questionnaireId, $fetchReturn, $filter, $orderBy, $format, $tipoRelatorio,
                 $groupBy

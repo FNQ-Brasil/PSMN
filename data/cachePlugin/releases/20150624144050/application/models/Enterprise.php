@@ -360,12 +360,14 @@ class Model_Enterprise {
     public function getAllByColAE(
     $valuesAddress, $colAddress, $questionnaireId, $count = null, $offset = null, $filter = null, $orderBy = null, $format = 'html', $fetchReturn = 'paginator', $tipoRelatorio = 'inscricoes'
     ) {
+        
         if ($fetchReturn == 'paginator') {
-
+            
             $query = $this->dbTable_Enterprise->getAll(
                     $valuesAddress, $colAddress, $questionnaireId, 'select', $filter, $orderBy, $format, $tipoRelatorio
             );
-
+            
+            
             return Zend_Paginator::factory($query)
                             ->setItemCountPerPage($count ? $count : null)
                             ->setCurrentPageNumber($offset ? $offset : 1);

@@ -44,13 +44,15 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         $filter = null, $orderBy = null, $format = null, $tipoRelatorio = 'inscricoes',
         $groupBy = null
     ) {
+        
+               
         $configDb = Zend_Registry::get('configDb');
 
         $filter = $this->setDefaultFiltersValue($filter);
-
+        
         $competitionId = (isset($filter['competition_id']) and $filter['competition_id'])?
             $filter['competition_id'] : $configDb->competitionId;
-
+        
         /*
         $currentAutoavaliacaoId = ($configDb->qstn->currentAutoavaliacaoId)?
                 $configDb->qstn->currentAutoavaliacaoId:'"null"';
@@ -72,7 +74,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 $currentBlockIdEmpreendedorismo = ($configDb->qstn->currentBlockIdEmpreendedorismo)? $configDb->qstn->currentBlockIdEmpreendedorismo:'"null"';
                 break;
         }
-
+        
 
         $incluirJoinPontuacao = (isset($filter['incluir_join_pontuacao']) and $filter['incluir_join_pontuacao'] == '1')?true:false;
         $camposEmpresa = ($incluirJoinPontuacao)?$this->camposEnterprise:$this->menosCamposEnterprise;
@@ -398,7 +400,13 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         */
 
 //         echo $query->__toString(); die;
-        return $this->fetch($query, $fetch);
+
+        
+        
+        
+        $retorno = $this->fetch($query, $fetch);
+        
+        return $retorno;
     }
 
     public function getAllForParticipationNotification($filter) {
