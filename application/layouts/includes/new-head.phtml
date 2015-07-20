@@ -79,7 +79,7 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                                 <?php if ($this->loggedAllowed('ranking', 'management:enterprise')): ?>
                                     <li><a href="<?php echo $this->baseUrl('/management/enterprise/ranking'); ?>" title="Ranking Canditadas">Ranking Canditadas</a></li>
                                 <?php endif; ?>
-                                <!--<?php if ($this->loggedAllowed('classificadas', 'management:enterprise')): ?>
+                                <?php if ($this->loggedAllowed('classificadas', 'management:enterprise')): ?>
                                     <li><a href="<?php echo $this->baseUrl('/management/enterprise/classificadas'); ?>" title="Ranking Classificadas">Ranking Classificadas</a></li>
                                 <?php endif; ?>
                                 <?php if ($this->loggedAllowed('finalistas', 'management:enterprise')): ?>
@@ -87,7 +87,7 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                                 <?php endif; ?>
                                 <?php if ($this->loggedAllowed('comunicacao', 'management:enterprise') and $isManager): ?>
                                     <li><a href="<?php echo $this->baseUrl('/management/enterprise/comunicacao'); ?>" title="Comunicar Participantes">Comunicar Participantes</a></li>
-                                <?php endif; ?>-->
+                                <?php endif; ?>
                             </ul>
                         </li>
                     <?php endif; ?>
@@ -102,7 +102,7 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                             $isNational
                     ):
                         ?>
-                        <!--<li class="submenu">
+                        <li class="submenu">
                             <a href="<?php echo $this->baseUrl('/management/enterprise/candidatas-nacional'); ?>" title="Avaliação Nacional">Avaliação Nacional</a>
                             <ul>
                                 <?php if ($this->loggedAllowed('candidatas-nacional', 'management:enterprise')): ?>
@@ -115,7 +115,7 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                                     <li><a href="<?php echo $this->baseUrl('/management/enterprise/finalistas-nacional'); ?>" title="Ranking Finalistas Nacional">Ranking Finalistas</a></li>
                                 <?php endif; ?>
                             </ul>
-                        </li>-->
+                        </li>
                     <?php endif; ?>
 
                     <?php

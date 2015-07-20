@@ -17,7 +17,7 @@ class Vtx_Util_PsmnAvaliacao
         $status = array(
             'N' => 'Não iniciada',
             'I' => 'Iniciada/Incompleta',
-            'C' => 'Finalizado',
+            'C' => 'Concluida',
             'D' => 'Devolvida'
         );
         return $statusId? $status[$statusId] : $status;

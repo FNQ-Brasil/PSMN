@@ -93,12 +93,17 @@ class DbTable_ApeEvaluationVerificador extends Vtx_Db_Table_Abstract
         ;
         
         
-        $objResult = $this->fetchRow($query)->toArray();
+        $objResult = getRole($this->fetchRow($query));
         $resposta = array();
         $resposta[$objResult['QuestionCheckerId']]=$objResult['Resposta'];
 	
         return $resposta;
         
+    }
+    
+    public function getRole($data)
+    {
+        return array($data);
     }
 
     public function getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId) {    
