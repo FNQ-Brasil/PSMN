@@ -1,3 +1,11 @@
+<?php $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();  ?>
+<?php
+if (count($this->getAllEnterprise) >= 1):
+    foreach ($this->getAllEnterprise  as $key=>$enterprise_one){
+        $avaliacaoStatusTopo = $enterprise_one->getCheckerStatus(); 
+        
+    }
+?>
 <table class="table">
   <caption></caption>
   <thead>
@@ -11,18 +19,18 @@
       <th>Verificar <br>Questionário <br>de Visita</th>
       <th>Verificar <br>Critério <br>de Avaliação</th>
       <th>Gerar <br>Relatório <br>de Avaliação</th>
-      <th>Status</th> 
-      <th>Enviar <br>ao Gestor</th>
+      <th>Status</th>
+      <?php
+      if($avaliacaoStatusTopo != "N" && $avaliacaoStatusTopo != "I"): ?><th>Enviar <br>ao Gestor</th>
+          <?php endif; ?> 
       
     </tr>
   </thead>
-<?php
-if (count($this->getAllEnterprise) >= 1):
-?>
+
   <tbody>
  
 <?php
-$userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
+
   foreach ($this->getAllEnterprise as $index => $enterprise) :
  
     
@@ -121,23 +129,34 @@ $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
       <td style="padding:5px;">
           <?php
                   
-            echo Vtx_Util_PsmnAvaliacao::statusReport($avaliacaoStatus);
+            //$avaliacao_results = Vtx_Util_PsmnAvaliacao::statusReport($avaliacaoStatus);
+           if($avaliacaoStatus == "N"){
+               $avaliacaoStatus = "0%";
+               }  else if($avaliacaoStatus == "I"){
+               $avaliacaoStatus = "50%";    
+               }else
+               {
+               $avaliacaoStatus = "100%";        
+               }
+              echo $avaliacaoStatus;
+            
+            
           ?>
       </td>
-      
+      <?php
+       if($avaliacaoStatus != "0%" && $avaliacaoStatus != "50%"):
+      ?>
       <td class="middle">
         <dl>
             <dt>
-            <?php
-            if($avaliacaoStatus != "N" && $avaliacaoStatus != "I"):
-            ?>
+            
                 <a href="<?php echo $EnviarGestor; ?>" title="Enviar ao Gestor" 
                    class="answer-survey" >Enviar ao Gestor</a>
-             <?php endif; ?>      
+            
             </dt>
         </dl>
       </td>
-      
+       <?php endif; ?>      
     </tr>
 <?php endforeach; ?>
   </tbody>

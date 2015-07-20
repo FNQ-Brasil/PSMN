@@ -89,7 +89,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->view->getAllEnterpriseCategoryAward = $modelEnterpriseCategoryAward->getAll();
         $this->view->getAllRegiao = $Regiao->getAll();
         $this->view->getAllMetier = $model_Metier->getAll();
-        $this->view->getAllApeEvaluationVerificador = $ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData($enterprise->getId()); 
+        //$this->view->getAllApeEvaluationVerificador = $ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(); 
 
         $this->view->isRanking = isset($this->view->isRanking) ? $this->view->isRanking : false;
         $this->filterAdditional = isset($this->filterAdditional) ?
