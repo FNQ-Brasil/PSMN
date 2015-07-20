@@ -42,4 +42,15 @@ class DbTable_Alternative extends Vtx_Db_Table_Abstract
                 
         return $this->fetchRow($query);
     }
+    
+    public function  getScoreLevelField($alternativeId)
+    {        
+        $query = $this->select()
+           ->setIntegrityCheck(false)
+           ->from(array('ALT' => 'alternative')
+           )
+           ->where('ARD.AlternativeId = ?', $alternativeId);
+                
+           return $this->fechRow($query);
+    }
 }

@@ -33,5 +33,8 @@ function getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $compet
         return $this->DbApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $competitionId);
     }
 
-  
+  function getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId)
+  {
+      return $this->DbApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId);      
+  }
 }

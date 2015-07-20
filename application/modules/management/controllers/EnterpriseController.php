@@ -374,14 +374,16 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
             $this->view->getAllEnterprise = $this->Enterprise->getAllForNationalCandidates($userId, $filter);
             
            foreach($this->view->getAllEnterprise as $key=>$value){
-               //$this->view->getAllApeEvaluationVerificador[$value['Id']] = $this->ApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($value['Id']);
-               echo $value['Id'].'<br/> asd';
+               $IdEntrepriseNacional = $value['Id'];
+               $CompetitionId = $filter['competition_id'];
+
+               $QtdePontosFortes = $this->ApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId);
+               $PontosFinal = $this->view->getAllApeEvaluationVerificador->getPontosFinal();
+
+               $this->view->getAllEnterprisePontosFortes = $QtdePontosFortes;
+               $this->view->getAllEnterprisePontosFinal = $PontosFinal;
            }
-           exit('aeeeeee');
-            
-            
             $this->view->getAllApeEvaluationVerificador2 = $this->ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(766);
-            
             
         } else {
             $this->view->getAllEnterprise = array();

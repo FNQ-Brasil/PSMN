@@ -33,7 +33,11 @@ $this->headScript()
 
   foreach ($this->getAllEnterprise as $index => $enterprise):
   
-  $QtdPontosFortes = 1; //$enterprise->getQtdePontosFortes();
+      
+  $QtdePontosFortes = $this->getAllEnterprisePontosFortes->getQtdePontosFortes();
+  
+  
+  $QtdPontosFortes = $QtdePontosFortes;
   
   if($QtdPontosFortes == 0)   $QtdPontosFortes = '0';
   if($QtdPontosFortes == 1)   $QtdPontosFortes = '2';
@@ -152,21 +156,20 @@ $this->headScript()
 	<dl>
 		<dt>
 		<?php 
-		
 		?> 
-         <?php if($enterprise->getQtdePontosFortes() == 0) echo '0'?>
-         <?php if($enterprise->getQtdePontosFortes() == 1) echo '2'?>
-         <?php if($enterprise->getQtdePontosFortes() == 2) echo '4'?>
-         <?php if($enterprise->getQtdePontosFortes() == 3) echo '6'?>
-         <?php if($enterprise->getQtdePontosFortes() == 4) echo '8'?>
-         <?php if($enterprise->getQtdePontosFortes() == 5) echo '10'?>
-         <?php if($enterprise->getQtdePontosFortes() == 6) echo '12'?>
-         <?php if($enterprise->getQtdePontosFortes() == 7) echo '14'?>
-         <?php if($enterprise->getQtdePontosFortes() == 8) echo '16'?>
-         <?php if($enterprise->getQtdePontosFortes() == 9) echo '17'?>
-         <?php if($enterprise->getQtdePontosFortes() == 10) echo '18'?>
-         <?php if($enterprise->getQtdePontosFortes() == 11) echo '19'?>
-         <?php if($enterprise->getQtdePontosFortes() == 12) echo '20'?>
+         <?php if($QtdePontosFortes == 0) echo '0'?>
+         <?php if($QtdePontosFortes == 1) echo '2'?>
+         <?php if($QtdePontosFortes == 2) echo '4'?>
+         <?php if($QtdePontosFortes == 3) echo '6'?>
+         <?php if($QtdePontosFortes == 4) echo '8'?>
+         <?php if($QtdePontosFortes == 5) echo '10'?>
+         <?php if($QtdePontosFortes == 6) echo '12'?>
+         <?php if($QtdePontosFortes == 7) echo '14'?>
+         <?php if($QtdePontosFortes == 8) echo '16'?>
+         <?php if($QtdePontosFortes == 9) echo '17'?>
+         <?php if($QtdePontosFortes == 10) echo '18'?>
+         <?php if($QtdePontosFortes == 11) echo '19'?>
+         <?php if($QtdePontosFortes == 12) echo '20'?>
         </dt>
 	</dl>
 </td>            

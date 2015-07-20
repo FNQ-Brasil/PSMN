@@ -68,6 +68,7 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
      */
     public function indexAction()
     {
+        
        $seconds = 360; //3 minutos
        set_time_limit($seconds); 
        $limit = $this->_getParam('limit');
@@ -219,8 +220,10 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
              $this->view->regerar_devolutive =  $this->view->baseUrl('questionnaire/respond')
                 . "/index/geraDevolutiva/1/regerar/1/enterprise-id-key/" . $this->_getParam('enterprise-id-key');
              $this->view->permissaoCadastrar = $this->Acl->isAllowed($this->auth->getIdentity()->getRole(), 'management:enterprise', 'cadastro');
+             
              return;
         }
+        
         $this->view->messageError = 'Náo foi possível a geração da devolutiva.';
         
     } //end action

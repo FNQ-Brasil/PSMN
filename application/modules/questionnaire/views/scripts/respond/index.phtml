@@ -17,7 +17,7 @@ $this->headScript()->captureStart() ?>
     
     $answered = array();
     $answered_items = array();
-    if(isset($this->answeredByUserId)){
+    if(isset($this->answeredByUserId) &&  $this->answeredByUserId != null){
     foreach ($this->answeredByUserId as $answer):
       $answered[] = $answer['Id'];
       $answered_items[$answer['Id']] = array(
