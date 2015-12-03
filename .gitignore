@@ -38,3 +38,7 @@ Thumbs.db
 /.metadata/
 /.settings/
 /log/
+/.~lock.teste1.csv#
+/.buildpath
+/.gitignore
+/.project
