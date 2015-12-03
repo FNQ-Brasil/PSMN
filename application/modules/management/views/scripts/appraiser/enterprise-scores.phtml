@@ -1,5 +1,4 @@
 <form action="" id="" method="POST" class="avaliacao">
-
   <fieldset style="border-bottom: 2px solid #CCCCCC">
     <input type="hidden" id="" name="" value="" />
   </fieldset>
@@ -33,15 +32,14 @@
     </div>
     
            <div class="list-table-20">
-             <label class="label-control">Pontos Geral</label>
+             <label class="label-control">Pontos Primeira Fase</label>
              <span class="label-value">
                 <?php
                     if ($score->getPontosGeral() != '-') {
-                        //echo number_format($score->getPontosGeral()*100, 1 , ',', '.') . '%';
-                      $NegocioTotal =  number_format($score->getNegociosTotal()*1/2, 1, '.', ',');                      
+                      $NegocioTotal =  number_format($score->getNegociosTotal()*1, 1, '.', ',');                      
                       $MediaTotal =  number_format($score->getMediaPontos(), 1 , '.', ',');
                       
-                      echo number_format(($NegocioTotal + $MediaTotal), 1 , ',', '.');
+                      echo number_format(($NegocioTotal + $MediaTotal)/2, 1 , ',', '.');
                     }
                 ?>
              </span>
@@ -51,7 +49,7 @@
              <label class="label-control">Pontos Negócios</label>
              <span class="label-value">
                 <?php
-                  echo number_format($score->getNegociosTotal()*1/2, 1 , ',', '.').'%';
+                  echo number_format($score->getNegociosTotal()*1, 1 , ',', '.');
                   ?>
              </span>
            </div>
@@ -64,7 +62,7 @@
                 <?php echo number_format($score->getMediaPontos(), 1 , ',', '.');?>
 
              </span>
-           </div>
+           </div>   
     
 
 </fieldset>
@@ -182,7 +180,7 @@
           <span class="label-value">
              <?php
                  if ($score->getPontosGeral() != '-') {
-                     echo number_format($score->getPontosGeral()*100, 1 , ',', '.') . '%';
+                     echo number_format($score->getPontosGeral()*100/2, 1 , ',', '.');
                  }
              ?>
           </span>
@@ -192,7 +190,7 @@
           <label class="label-control">Pontos Negócios</label>
           <span class="label-value">
              <?php
-               echo number_format($score->getNegociosTotal()*10, 1 , ',', '.').'%';
+               echo number_format($score->getNegociosTotal()*10, 1 , ',', '.');
                ?>
           </span>
         </div>

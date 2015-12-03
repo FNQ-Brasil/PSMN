@@ -471,8 +471,11 @@ class Model_Devolutive
                 }    
                 // Recupera as alternativas da questão
                 $alternativesDefs =  $this->Alternative->getAllByQuestionId($questionId);
+				
+
                 foreach ($alternativesDefs as $alternative_def) {
-                    $arr_alternative[$alternative_def->getDesignation()] = $alternative_def->getValue();
+ 
+                    $arr_alternative[$alternative_def["Designation"]] = $alternative_def["Value"];
                 }
                 $arrDevolutiveRAA[$questionId]['alternatives'] = $arr_alternative;
                     

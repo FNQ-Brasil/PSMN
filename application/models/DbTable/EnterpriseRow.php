@@ -43,6 +43,5 @@ class DbTable_EnterpriseRow extends Vtx_Db_Table_Row_Abstract
         $reticencias = (strlen($string) > 250)?'(...)':'.';
         return substr($string, 0, 250).$reticencias;
         //$txtCompany2 = wordwrap($txtCompany, $txtCompanyWidth, "<br />\n",false);
-    }
-    
+    }    
 } 

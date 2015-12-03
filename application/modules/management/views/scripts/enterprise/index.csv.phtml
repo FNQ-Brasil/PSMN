@@ -95,6 +95,12 @@ echo "Na Medida{$separador}";
 echo "Regional{$separador}";
 echo "Resumo da Empresa{$separador}";
 echo "Confirmada{$separador}";
+
+echo "Inscrição Estadual{$separador}";
+echo "DAP{$separador}";
+echo "N° Ministério da Pesca{$separador}";
+echo "NIRF {$separador}";
+echo "Tamanho da Propriedade{$separador}";
 echo $novalinha;
 
 $arrFaturamento = Vtx_Util_Array::annualRevenue();
@@ -110,7 +116,10 @@ $findUsArray = Vtx_Util_Array::howFindUsPsmn();
 
 $i = 1;
 if (count($this->getAllEnterprise) >= 1) :
+
    foreach ($this->getAllEnterprise as $enterprise) {
+	   
+
        
         $socialName = rr ( $enterprise->getSocialName() );
         $inscricaoEstadual = ''; //rr2 ( $enterprise->getInscricaoEstadual() );
@@ -119,6 +128,16 @@ if (count($this->getAllEnterprise) >= 1) :
         $CNPJ = trim($enterprise->getCnpj());
         $CPF = trim($enterprise->getCpfUser());
         $enterpriseType = ($enterpriseTypeId == '1')?$CNPJ:$CPF;
+		
+		
+		$StateRegistration = trim($enterprise->getStateRegistration());
+		$Dap = trim($enterprise->getDap());
+		$RegisterMinistryFisher = trim($enterprise->getRegisterMinistryFisher());
+		$Nirf =trim($enterprise->getNirf());
+		$FarmSize =trim($enterprise->getFarmSize());
+		
+		
+		
         
         $tipoEmpresaString = $tipoEmpresa[$enterpriseTypeId]; // '';//
         
@@ -286,6 +305,13 @@ if (count($this->getAllEnterprise) >= 1) :
         echo $regional.$separador;
         echo $companyHistory.$separador;
         echo $verified.$separador;
+		
+		echo $StateRegistration . $separador;
+		echo $Dap .$separador;
+		echo $RegisterMinistryFisher . $separador;
+		echo $Nirf .$separador;
+		echo $FarmSize .$separador;
+		
         
         //echo $logGerouDevolutiva.$separador;
         echo $novalinha; 

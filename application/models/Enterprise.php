@@ -376,7 +376,7 @@ class Model_Enterprise {
     $valuesAddress, $colAddress, $questionnaireId, $count = null, $offset = null, $filter = null, $orderBy = null,
     $format = 'html', $fetchReturn = 'paginator', $tipoRelatorio = 'inscricoes', $groupBy=null
     ) {
-        if ($fetchReturn == 'paginator') {
+		if ($fetchReturn == 'paginator') {
             
             $query = $this->dbTable_Enterprise->getAll(
                     $valuesAddress, $colAddress, $questionnaireId, 'select', $filter, $orderBy, $format, $tipoRelatorio,
@@ -1012,7 +1012,7 @@ class Model_Enterprise {
     }
 
     public function getPaginatorForSubscriptions($loggedUserId, $filter, $limit=10, $offset=1){
-        $query = $this->dbTable_Enterprise->getQueryForSubscriptions($loggedUserId, $filter);
+		$query = $this->dbTable_Enterprise->getQueryForSubscriptions($loggedUserId, $filter);
         return Zend_Paginator::factory($query)->setItemCountPerPage($limit)->setCurrentPageNumber($offset);
     }
 
@@ -1088,4 +1088,8 @@ class Model_Enterprise {
         exit('aqui');
         return $this->dbTable_Enterprise->getEnterpriseCheckerEnterprisePontosFortes($enterpriseId, $competitionId);
     }
+	
+	public function setTempVal($id,$col,$val){
+		$this->dbTable_Enterprise->setTempVal($id,$col,$val);
+	}
 }

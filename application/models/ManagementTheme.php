@@ -14,8 +14,8 @@ class Model_ManagementTheme {
     public function getScoreByTh7eme($questionnaireId, $userId){
         return $this->table->getScoreByTheme($questionnaireId, $userId);
     }
-    public function getScoreByTheme($questionnaireId, $userId){
-        return $this->table->getScoreByTheme($questionnaireId, $userId);
+    public function getScoreByTheme($questionnaireId, $userId,$verificador){
+        return $this->table->getScoreByTheme($questionnaireId, $userId,$verificador);
     }
 }
 

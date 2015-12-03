@@ -30,11 +30,12 @@ class Manager_ExecutionPontuacao {
         return $this->Execution->getExecutionByUserAndQuestionnaire($questionnaireId, $userId);
     }
 
-    public function calculateExecutionScore($questionnaireId, $userId){
+    public function calculateExecutionScore($questionnaireId, $userId,$verificador = false){
         $executionScore = 0;
-        $themesScore = $this->ManagementTheme->getScoreByTheme($questionnaireId, $userId);
+        $themesScore = $this->ManagementTheme->getScoreByTheme($questionnaireId, $userId,$verificador);
         foreach($themesScore as $themeScore) $executionScore += $themeScore->getThemeScore();
-        return ($executionScore = $executionScore / count($themesScore));
+		if($executionScore > 0) return ($executionScore = $executionScore / count($themesScore));
+		else  return 0;
     }
 
 }

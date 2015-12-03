@@ -7,8 +7,9 @@
  */
 class Model_Appraiser
 {
-
     public $DbAppraiser = "";
+	
+	private $appraiserID;
     
     public function __construct()
     {
@@ -17,7 +18,8 @@ class Model_Appraiser
         $this->DbEnterprise = DbTable_Enterprise::getInstance();
         $this->DbApeEvaluation = DbTable_ApeEvaluation::getInstance();
         $this->DbCheckerEvaluation = DbTable_CheckerEvaluation::getInstance();
-        $this->DbApeEvaluationVerificador = DbTable_ApeEvaluationVerificador::getInstance();         
+        $this->DbApeEvaluationVerificador = DbTable_ApeEvaluationVerificador::getInstance(); 
+	    $this->DbApeEvaluationVerificadorComment = DbTable_ApeEvaluationVerificadorComment::getInstance();        
     }
     
     public function getTable()
@@ -29,6 +31,16 @@ class Model_Appraiser
     {
         return DbTable_AvaliacaoPerguntas::getInstance()->fetchAll($where);
     }
+	
+    private function setAppraiserId($appraiserID)
+	{
+		$this->appraiserID = $appraiserID;
+	}
+	
+	public function getAppraiserId()
+	{
+		return $this->appraiserID;
+	}
 
     public function createAppraiserToEnterprise($appraiserRow,$data)
     {
@@ -46,15 +58,25 @@ class Model_Appraiser
         );
     }
 
-    public function setAppraiserToEnterprise($data)
+     public function setAppraiserToEnterprise($data)
     {
         $enterpriseId   = $data['enterprise_id'];
         $appraiserId    = $data['appraiser_id'];
         $programaId     = $data['programa_id'];
         $tipo           = $data['tipo'];
         $this->DbAppraiser->getAdapter()->beginTransaction();
+		
         try {
-            $where = array('EnterpriseId=?'=>$enterpriseId,'AppraiserTypeId=?'=>$tipo,'ProgramaId=?'=>$programaId);
+            $where = array('EnterpriseId=?'=>$enterpriseId,'UserId=?'=>$appraiserId,'ProgramaId=?'=>$programaId,'AppraiserTypeId IN (4,5,6)'=>'');
+			$obj = $this->DbAppraiser->fetchRow($where);
+			if ($obj){
+				return array(
+					'status' => false,
+					'messageError'=>'Este avaliador já está selecionado para esta empresa'
+				);
+			}
+            unset($obj);
+			$where = array('EnterpriseId=?'=>$enterpriseId,'AppraiserTypeId=?'=>$tipo,'ProgramaId=?'=>$programaId);
                 if ( $appraiserId == '0' ) {
                     $this->DbAppraiser->delete($where);
                 } else {
@@ -70,9 +92,77 @@ class Model_Appraiser
                         ->setAppraiserTypeId($tipo)
                         ->setProgramaId($programaId)
                         ;
-                    $appraiserEntRow->save();
+						
+					//print_r($appraiserEntRow);exit;
+					$appraisserId = $appraiserEntRow->save();
+                    $this->setAppraiserId($appraisserId);
             }
             $this->DbAppraiser->getAdapter()->commit();
+            return array(
+                'status' => true
+            );
+
+        } catch (Vtx_UserException $e) {
+            DbTable_Question::getInstance()->getAdapter()->rollBack();
+            return array(
+                'status' => false, 'messageError' => $e->getMessage()
+            );
+        } catch (Exception $e) {
+            DbTable_Question::getInstance()->getAdapter()->rollBack();
+            throw new Exception($e);
+        }
+    }
+
+
+	public function setCheckerToEnterpriseVerificador($data)
+    {
+			
+        $enterpriseId   = $data['enterprise_id'];
+        $userId   		= $data['user_id'];
+        $programaId     = $data['programa_id'];
+        $tipo           = $data['tipo'];
+		$status        = $data['status'];
+		
+		$tbCheckerLast =  $this->DbChecker->select()
+		    ->distinct()
+            ->setIntegrityCheck(false)
+            ->from(array("ce" => "CheckerEnterprise"), array('*'))
+			->where('UserId = ?', $userId)
+			->where('EnterpriseId = ?', $enterpriseId)
+			->order('Id DESC');
+		$last = $this->DbChecker->fetchRow($tbCheckerLast);
+		
+		
+		if(isset($last) && $status != "C"){
+			if($last->getStatus() == $status && $last->getStatus() != NULL && $last->getStatus() != "IIII")
+			{
+				$status = $status . "I";
+			}
+		}
+		
+
+        $this->DbChecker->getAdapter()->beginTransaction();
+        try {
+            $where = array(
+                'EnterpriseId=?' => $enterpriseId,
+                'CheckerTypeId=?' => $tipo,
+                'ProgramaId=?' => $programaId,
+				'UserId=?' => $userId
+            );
+               // $this->DbChecker->delete($where);
+                $obj = $this->DbChecker->fetchRow($where);
+                $checkerEnt = ($obj)? $obj : $this->DbChecker->createRow();
+
+                $checkerEntRow = $checkerEnt
+                    ->setUserId($userId)
+                    ->setEnterpriseId($enterpriseId)
+                    ->setCheckerTypeId($tipo)
+                    ->setProgramaId($programaId)
+					->setStatus($status)
+                ;
+                $checkerEnt->save();
+
+            $this->DbChecker->getAdapter()->commit();
             return array(
                 'status' => true
             );
@@ -87,10 +177,10 @@ class Model_Appraiser
         }
     }
 
+
+
     public function setCheckerToEnterprise($data)
     {
-        
-        
         $enterpriseId   = $data['enterprise_id'];
         $checkerId    = $data['checker_id'];
         $programaId     = $data['programa_id'];
@@ -490,9 +580,11 @@ class Model_Appraiser
     public function saveApeEvaluationVerificador(
         $questions, $evaluationRow, $answers = array(), $conclusao = '', $finalizar = false
     ) {                
+ 
         $tbApeEvaluationVerificador = DbTable_ApeEvaluationVerificador::getInstance();
         $appraiserEnterpriseId = $evaluationRow->getId();
-        $pontosFinal = 1;
+		$userId = $evaluationRow->getUserId();
+        $pontosFinal = 0;
         $finalizacaoSucesso = true;
         $questionsError = array();
            
@@ -521,20 +613,25 @@ class Model_Appraiser
                     $questionsError[$question['Bloco']][$question['Criterio']][$question['QuestaoLetra']] = array();
                 }               
                 
-                if (isset($questionId) and $questionId == 2) {
+			 
+				
+                if (isset($answers[$questionId]) and $answers[$questionId] == 2) {
                     $pontosFinal += ($question['Peso'] * 0.5); //50%
                 } elseif (isset($answers[$questionId]) and $answers[$questionId] == 3) {
                     $pontosFinal += ($question['Peso'] * 1); //100%                   
-                }
-                
-                $respostas = isset($answers[$questionId])? $answers[$questionId] : null;
-                
+                }               
+
+                $respostas = isset($answers[$questionId])? $answers[$questionId] : null;              
+
                 $appraiserEntRow = $tbApeEvaluationVerificador->createRow()
                 ->setAppraiserEnterpriseId($appraiserEnterpriseId)
                 ->setAvaliacaoPerguntaId($questionId)
                 ->setResposta($respostas)
                 ->setDate(New Zend_Db_Expr('NOW()'))                
-                ->setPontosFinal($pontosFinal);
+                ->setPontosFinal($pontosFinal)
+				->setUserId($userId);
+				
+		 
                 $appraiserEntRow->save();
             }           
             
@@ -569,12 +666,121 @@ class Model_Appraiser
         }
     }
     
-    function getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $competitionId = null)
+    function getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId,$userId, $competitionId = null)
     {
         if (!$competitionId) {
             $competitionId = Zend_Registry::get('configDb')->competitionId;
         }
-        return $this->DbApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $competitionId);
-    }
+
+        return $this->DbApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId,$userId,$competitionId);
+    }    
+	
+	    public function saveApeEvaluationVerificadorComment(
+        $commentQuestions, $evaluationQuestions, $comments = array(), $appraiserEnterpriseId, $userId
+    ) {              
+
+       //$evaluationRow
+	$conclusao = '';
+	$finalizar = false;  
+ 
+        $tbApeEvaluationVerificadorComment = DbTable_ApeEvaluationVerificadorComment::getInstance();
+        $appraiserEnterpriseId = $appraiserEnterpriseId;
+	$userId = $userId;
+        $finalizacaoSucesso = true;
+        $questionsError = array();
+           
+		   
+		 
+		   
+        Zend_Registry::get('db')->beginTransaction();
+        try {
+            $tbApeEvaluationVerificadorComment->delete(array(
+                'AppraiserEnterpriseId = ?' => $appraiserEnterpriseId
+            ));
+
+            foreach ($commentQuestions as $question) {
+                $questionId = $question['Id'];              
+                
+                if (!isset($questionId)) {
+                    $finalizacaoSucesso = false;
+                    $questionsError[$question['Bloco']][$question['Criterio']] = array();
+                    continue;
+                }
+               
+                if (!isset($questionId) or ($questionId != 1)) 
+                {
+                    $finalizacaoSucesso = false;
+                    $questionsError[$question['Bloco']][$question['Criterio']] = array();
+                }               
+             }
+
+	    $criterioAnterior = '';
+            foreach ($commentQuestions as $question) {
+
+               // $criterio = "{$question->getBloco()}{$question->getCriterio()}";
+              //  if ($criterioAnterior==$criterio) {
+              //      continue;
+               // }
+
+
+				$criterio = $question->getBloco().$question->getCriterio();
+
+				
+                
+
+                if (!isset($comments[$criterio]) or trim($comments[$criterio]) == '') {
+                    $finalizacaoSucesso = false;
+                    $criteriosError[$question->getBloco()][$question->getCriterio()] = array();
+                    continue;
+                }    
+				
+				 if ($criterioAnterior==$criterio) {
+                   		continue;
+                  }
+				
+				$appraiserEntRow = $tbApeEvaluationVerificadorComment->createRow()
+				->setComment($comments[$criterio])
+				->setCriterioNumber($criterio)
+				->setAppraiserEnterpriseId($appraiserEnterpriseId)
+				->setUserId($userId);			
+				
+				$appraiserEntRow->save();
+				$criterioAnterior = $criterio;
+			                             
+             }   			
+
+            if ($conclusao) {
+                $evaluationRow
+                ->setConclusao($conclusao)
+                ->setConclusaoDate(New Zend_Db_Expr('NOW()'))                
+                ->save();
+            }
     
+            Zend_Registry::get('db')->commit();
+    
+            return array(
+                'status' => true,
+                'finalizacaoSucesso' => $finalizacaoSucesso,
+                'questionsError' => $questionsError
+            );
+
+            } 
+	catch (Vtx_UserException $e) {
+            Zend_Registry::get('db')->rollBack();
+            return array(
+                'status' => false,
+                'messageError' => $e->getMessage(),
+                'questionsError' => $questionsError
+            );
+        }
+	catch (Exception $e) {
+            Zend_Registry::get('db')->rollBack();
+            throw new Exception($e);
+        }
+    }
+	
+	    function getApeEvaluationVerificadorComment($enterpriseId,$userId)
+    {
+        return $this->DbApeEvaluationVerificadorComment->getApeEvaluationVerificadorCommentFind($enterpriseId,$userId);
+    }    
 }

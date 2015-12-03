@@ -433,6 +433,44 @@ class DbTable_Questionnaire extends Vtx_Db_Table_Abstract
 
         return $this->fetch($query, $fetch);
     }
+
+
+    public function getQuestionsAnsweredByUserIdVerificador($QstnId, $UserId,$EnterpriseId, $fetch = 'all', $blockId = false)
+    {       
+        $query = $this->select()
+            ->setIntegrityCheck(false)
+            ->from(
+                array('QST' => 'Question'), array('Id')
+            )
+            ->joinLeft(
+                array('CRT' => 'Criterion'), 'QST.CriterionId = CRT.Id', null
+            )
+            ->joinInner(
+                array('BLK' => 'Block'), 'CRT.BlockId = BLK.Id', null
+            )
+            ->joinInner(
+                array('QTR' => 'Questionnaire'), 'BLK.QuestionnaireId = QTR.Id', null
+            )
+            ->joinInner(
+                array('ALT' => 'Alternative'), 'QST.Id = ALT.QuestionId', null
+            )
+            ->joinInner(
+                array('ANS' => 'AnswerVerificador'), 'ALT.Id = ANS.AlternativeId', array('AlternativeId', 'AnswerValue')
+            )
+            ->joinLeft(
+                array('ANF' => 'AnswerFeedback'), 'ANS.Id = ANF.AnswerId', 
+                array('Feedbacks' => 'count(ANF.Id)')
+            )
+            ->where('QTR.Id = ?', $QstnId)
+            ->where('ANS.UserId = ?', $UserId)
+			->where('ANS.EnterpriseId = ?', $EnterpriseId);
+			
+
+            $query->group('QST.Id')
+            ->order('QST.Designation');
+
+        return $this->fetch($query, $fetch);
+    }
     
     /**
      * Faz verificacao se um usuario respondeu todas as questoes 

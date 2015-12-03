@@ -39,8 +39,6 @@ class Model_ExecutionPontuacao
 
             }
             $eRow->save();
-
-            //var_dump($eRow); exit;
             
             DbTable_ExecutionPontuacao::getInstance()->getAdapter()->commit();
             return array(
@@ -81,8 +79,6 @@ class Model_ExecutionPontuacao
                   break;                         
                       
              } //fim switch
-
-            //var_dump($eRow); exit;
             
             DbTable_ExecutionPontuacao::getInstance()->getAdapter()->commit();
             return array(

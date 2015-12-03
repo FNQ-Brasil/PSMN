@@ -1,26 +1,5 @@
 <?php
 
-function mask($val, $mask)
-{
-	$maskared = '';
-	$k = 0;
-	for($i = 0; $i<=strlen($mask)-1; $i++)
-	{
-		if($mask[$i] == '#')
-		{
-			if(isset($val[$k]))
-			$maskared .= $val[$k++];
-			}
-		else
-		{
-			if(isset($mask[$i]))
-			$maskared .= $mask[$i];
-		}
-	}
-	return $maskared;
-}
-
-
 /**
 view usada para gerar conteudo do fetchall em .CSV
 */
@@ -32,7 +11,7 @@ $novalinha = "\n";
 $competitionId = (isset($this->filter['competition_id']))? $this->filter['competition_id'] : $this->competitionId;
 
 echo "Razão Social{$separador}CPF{$separador}Nome Fantasia{$separador}CNPJ{$separador}Email{$separador}UF{$separador}";
-echo "Pts. Geral 1º Fase{$separador}";
+echo "Pts. Geral{$separador}";
 echo "Pts. Negócios{$separador}";
 echo "Média Relato{$separador}";
 if ($competitionId == 2013) {
@@ -59,7 +38,7 @@ if (count($this->getAllEnterprise) >= 1) :
         $fantasyName = rr ( $enterprise->getFantasyName() );
         $enterpriseTypeId = 2; //$enterprise->getEnterpriseTypeId();
         $CNPJ = trim($enterprise->getCnpj());
-        $CPF = mask(trim($enterprise->getCpfUser()),'###.###.###-##');
+        $CPF = trim($enterprise->getCpfUser());
         $enterpriseType = ($enterpriseTypeId == '1')?$CNPJ:$CPF;
 
         $email = trim($enterprise->getEmailDefault());
@@ -67,22 +46,17 @@ if (count($this->getAllEnterprise) >= 1) :
         echo $separador;
         echo $CPF.$separador;
         echo $fantasyName.$separador; //Nome Fantasia
-
-		if(strlen($CNPJ) == 14)
-        	echo mask($CNPJ,'##.###.###/####-##').$separador; //CPF/CNPJ
-		else
-			echo $CNPJ .$separador;
-		
+        echo $CNPJ.$separador; //CPF/CNPJ
         echo $email.$separador;
         echo rr2($enterprise->getUf()).$separador;
 
-        $negocios = rr2(number_format($enterprise->getNegociosTotal()*1, 1 , ',', '.')).'';
+        $negocios = rr2(number_format($enterprise->getNegociosTotal()*10, 1 , ',', '.').'%').'';
         if ($competitionId == 2013 ) {
             $empree = rr2(number_format($enterprise->getPontosEmpreendedorismo(), 2 , ',', '.')).'';
         }
- 
-        if ($enterprise->getTotalPrimeiraFase() != '-') {
-            echo rr2(number_format($enterprise->getTotalPrimeiraFase(), 1 , '.', ','));
+
+        if ($enterprise->getPontosGeral() != '-') {
+            echo rr2(number_format($enterprise->getPontosGeral()*100, 1 , ',', '.') . '%');
         }
         echo $separador;
         echo $negocios."";

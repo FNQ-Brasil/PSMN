@@ -1,6 +1,12 @@
 <?php
+
 $controller = $this->request()->getControllerName();
 $action = $this->request()->getActionName();
+
+//print_r($controller);
+//print_r($action);
+
+
 $idKey = ($this->enterpriseIdKey)?true:false;
 $linkCadastro = ($idKey)?'edit/id_key/'.$this->enterpriseIdKey:'cadastro';
 $request = $this->request();
@@ -10,8 +16,6 @@ if ($idKey) {
     $arrEtapas = $this->terminoEtapas();
 }
 
-print_r($controller);
-print_r($action);
 ?>
 <ul class="main-menu" style="left: -91px; top: 0">
 <?php

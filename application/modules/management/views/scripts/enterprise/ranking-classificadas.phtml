@@ -1,7 +1,5 @@
-<?php
-$this->headScript()
-    ->appendFile($this->baseUrl('js/management/appraiser/list.js?x1'))
-;
+﻿<?php
+$this->headScript()->appendFile($this->baseUrl('js/management/appraiser/list.js?x1'));
 ?>
 <table class="table">
 	<caption></caption>
@@ -14,7 +12,7 @@ $this->headScript()
 			<th class="appraisers" style="padding: 30px 5px 21px">Verificador</th>
 			<th class="appraisers-cancel">Desclassificar</th>
 
-			<th>Pontos<br>Geral <br>1° Fase
+			<th>Pontos<br>Geral<br> 1º FASE
 			</th>
 			<th>Pontos<br>Negócios <br>da Empresária
 			</th>
@@ -37,10 +35,12 @@ $this->headScript()
 <?php if (count($this->getAllEnterprise) >= 1): ?>
   <tbody>
 <?php
+$autotest = new Model_AnswerVerificador(); 
+$enterpriseId = new Model_Enterprise();
   foreach ($this->getAllEnterprise as $index => $enterprise):
     
     $raa = $enterprise->getDevolutivePath();
-        $socialName = $enterprise->getSocialName();
+    $socialName = $enterprise->getSocialName();
     $fantasyName = $enterprise->getFantasyName();
     $CNPJ = trim($enterprise->getCnpj());
     //$CPF = trim($enterprise->getCpf());
@@ -81,8 +81,27 @@ $this->headScript()
         'note' => trim($enterprise->getMotivoDesclassificadoVerificacao())
       )
     );
+	
+	
+	$enterpriseUserid = $enterpriseId->getUserIdByIdKey($enterprise->getIdKey());
+	$score =(object)$autotest->getAllScoreByEnterpriseId($enterpriseUserid);
+
     if (isset($this->allCheckers)):
+if(($score->count() > 0 and $score[0]->EnterpriseId == $enterpriseUserid) and $verificadores['confirm']['options']['primary']['status'] != 0){
       foreach ($this->allCheckers as $checker):
+	  if($verificadores['confirm']['options']['primary']['status'] == $checker->getId()){
+        $verificadorNome = $checker->getFirstName() . ' ' . $checker->getSurname();
+        $verificadores['confirm']['options']['primary']['field'][] = '<option '
+                . (($isCurrentCompetition)?'':' disabled ')
+                .' value="' 
+                . (($isCurrentCompetition)?$checker->getId():null) . '" ' 
+                . (($verificadores['confirm']['options']['primary']['status'] == $checker->getId()) ? 'selected="selected"' : '') . '>' 
+                . $verificadorNome 
+                . '</option>';
+	  }
+      endforeach;
+}else{
+	      foreach ($this->allCheckers as $checker):
         $verificadorNome = $checker->getFirstName() . ' ' . $checker->getSurname();
         $verificadores['confirm']['options']['primary']['field'][] = '<option '
                 . (($isCurrentCompetition)?'':' disabled ')
@@ -92,6 +111,7 @@ $this->headScript()
                 . $verificadorNome 
                 . '</option>';
       endforeach;
+}
     endif;
 ?>
 
@@ -157,24 +177,26 @@ $this->headScript()
 
 			<td class="middle">
           <?php
-            if ($enterprise->getPontosGeral() != '-') {
+           // if ($enterprise->getPontosGeral() != '-') {
                 
-                $NegocioTotal =  number_format($enterprise->getNegociosTotal()*1/2, 1 , '.', ',');
-                $MediaTotal =  number_format($enterprise->getMediaPontos(), 1 , '.', ',');
-               
-                echo number_format(($NegocioTotal + $MediaTotal), 1 , ',', '.');
-            }
+               // $NegocioTotal =  number_format($enterprise->getNegociosTotal()*1, 1 , '.', ',');
+               $MediaTotal =  number_format($enterprise->getTotalPrimeiraFase(), 1 , '.', ',');
+ 
+                echo $MediaTotal;
+            //}
         ?>
       </td>
 			<td class="middle"><span>
           <?php
-            echo number_format($enterprise->getNegociosTotal()*1/2, 1 , ',', '.').'%';
+            echo number_format($enterprise->getNegociosTotal()*1, 1 , ',', '.');
             ?>
           </span></td>
 
 			</td>
 			<td class="middle">
-                <?php echo number_format($enterprise->getMediaPontos(), 1 , ',', '.');?>
+			
+			<?php echo number_format($enterprise->getMediaPontos(), 1 , ',', '.');?>
+                
             </td>
 
 			<td class="middle">
@@ -203,8 +225,8 @@ $this->headScript()
 								style="font-size: 10px">(<?php echo $enterprise->getLoginAvaliadorPri(); ?>)</b>
                          
                         <?php if ($enterprise->getAppraiserStatus() == 'C'): ?>
-                            <?php echo number_format($enterprise->getPontos(), 1 , ',', '.'); ?> pts. </label>
-                    
+    					   <?php echo number_format($enterprise->getPontos(), 1 , ',', '.'); ?> pts.
+                             </label>
                             <?php if ($isCurrentCompetition): ?> 
                             <a
 							style="font-size: 11px; text-indent: 0px; width: 54px; display: inline-block;"
@@ -229,7 +251,7 @@ $this->headScript()
 								style="font-size: 10px">(<?php echo $enterprise->getLoginAvaliadorSec(); ?>)</b>
                           
                            <?php if ($enterprise->getAppraiserStatusSec() == 'C'): ?>
-                                <?php echo number_format($enterprise->getPontosSec(), 1 , ',', '.'); ?> pts. 
+					           <?php echo number_format($enterprise->getPontosSec(), 1 , ',', '.'); ?> pts.
                                 <?php if ($isCurrentCompetition): ?> 
                                  <a
 								style="font-size: 11px; text-indent: 0px; width: 54px; display: inline-block;"
@@ -256,8 +278,7 @@ $this->headScript()
                             
                                 
                             <?php if ($enterprise->getAppraiserStatusTer() == 'C'): ?>
-                                <?php echo number_format($enterprise->getPontosTer(), 1 , ',', '.'); ?> pts.
-                                
+					           <?php echo number_format($enterprise->getPontosTer(), 1 , ',', '.'); ?> pts.
                                 <?php if ($isCurrentCompetition): ?> 
                                 <a
 								style="font-size: 11px; text-indent: 0px; width: 54px; display: inline-block;"

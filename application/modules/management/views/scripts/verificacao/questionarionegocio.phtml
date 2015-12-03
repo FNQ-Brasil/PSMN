@@ -1,9 +1,8 @@
-
-
 <?php
 if ($this->userAuth()->getRoleId() == $this->configRegistry()->acl->roleEnterpriseId) {
     // echo '<h1 class="title 22x">Fim das inscrições.</h1>';
     // return;
+
 }
 
 $this->headScript()->captureStart() ?>
@@ -14,16 +13,18 @@ $this->headScript()->captureStart() ?>
         ->appendStylesheet($this->baseUrl('assets/css/respond.css'));
 ?>
 
-  <?php
+<!-- DADOS DA EMPRESÁRIA -->
+<?php    
     $answered = array();
     $answered_items = array();
+    if(isset($this->answeredByUserId) &&  $this->answeredByUserId != null){
     foreach ($this->answeredByUserId as $answer):
       $answered[] = $answer['Id'];
       $answered_items[$answer['Id']] = array(
         'id' => $answer['AlternativeId'],
         'complement' => $answer['AnswerValue']
       );
-  ?>
+ ?>
     $('#alternativeItem<?php echo $answer['AlternativeId']; ?>')[0].checked = true;
     <?php if ($answer['AnswerValue'] && (trim($answer['AnswerValue']) != '')): ?>
         if ($('#FdbkQuestion<?php echo $answer['Id']; ?>').length) {
@@ -34,7 +35,9 @@ $this->headScript()->captureStart() ?>
     <?php
       endif;
     endforeach;
+    }
   ?>
+
   var QUESTION_ANSWERED = [<?php echo implode(', ', $answered); ?>];
   var QUESTION_ANSWERED_ITEMS = {};
   <?php
@@ -49,6 +52,62 @@ $this->headScript()->captureStart() ?>
     endforeach;
   endif;
   ?>
+
+
+<!-- DADOS DO VERIFICADOR -->
+
+<?php    
+    $answered = array();
+    $answered_items = array();
+    if(isset($this->answeredByUserIdVerificador) &&  $this->answeredByUserIdVerificador != null){
+    foreach ($this->answeredByUserIdVerificador as $answer):
+      $answered[] = $answer['Id'];
+      $answered_items[$answer['Id']] = array(
+        'id' => $answer['AlternativeId'],
+        'complement' => $answer['AnswerValue']
+      );
+ ?>
+    $('#alternativeItemverificador<?php echo $answer['AlternativeId']; ?>')[0].checked = true;
+    <?php if ($answer['AnswerValue'] && (trim($answer['AnswerValue']) != '')): ?>
+        if ( $('textarea[name="comentarioItemverificador<?php echo $answer['Id']; ?>"]').length) {
+       // $('[for="FdbkQuestion<?php echo $answer['Id']; ?>"]').addClass('visible');
+       $('textarea[name="comentarioItemverificador<?php echo $answer['Id']; ?>"]').addClass('visible');
+        $('textarea[name="comentarioItemverificador<?php echo $answer['Id']; ?>"]').val("<?php echo str_replace(array("\r\n", "\r", "\n"), array('\r\n', '\r', '\n'), $answer['AnswerValue']); ?>");
+        }
+    <?php
+      endif;
+    endforeach;
+    }
+  ?>
+
+  var QUESTION_ANSWERED = [<?php echo implode(', ', $answered); ?>];
+  var QUESTION_ANSWERED_ITEMS = {};
+  <?php
+  if ($answered_items):
+    foreach ($answered_items as $answered_items_index => $answered_items_value):
+  ?>
+  QUESTION_ANSWERED_ITEMS[<?php echo $answered_items_index; ?>] = {
+    id: <?php echo $answered_items_value['id']; ?>,
+    complement: '<?php echo str_replace(array("\r\n", "\r", "\n"), array('\r\n', '\r', '\n'), $answered_items_value['complement']); ?>'
+  };
+  <?php
+    endforeach;
+  endif;
+  ?>
+
+<?php 
+/*
+echo('<pre>');
+print_r($answered_items_value['complement']); 
+echo('</pre>');
+exit;
+*/
+
+?>
+
+
+
+<!-- DADOS GERAIS DO QUESTIONARIO -->
   var PAPEL_EMPRESA = <?php echo $this->papelEmpresa; ?>;
   var QUESTION_TYPE_ABCD_ID = <?php echo Model_QuestionType::ABCD_ID; ?>;
   var QUESTION_TYPE_YESNO_ID = <?php echo Model_QuestionType::YESNO_ID; ?>;
@@ -57,13 +116,11 @@ $this->headScript()->captureStart() ?>
   var ALTERNATIVE_TYPE_TEXT_ID = <?php echo Model_AlternativeType::TEXT_ACTION; ?>;
   var ALTERNATIVE_TYPE_RESULT_ID = <?php echo Model_AlternativeType::RESULT_ACTION; ?>;
   var ENTERPRISE_USER = <?php echo isset($this->user_id) ? $this->user_id : ''; ?>;
-  
-  var ENTERPRISE_ID_KEY ='43a58989dbbd57f8b4d29c66f48e6ec029466c85';
-  <!-- var ENTERPRISE_ID_KEY = <?php //echo isset($this->enterpriseIdKey) ? '"'.$this->enterpriseIdKey.'"' : ''; ?>; --> 
+  var ENTERPRISE_ID_KEY = <?php echo isset($this->enterpriseIdKey) ? '"'.$this->enterpriseIdKey.'"' : ''; ?>;
   var QSTN_ID = <?php echo isset($this->qstnRespondId) ? $this->qstnRespondId : ''; ?>;
   var PERMISSION_EVALUATION_OF_RESPONSE = <?php echo $this->permissionEvaluationOfResponse? 1 : 0 ?>;
   var SPEEDY_TRANSITION = <?PHP echo (Zend_Auth::getInstance()->getIdentity()->getRoleId()==Zend_Registry::get('config')->acl->roleDigitadorId)? 0 : 450; ?>;
-  var startDate = '<?php echo date('H:i:s'); ?>';
+  var startDate = "<?php echo date('H:i:s'); ?>";
   var PROGRAMA_ID = <?php echo isset($this->programaId) ? $this->programaId : Zend_Registry::get('configDb')->competitionId; ?>;
   var CURRENT_BLOCK_ID = <?php echo isset($this->blockId) ? $this->blockId : Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios; ?>;
   
@@ -80,14 +137,11 @@ if ($this->request()->getParam('module') == 'management') {
     include APPLICATION_PATH . '/modules/management/views/scripts/menus/admin_menu.phtml';
 }
 ?>
-
-
-
   <?php
     foreach ($this->blockQuestions as $questionId => $question){
       $questionType = $question['QuestionTypeId'];
       break;
-   }
+    }
   ?>
 
   <?php include ($questionType == 5 ? 'questionnaire-5.php' : 'questionnaire-6.php' ); ?>
@@ -103,3 +157,4 @@ if ($this->request()->getParam('module') == 'management') {
     <?php endif; ?>
   </div>
 
+</div>

@@ -46,8 +46,7 @@ var devolutiveModule = (function () {
             }
             
             $('#tituloDevolutiva').html('Devolutiva<br><br>');
-            $('#msgDownloadDevolutiva')
-               .html(textoDevolutiva);
+            $('#msgDownloadDevolutiva').html(textoDevolutiva);
                //.html('<a href="' + json.devolutive + '" target="_blank">Clique aqui para fazer o download!</a>');
 
         });

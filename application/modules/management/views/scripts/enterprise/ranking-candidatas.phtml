@@ -140,7 +140,7 @@ if (count($this->getAllEnterprise) >= 1):
       </td>
       <td class="middle"><span><?php echo str_replace('Microempreendedora', 'Microemp.', $enterprise->getCategoryDescription()); ?></span></td>
 
-      <td class="middle"><span><?php echo number_format($enterprise->getNegociosTotal()*1/2, 1 , ',', '.').'%'; ?></span></td>
+      <td class="middle"><span><?php echo number_format($enterprise->getNegociosTotal()*1, 1 , ',', '.'); ?></span></td>
     <?php if($competitionId == 2013) : ?>
       <td class="middle"><span><?php echo $enterprise->getPontosEmpreendedorismo();?></span></td>
     <?php endif; ?>

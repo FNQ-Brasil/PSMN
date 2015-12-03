@@ -80,7 +80,8 @@ class Management_AppraiserController extends Vtx_Action_Abstract
      * Listagem do verificadores logadops
      */
     public function checkerAction()
-    {
+    {		
+		
         $auth = Zend_Auth::getInstance();
 
         $this->view->page = $page = $this->_getParam('page', 1);
@@ -99,7 +100,9 @@ class Management_AppraiserController extends Vtx_Action_Abstract
         $this->view->getAllEnterprise = $this->Enterprise->getAllByColAE(
             null, null, $this->autoavaliacaoId, $count, $page,
             $filter, $orderBy, null, 'all', 'checker-list'
-        );  
+        );   
+		
+
         
      }
 
@@ -188,8 +191,8 @@ class Management_AppraiserController extends Vtx_Action_Abstract
         $data['tipo']= $this->_getParam('tipo');
         $data['programa_id'] = Zend_Registry::get('configDb')->competitionId;
         $data['etapa'] = $this->_getParam('etapa', 'estadual');
-
-        if ($data['etapa'] == 'nacional') {
+		
+		if ($data['etapa'] == 'nacional') {
             /* @TODO só pode gestor nacional */
             unset($data['desclassificar']);
             unset($data['justificativa']);
@@ -215,8 +218,10 @@ class Management_AppraiserController extends Vtx_Action_Abstract
         
         $AppraiserEnterprise = new Model_Appraiser();
         $objAppraiser = $AppraiserEnterprise->setAppraiserToEnterprise($data);
-        
-        $this->view->itemSuccess = true;
+		if(!isset($objAppraiser['messageError']))
+			$objAppraiser['messageError'] = '';
+        //print_r($objAppraiser);exit;
+        $this->view->itemSuccess = $objAppraiser;
     }
     
     public function setCheckerToEnterpriseAction()
@@ -251,6 +256,26 @@ class Management_AppraiserController extends Vtx_Action_Abstract
         $this->view->itemSuccess = true;
     }
  
+	public function gestorAction(){
+		
+		$auth = Zend_Auth::getInstance();
+		$this->enterpriseKey = $this->_getParam('enterprise-id-key');
+		$this->enterpriseRow = $this->Enterprise->getEnterpriseByIdKey($this->enterpriseKey);
+		
+		$data['enterprise_id'] = $this->enterpriseRow->getId();
+		$data['user_id'] = $auth->getIdentity()->getUserId();
+		$data['programa_id'] =$this->programId;
+		$data['tipo'] = 1;
+		$data['status'] = "C";
+		
+		$AppraiserModel = new Model_Appraiser();
+		$objAppraiser = $AppraiserModel->setCheckerToEnterpriseVerificador($data);
+		
+		 $this->_helper->layout()->disableLayout(); 
+		 
+		 $this->_redirect('/management/appraiser/checker');
+	}
+ 
     public function internalReportAction()
     {
         
@@ -265,6 +290,9 @@ class Management_AppraiserController extends Vtx_Action_Abstract
         );
 
         $modelReport = new Model_EnterpriseReport;
+		$scores = $this->Appraiser->getEnterpriseScoreAppraisersData($enterpriseRow->getId(),$competitionId);
+		$checkerId = (isset($scores) and $scores->getCheckerId() != null) ? $scores->getCheckerId() : 0;
+	    $commentAnswers = $this->Appraiser->getApeEvaluationVerificadorComment($enterpriseRow->getId(),$checkerId);
         $View = array(
             'report' => $modelReport->getEnterpriseReportByEnterpriseIdKey($enterpriseKey,$competitionId),
             'enterprise' => $enterpriseRow,
@@ -273,9 +301,11 @@ class Management_AppraiserController extends Vtx_Action_Abstract
             'questionsAvaliacao' => $evaluationQuestions,
             'evaluationRow' => $this->evaluationRow,
             'respostas' => $this->evaluationRow? $this->evaluationRow->getAnswers() : null,
-            'commentAnswers' => $this->evaluationRow? $this->evaluationRow->getCommentAnswers() : null,
-            'scores' => $this->Appraiser->getEnterpriseScoreAppraisersData($enterpriseRow->getId(),$competitionId)
+            'commentAnswers' =>($commentAnswers->count() >0) ? $commentAnswers : null,
+            'scores' =>$scores
+			
         );
+	 
         $this->view->assign($View);
     }
     

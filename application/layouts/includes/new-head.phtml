@@ -1,3 +1,44 @@
+﻿<?php
+
+        $db = Zend_Registry::get('db');
+		
+		
+		
+$profiler = $db->getProfiler();
+ 
+ 
+  $totalQueries = $profiler->getTotalNumQueries();
+        $queryTime    = $profiler->getTotalElapsedSecs();
+
+        $longestTime = 0;
+        $longestQuery = null;
+        $queries = $profiler->getQueryProfiles();
+
+        $content = "Executed $totalQueries database queries in $queryTime seconds<br />\n";
+
+        if ($queries !== false) { // loop over each query issued
+            foreach ($queries as $query) {
+                $content .= "\n<!-- Query (" . $query->getElapsedSecs() . "s): " . $query->getQuery() . "\n\n -->\n";
+                if ($query->getElapsedSecs() > $longestTime) {
+                    $longestTime = $query->getElapsedSecs();
+                    $longestQuery = htmlspecialchars(addcslashes($query->getQuery(), '"'));
+                }
+            }
+
+            $content .= "Longest query time: $longestTime."
+                       ." <a href=\"#\" onclick=\"return false\" title=\"$longestQuery\">Mouseover for query</a><br />\n";
+        }
+
+        // Log $content here, or append it to the response body
+
+       echo   $content;
+
+		
+	
+  
+?>
+
+
 <?php
 $controller = $this->request()->getControllerName();
 $action = $this->request()->getActionName();
@@ -18,6 +59,7 @@ if(Zend_Auth::getInstance()->hasIdentity()){
         $appraiserUserManagementAllowed = $roleRow->getIsSystemAdmin();
     }
 }
+
 ?><!doctype html>
 <html class="no-js" lang="pt-br">
     <head>
@@ -68,7 +110,7 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                             </ul>
                         </li>
                     <?php endif; ?>
-
+			 
                     <?php
                     if ($this->loggedAllowed('ranking', 'management:enterprise') or $this->loggedAllowed('classificadas', 'management:enterprise') or $this->loggedAllowed('finalistas', 'management:enterprise')
                     ):
@@ -86,12 +128,13 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                                     <li><a href="<?php echo $this->baseUrl('/management/enterprise/finalistas'); ?>" title="Ranking Finalistas">Ranking Finalistas</a></li>
                                 <?php endif; ?>
                                 <?php if ($this->loggedAllowed('comunicacao', 'management:enterprise') and $isManager): ?>
-                                    <li><a href="<?php echo $this->baseUrl('/management/enterprise/comunicacao'); ?>" title="Comunicar Participantes">Comunicar Participantes</a></li>
+                                    <!---<li><a href="<?php echo $this->baseUrl('/management/enterprise/comunicacao'); ?>" title="Comunicar Participantes">Comunicar Participantes</a></li>-->
                                 <?php endif; ?>
                             </ul>
                         </li>
                     <?php endif; ?>
-
+<!-- Apenas Gestorfnq -->
+<?php if ($appraiserUserManagementAllowed ): ?>                   
                     <?php
                     if (
                             (
@@ -103,7 +146,7 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                     ):
                         ?>
                         <li class="submenu">
-                            <a href="<?php echo $this->baseUrl('/management/enterprise/candidatas-nacional'); ?>" title="Avaliação Nacional">Avaliação Nacional</a>
+                           <a href="<?php echo $this->baseUrl('/management/enterprise/candidatas-nacional'); ?>" title="Menu de Produção - Avaliação Nacional">Avaliação Nacional</a>
                             <ul>
                                 <?php if ($this->loggedAllowed('candidatas-nacional', 'management:enterprise')): ?>
                                     <li><a href="<?php echo $this->baseUrl('/management/enterprise/candidatas-nacional'); ?>" title="Ranking Canditadas Nacional">Ranking Canditadas</a></li>
@@ -117,7 +160,7 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                             </ul>
                         </li>
                     <?php endif; ?>
-
+<?php endif; ?>				
                     <?php
                     if (
                             $this->loggedAllowed('report-global', 'management:enterprise') or
@@ -130,7 +173,7 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                             $this->loggedAllowed('report-categoria-premio', 'management:enterprise')
                     ):
                         ?>
-                        <li class="submenu"><a href="#" onclick="return false;" class="cancel-modal">Relatórios</a>
+                        <li class="submenu"><a href="#" onClick="return false;" class="cancel-modal">Relatórios</a>
 
                             <ul>
                                 <?php if ($this->loggedAllowed('report-categoria', 'management:enterprise')): ?>
@@ -147,16 +190,17 @@ if(Zend_Auth::getInstance()->hasIdentity()){
                                 <?php endif; ?>
                                 <?php if ($this->loggedAllowed('report-global', 'management:enterprise')): ?>
                                     <li><a href="<?php echo $this->baseUrl('management/enterprise/report-global') ?>">Panorama das Respostas</a></li>
-                                <?php endif; ?>
+                                <?php endif; ?>-->
                                 <?php if ($this->loggedAllowed('report-status-appraiser', 'management:enterprise')): ?>
-                                    <li><a href="<?php echo $this->baseUrl('management/enterprise/report-status-appraiser') ?>">Status da Avaliação</a></li>
+                                    <li><a href="<?php echo $this->baseUrl('management/enterprise/report-status-appraiser') ?>">Status da Avaliação</a>                               </li>
                                 <?php endif; ?>
                                 <?php if ($this->loggedAllowed('report-status-verificador', 'management:enterprise')): ?>
                                     <li><a href="<?php echo $this->baseUrl('management/enterprise/report-status-verificador') ?>">Status da Verificação</a></li>
                                 <?php endif; ?>
                                 <?php if ($this->loggedAllowed('report-categoria-premio', 'management:enterprise')): ?>
                                     <li><a href="<?php echo $this->baseUrl('management/enterprise/report-categoria-premio') ?>">Participantes por Categoria</a></li>
-    <?php endif; ?>-->
+  <?php endif; ?>
+
                             </ul>
 
                         </li>

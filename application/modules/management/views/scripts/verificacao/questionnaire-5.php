@@ -1,12 +1,18 @@
+<h1 class="title tquiz">Questionário de Autoavaliação</h1>
+ <h4 class="subtitle tquiz">
+ 
+ 
+            
+            
+            
+        <!--?php if (isset($this->enterpriseRow) and isset($this->isViewAdmin) and $this->isViewAdmin): ?-->
+            <h4 class="subtitle tquiz">
+            <?php echo $this->escape($this->enterpriseRow->getSocialName()); ?>
+            (<?php echo $this->escape($this->enterpriseRow->getFantasyName()); ?>)</h4>
+        <!--?php endif; ?-->
 
+<p class="description-quizz"><?php echo "Para cada questão <strong>clique na resposta</strong> e depois no <strong>botão 'Salvar'</strong>."; ?></p>
 
-<?php if (isset($this->enterpriseRow) and isset($this->isViewAdmin) and $this->isViewAdmin): ?>
-    <h4 class="subtitle tquiz">
-    <?php echo $this->escape($this->enterpriseRow->getSocialName()); ?>
-    (<?php echo $this->escape($this->enterpriseRow->getFantasyName()); ?>)</h4>
-<?php endif; ?>
-
-<p class="description-quizz"><?php echo "Para cada questão <strong>clique na resposta</strong> e depois no <strong>botão 'Salvar Resposta'</strong>."; //$this->blockCurrent->getLongDescription(); ?></p>
 <div class="innet-content">
   <div class="quizz">
     <ul>
@@ -18,7 +24,6 @@
         $questionType = $question['QuestionTypeId'];
         $questionTypeCssName = ( Model_QuestionType::AGREEDISAGREE_ID ? 'questionTypeSubmitButton' : 'questionTypeSubmitRadioChange');
       ?>
-          
       <li id="marker-<?php echo $cont; ?>"><a href="#tab-<?php echo $cont; ?>"><span></span><?php echo $cont++; ?></a></li>
       <?php endforeach; ?>
     </ul>
@@ -32,8 +37,7 @@
         3 => "nao-sei",
         4 => "concordo",
         5 => "con-plenament",
-      );          
-            
+      );
       $disabled = $this->subscriptionPeriodIsClosed ? 'disabled' : '';
       foreach ($this->blockQuestions as $questionId => $question):
         $questionSummary = $question['QuestionSummary'];
@@ -42,8 +46,8 @@
         $questionType = $question['QuestionTypeId'];
         $questionTypeCssName = ( Model_QuestionType::AGREEDISAGREE_ID ? 'questionTypeSubmitButton' : 'questionTypeSubmitRadioChange');
       ?>
-      
-      <div id="tab-<?php echo $cont; ?>" class="tab-item" style="height: auto">      
+
+      <div id="tab-<?php echo $cont; ?>" class="tab-item" style="height: auto">
         <form action="" class="formsubmitfull" data-question-id="<?php echo $questionId; ?>">
           <div class="label">
             <span class="number"><?php echo $cont++; ?>.</span>
@@ -51,8 +55,10 @@
             <a class="details">Saiba mais</a>
           </div>
           <div class="helper-questions">
+
               <p class="title-helper-questions" style="">Perguntas facilitadoras:</p>
               <?php echo $supportingText; ?>
+
           </div>
 
           <div class="details" style="display: none">
@@ -61,9 +67,10 @@
                 <h1><?php echo $questionSummary ?></h1>
                 <a class="close" href="#"></a>
               </div>
-              <?php echo $questionValue ?>             
+              <?php echo $questionValue ?>
             </div>
           </div>
+
          <div class="helper-questions">
          <p class="title-helper-questions">Resposta Empresária:</p>    
          </div>
@@ -73,15 +80,10 @@
               $contPesos = 1; 
               foreach ($question['Alternatives'] as $alternativeId => $alternative):
             ?>
-              <div id="<?php echo $pesos[$contPesos++]; ?>" class="answer">                
+              <div id="<?php echo $pesos[$contPesos++]; ?>" class="answer">
                 <span class="face"></span>
-                
-                <input type="radio" value="<?php echo $alternativeId; ?>" 
-                name="question[<?php echo $questionId; ?>]" 
-                id="alternativeItem<?php echo $alternativeId; ?>" 
-                tabindex="-1" disabled
-                <?php echo $disabled ?>/>
-                
+                <input type="radio" value="<?php echo $alternativeId; ?>" name="question[<?php echo $questionId; ?>]" 
+                id="alternativeItem<?php echo $alternativeId; ?>" tabindex="-1" disabled/>
                 <label class="label-inline" for="alternativeItem<?php echo $alternativeId; ?>">
                   <span class="radio-button"></span>
                   <?php echo $alternative['AlternativeValue']; ?>
@@ -121,20 +123,16 @@
             </div>            
           </div>          
           
-           <label class="label-control"> Comentário: </label>
-           <textarea name="comentarioItemverificador<?php echo $alternativeId; ?>" style="width: 500px; height: 110px;"></textarea>
+                  <label class="label-control"> Comentário: </label>
           
+          <textarea name="comentarioItemverificador<?php echo $questionId; ?>" style="width: 800px; height: 110px;"></textarea>  
+              
           <div class="clearfix"></div>
-          
           <?php if ($question['ShowEnterpriseFeedback']):?>
-              <div class="complement">
-                    <?php if ($this->loggedAllowed('index', 'questionnaire:respond') and !$this->subscriptionPeriodIsClosed): ?>
-                        <button class="large btn-submit btSaveQuestionWithFeedback" type="submit" style="float: right; font-size: 16px;" tabindex="-1" <?php if ($this->periodoRespostas === false): ?>onClick="return false;"<?php endif; ?>><b>Salvar resposta</b></button>
-                        <a class="large btn-submit help" style="float: right; font-size: 16px;"><b>Ajuda</b></a>
-                    <?php else: ?>
-                        <button class="large btn-submit btSaveQuestionWithFeedback" type="button" style="float: right; font-size: 16px; cursor: default; visibility: hidden" tabindex="-1" <?php if ($this->periodoRespostas === false): ?>onClick="return false;"<?php endif; ?>><b>Salvar resposta</b></button>
-                        <a class="large btn-submit help" style="float: right; font-size: 16px;"><b>Ajuda</b></a>
-                    <?php endif; ?>
+            <div class="complement">
+                        <button class="large btn-submit btSaveQuestionWithFeedback" type="submit" style="float: right; font-size: 16px;" tabindex="-1" <?php if ($this->periodoRespostas === false): ?>onClick="return false;"<?php endif; ?>><b>Salvar </b></button>
+                <a class="large btn-submit help" style="float: right; font-size: 16px;"><b>Ajuda</b></a>
+
                 <label for="FdbkQuestion<?php echo $questionId; ?>" class="complement-label"></label>
               <textarea name="fdbkQuestion[<?php echo $questionId; ?>]" id="FdbkQuestion<?php echo $questionId; ?>" class="complement-field" tabindex="-1"></textarea>
               <div class="responseretu"></div>              

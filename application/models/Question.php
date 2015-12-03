@@ -259,6 +259,33 @@ class Model_Question
             );
         } 
     }
+	
+	public function isAnsweredByVerificador($questionId,$userId,$enterpriseId)
+    {
+        try {
+            
+            $answer = DbTable_Question::getInstance()->isAnsweredByVerificadorId($questionId,$userId,$enterpriseId);
+            if ($answer > 1) {
+                return array(
+                    'status' => false, 'messageError' => 'Questão atual possui mais de uma resposta.'
+                );
+            }
+            elseif ($answer == 0) {
+                return array(
+                    'status' => false, 'messageError' => 'Questão atual não possui resposta.'
+                );
+            }
+            return array(
+                'status' => true,
+                'objAnswered' => DbTable_Question::getInstance()->getAnswerVerificador($questionId,$userId,$enterpriseId)
+            );
+            
+        } catch (Vtx_UserException $e) {
+            return array(
+                'status' => false, 'messageError' => $e->getMessage()
+            );
+        } 
+    }
 
     protected function _filterInputQuestion($params)
     {

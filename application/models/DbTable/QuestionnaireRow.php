@@ -1,16 +1,12 @@
 <?php
 
 class DbTable_QuestionnaireRow extends Vtx_Db_Table_Row_Abstract
-{
-
-    
+{    
     public function getAllBlocksCriterionsForView()
     {
-        $questions = DbTable_Questionnaire::getInstance()->getAllBlocksCriterionsById($this->getId());
-        
-        
-        $lastBlockId = $lastCriterionId = $lastQuestionId = null;
-        $blocks = array();
+       $questions = DbTable_Questionnaire::getInstance()->getAllBlocksCriterionsById($this->getId());
+       $lastBlockId = $lastCriterionId = $lastQuestionId = null;
+       $blocks = array();
 
         foreach ($questions as $question) {
             $blockId = $question->getBlockId();
@@ -49,8 +45,7 @@ class DbTable_QuestionnaireRow extends Vtx_Db_Table_Row_Abstract
      * Consulta os criterios e dados de um bloco do BD ou recupera/grava no sistema de cache
      */
     public function cacheBlockAndCriterion($blocoId)
-    {
-        
+    {        
         $mpeCache = new Vtx_Cache_MPE_QuestionarioCache();
         
         $blocoCacheModel = $mpeCache->BlocoECriterios($blocoId, $this);
@@ -108,9 +103,5 @@ class DbTable_QuestionnaireRow extends Vtx_Db_Table_Row_Abstract
             $lastQuestionId = $questionId;
         }
         return $blocks;
-    }
-    
-    
-    
-    
+    }    
 }

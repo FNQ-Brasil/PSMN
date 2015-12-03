@@ -22,7 +22,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initLog()
     {
-        /*$options = $this->getOption('resources');
+    	// Sandra SSSSS este função tem que ficar comentada em produção - para não ficar criando arquivos de log  desnecessariamente
+        $options = $this->getOption('resources');
 
         $partitionConfig = $this->getOption('log');
         $logOptions = $options['log'];
@@ -38,7 +39,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $logger = Zend_Log::factory($logOptions);
         Zend_Registry::set('logger', $logger);
 
-        return $logger;*/
+        return $logger;
     }
 
     protected function _initLoaderResource()

@@ -1,10 +1,22 @@
-<?php
+﻿<?php
 
 class Management_VerificacaoController extends Vtx_Action_Abstract
 {
     protected $Block;
-    
-    public function init()
+ 
+    protected $_messagesError = array(
+        'answerValue' => 'Campo resposta escrita deve ser preenchido. ',
+        'alternativeError' => 'Alternativa escolhida não pertence a questão corrente.',
+        'questionNotExists' => 'A questão informada não existe.'
+    );
+
+    protected $_messagesSuccess = array(
+        'answerOk' => 'Questão respondida com sucesso. ',
+        'answerExists' => 'Questão respondida anteriormente; nenhuma alteração detectada. ',
+        'answerValue' => 'Resposta escrita excluída devida alternativa escolhida. ',
+    );
+   
+ public function init()
     {
         $this->userAuth = Zend_Auth::getInstance()->getIdentity();
         
@@ -22,8 +34,11 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
         $this->Block = new Model_Block();
         $this->Questionnaire = new Model_Questionnaire();
         $this->Question = new Model_Question();
-        $this->Answer = new Model_Answer();
+        //$this->Answer = new Model_Answer();
+        $this->AnswerVerificador = new Model_AnswerVerificador();
         $this->Alternative = new Model_Alternative();
+	$this->modelUserLocality = new Model_UserLocality();
+	$this->modelECAC = new Model_EnterpriseCategoryAwardCompetition();
 
         /* Verificação se o verificador tem permissao */
       
@@ -39,16 +54,21 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
         );
         if (!$this->evaluationRow or $this->evaluationRow->getStatus() == 'C') {
             throw new Exception('Não autorizado');
-        }        
-        
-      }
+        }                
+      
+        $this->enterpriseIdKey = $this->_getParam('enterprise-id-key',null);
+        $this->enterpriseUserId = ($this->enterpriseIdKey)?
+        $this->Enterprise->getUserIdByIdKey($this->enterpriseIdKey):null;
+	$this->competitionId = Zend_Registry::get('configDb')->competitionId;
+}
 
-    public function indexAction()
+ public function indexAction()
     {
+	$this->userAuth = Zend_Auth::getInstance()->getIdentity();
         $commentQuestions = $this->Appraiser->getQuestions();
         $evaluationQuestions = DbTable_QuestionChecker::getInstance()->fetchAll('QuestionTypeId = 7', 'Designation');
         $questions = $this->Appraiser->getQuestions();
-        
+		
         $V = array(
             'enterprise' => $this->enterpriseRow,
             'president' => $this->enterpriseRow->getPresidentRow(),
@@ -58,80 +78,78 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
             'commentAnswers' => $this->evaluationRow->getCommentAnswers(),
             'conclusao' => $this->evaluationRow->getConclusao(),
             'scores' => $this->Appraiser->getEnterpriseScoreAppraisersData($this->enterpriseRow->getId()),
-            'verificacaoAvaliador' => $this->Appraiser->getEnterpriseScoreAppraiserAnwserAvaliatorData($this->enterpriseRow->getId()),
-            'verificacaoVerificadorRelato' => $this->Appraiser->getEnterpriseScoreAppraiserAnwserVerificadorData($this->enterpriseRow->getId()),
+            'verificacaoAvaliador' => $this->Appraiser->getEnterpriseScoreAppraiserAnwserVerificadorData($this->enterpriseRow->getId(),$this->userAuth->getUserId()),
             'conclusao' => $this->evaluationRow->getConclusao(),
+            'comentarioVerificador' => $this->Appraiser->getApeEvaluationVerificadorComment($this->enterpriseRow->getId(),$this->userAuth->getUserId())
         );
 
         $this->view->assign($V);
+        $this->loggedUserId = $this->userLogged->getUserId();
 
         if (!$this->getRequest()->isPost()) {
             return;
         }
+
         $conclusao = $this->_getParam('conclusao', false);
-        $finalizar = $this->_getParam('finalizar', false);
-        
-        $save = $this->Appraiser->saveCheckerEvaluation(
-            $commentQuestions, 
-            $evaluationQuestions, 
-            $this->evaluationRow,
-            $this->_getParam('comments'),
-            $this->_getParam('respostas'),
-            $this->_getParam('ansAvaliacao')//, 
-            //$conclusao, 
-            //$finalizar            
-        );        
-        
+
+		$data = array();
+		$data['enterprise_id']= $this->enterpriseRow->getId();
+        $data['appraiser_id'] = $this->userAuth->getUserId();
+        $data['tipo']= '9';
+        $data['programa_id'] = Zend_Registry::get('configDb')->competitionId;
+        $data['etapa'] = $this->_getParam('etapa', 'estadual');
+
+	
+		$AppraiserEnterprise = new Model_Appraiser();
+        $AppraiserEnterprise->setAppraiserToEnterprise($data);       
+		$this->evaluationRow->setId($AppraiserEnterprise->getAppraiserId());
+	
+
         $save = $this->Appraiser->saveApeEvaluationVerificador(
                 $questions,
-                //$this->_getParam('answers'),
                 $this->evaluationRow, 
                 $this->_getParam('ans'), 
-                $conclusao, 
-                $finalizar
-                );
-                
-             
-        
-        // no caso de finalizacao da avaliacao, porém com campos notas faltando
-        if ($finalizar and !$save['finalizacaoSucesso'] and $save['status']) {
-            $V['commentAnswers'] = $this->evaluationRow->getCommentAnswers();
-            $V['respostas'] = $this->evaluationRow->getAnswers();
-            $V['finalizacaoErro'] = true;
-            $V['questionsError'] = $save['questionsError'];
-//            $V['criteriosError'] = $save['criteriosError'];
-  //          $V['evaluationQuestionsError'] = $save['evaluationQuestionsError'];
-            $this->view->assign($V);
-            return;
-        }
-        //finalizacao da avaliação faltando conclusão final
-        if ($finalizar and !$conclusao) {
-            $V['commentAnswers'] = $this->evaluationRow->getCommentAnswers();
-            $V['respostas'] = $this->evaluationRow->getAnswers();
-            $V['conclusaoErro'] = true;
-            $V['questionsError'] = isset($save['questionsError'])? $save['questionsError'] : array();
-            $this->view->assign($V);
-            return;
-        }
+                $conclusao
+        );      
+		
+		$appraiserEnterpriseId = $this->enterpriseRow->getId();
+		$userId =  $this->loggedUserId;
 
-       //if ($save['status']) {       
-        //$this->_redirect(
-          //  'management/appraiser/checker/' . $this->enterpriseKey
-        //);
-       //}
-    }
-
-    public function reportAction()
-    {
-        $modelReport = new Model_EnterpriseReport;
-        $V = array(
-            'report' => $modelReport->getEnterpriseReportByEnterpriseIdKey($this->enterpriseKey),
-            'enterprise' => $this->enterpriseRow,
-            'president' => $this->enterpriseRow->getPresidentRow(),
-            'scores' => $this->Appraiser->getEnterpriseScoreAppraisersData($this->enterpriseRow->getId())
+	$save = $this->Appraiser->saveApeEvaluationVerificadorComment(
+            $commentQuestions, 
+            $evaluationQuestions, 
+			$this->_getParam('comments'),
+			$appraiserEnterpriseId,
+			$userId 
         );
-        $this->view->assign($V);
-    }
+		
+		
+		$data['enterprise_id'] = $this->enterpriseRow->getId();
+        $data['user_id'] = $this->loggedUserId;
+        $data['programa_id'] = $this->competitionId;
+        $data['tipo'] = 1;
+		$data['status'] = "I";
+ 
+		$AppraiserModel = new Model_Appraiser();
+		$objAppraiser = $AppraiserModel->setCheckerToEnterpriseVerificador($data);
+		
+		if ($save['status']) {       
+			$this->_redirect(
+			'management/appraiser/checker/' . $this->enterpriseKey
+			);
+		} 
+
+        //finalizacao da avaliação faltando conclusão final
+        if (!$conclusao) {
+            $V['commentAnswers'] = $this->evaluationRow->getCommentAnswers();
+            $V['resposta'] = $this->evaluationRow->getAnswers();
+            //$V['conclusaoErro'] = true;
+           // $V['questionsError'] = isset($save['questionsError'])? $save['questionsError'] : array();
+
+            $this->view->assign($V);
+            return;
+		}	
+   }
     
     public function criterioavaliacaoAction()
     {
@@ -162,14 +180,30 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
         $save = $this->Appraiser->saveCheckerEvaluation(
             $commentQuestions, $evaluationQuestions, $this->evaluationRow,
             $this->_getParam('comments'),
-            //$this->_getParam('respostas'),
             $this->_getParam('ansAvaliacao'), 
             $conclusao, 
             $finalizar
-        );         
-      }
+        );     
+		
+		//print_r($this->_getParam('ansAvaliacao'));exit;
+		
+		$data['enterprise_id'] = $this->enterpriseRow->getId();
+        $data['user_id'] = $this->loggedUserId;
+        $data['programa_id'] = $this->competitionId;
+        $data['tipo'] = 1;
+		$data['status'] = "III";
+ 
+		$AppraiserModel = new Model_Appraiser();
+		$objAppraiser = $AppraiserModel->setCheckerToEnterpriseVerificador($data);
+		
+if ($save['status']) {       
+			$this->_redirect(
+			'management/appraiser/checker/' . $this->enterpriseKey
+			);
+		}  
+    }
       
-    public function subscriptionPeriodIsOpen(){
+/* public function subscriptionPeriodIsOpen(){
           $isOpen = true;
       
           if(!$this->Questionnaire->subscriptionPeriodIsOpenFor(null, $this->userLogged)){
@@ -180,277 +214,215 @@ class Management_VerificacaoController extends Vtx_Action_Abstract
       
           return $isOpen;
       }      
-      
-      public function answerAction()
-      {
-          
-          if(!$this->subscriptionPeriodIsOpen()) return;
-          $this->view->papelEmpresa = ($this->userLogged->getRoleId() == Zend_Registry::get('config')->acl->roleEnterpriseId)?'true':'false';
-          $ns = new Zend_Session_Namespace('verificacao');
-            
-            $this->enterpriseIdKey = $this->_getParam('enterprise-id-key',null);
+  */    
 
-            $this->enterpriseUserId = ($this->enterpriseIdKey)?
-                    $this->Enterprise->getUserIdByIdKey($this->enterpriseIdKey):null;
+     public function answerAction()
+     {
+        $this->view->papelEmpresa = ($this->userLogged->getRoleId() == Zend_Registry::get('config')->acl->roleEnterpriseId)?'true':'false';
+        $this->view->user_id = $this->enterpriseUserId;
+        $this->view->respondQuestionOk = false;
+        $this->view->itemSuccess = false;
+        $this->view->respondRowData = $dataPosted = $this->_getAllParams();
+
+
+        //Não respondeu nada.
+        if (!isset($this->view->respondRowData['alternative_id']) 
+            or $this->view->respondRowData['alternative_id'] == ''
+        ) {
+            $this->view->itemSuccess = true;
+            return;
+        }
+        
+		
+	    $data['enterprise_id'] = $this->enterpriseRow->getId();
+        $data['user_id'] = $this->loggedUserId;
+        $data['programa_id'] = $this->competitionId;
+        $data['tipo'] = 1;
+		$data['status'] = "I";
+ 
+		if($this->view->respondRowData["question_id"] == 530){
+			$AppraiserModel = new Model_Appraiser();
+			$objAppraiser = $AppraiserModel->setCheckerToEnterpriseVerificador($data);
+		}
+		
+        $respondQuestionId = $this->_getParam('question_id', '');
+        $respondQuestionRow = $this->Question->getQuestionById($respondQuestionId);
+        if (!$respondQuestionId or !$respondQuestionRow) {
+            throw new Exception('Questão inválida, não encontrada.');
+        }
+        
+        $block = $respondQuestionRow->findParentCriterion()->findParentBlock();
+        $questionnaire = $block->findParentQuestionnaire();
+        $qstnId = $questionnaire->getId();
+        $competitionId = $questionnaire->getCompetitionId();
+
+        if (!$this->Questionnaire->isQuestionnaireExecution($qstnId)) {
+            throw new Exception('Período de resposta do questionário inválido.');
+        }
+        
+        $isAnswered = $this->Question->isAnsweredByVerificador($respondQuestionId,  $this->loggedUserId,$this->enterpriseUserId);
+		
+		//print_r($isAnswered );exit;
+
+        $respondRowData = $this->view->respondRowData;
+
+        // resposta escrita
+        $respondRowData['answer_value'] = isset($respondRowData['answer_value'])?
+            trim($respondRowData['answer_value']) : '';
+        
+        $respondRowData = $this->AnswerVerificador->filterAnswerForm($respondRowData)->getUnescaped();
+        $respondRowData['aaresult_value'] = ''; // resposta com resultado anual
+
+        //Verificação de segurança se é uma alternativa válida da questão
+        $alternativeRow = $this->Alternative->isQuestionAlternative(
+            $respondRowData['alternative_id'], $respondQuestionId
+        );
+        if (!$alternativeRow) {
+            throw new Exception($this->_messagesError['alternativeError']);
+        }
+
+        $this->view->respondRowData['answer_value'] = "";
+        
+        $setExecutionProgress = false;
+
+        $respondRowData['answer_date'] = date('Y-m-d');
+        $respondRowData['end_time'] = date('H:i:s');
+        $respondRowData['user_id'] =  $this->userLogged->getUserId();
+        $respondRowData['logged_user_id'] = $this->loggedUserId;
+        $respondRowData['qstn_id'] = $qstnId;
+		$respondRowData['enterprise_id'] = $this->enterpriseUserId;
+		
+		//print_r($respondRowData);exit;
+
+        if ($isAnswered['status']) {
+            $answerId = $isAnswered['objAnswered']->getAnswerId();
             
-            if ($this->enterpriseUserId) {
-                $ns->enterpriseUserId = $this->enterpriseUserId;
+ 
+            if ($this->AnswerVerificador->hasChange($answerId, $respondRowData, $alternativeRow)) {
+ 
+                $answer = $this->AnswerVerificador->updateAnswer($answerId, $respondRowData, $alternativeRow);
+                $setExecutionProgress = true;
             } else {
-                $this->enterpriseUserId = $ns->enterpriseUserId;
+                $answer['status'] = true;
+                $answer['row'] = $isAnswered['objAnswered'];
             }
-          $this->view->user_id = $this->enterpriseUserId;
-          $this->view->respondQuestionOk = false;
-          $this->view->itemSuccess = false;
-          $this->view->respondRowData = $dataPosted = $this->_getAllParams();
-          
-          //Não respondeu nada.
-          if (!isset($this->view->respondRowData['alternative_id'])
-              or $this->view->respondRowData['alternative_id'] == ''
-          ) {
-              $this->view->itemSuccess = true;
-              return;
-          }
+        } else {
+ 
+            $answer = $this->AnswerVerificador->createAnswer($respondRowData, $alternativeRow);
+            $answerId = $answer['row']->getId();
+            $setExecutionProgress = true;
+        }
+
+        if (!$answer['status']) {
+            $this->view->itemSuccess = false;
+            $this->view->messageError = $answer['messageError'];
+            return;
+        }
+        
+        if ($setExecutionProgress) {
+            $this->Questionnaire->setExecutionProgress($qstnId, $this->enterpriseUserId);
+        }
+
+        //Privilégio avaliação de resposta: Pontos Fortes e Pontos a melhorar
+        $this->verificaRotinasFeedback($answerId, $dataPosted);
+        $this->checkForDevolutiveUpdate($competitionId, $qstnId, $block->getId());
+        $this->view->respondQuestionOk = true;
+        $this->view->respondRowData = array();
+        $this->view->itemSuccess = true;
+     }      
       
-          $respondQuestionId = $this->_getParam('question_id', '');
-          $respondQuestionRow = $this->Question->getQuestionById($respondQuestionId);
-          if (!$respondQuestionId or !$respondQuestionRow) {
-              throw new Exception('Questão inválida, não encontrada.');
-          }
-      
-          $block = $respondQuestionRow->findParentCriterion()->findParentBlock();
-          $questionnaire = $block->findParentQuestionnaire();
-          $qstnId = $questionnaire->getId();
-          $competitionId = $questionnaire->getCompetitionId();
-      
-          
-          
-          
-          if (!$this->Questionnaire->isQuestionnaireExecution($qstnId)) {
-              throw new Exception('Período de resposta do questionário inválido.');
-          }
-      
-          
-          $isAnswered = $this->Question->isAnsweredByEnterprise($respondQuestionId,  $this->enterpriseUserId);
-      
-          $respondRowData = $this->view->respondRowData;
-           
-          // resposta escrita          
-          
-          $respondRowData['answer_value'] = isset($respondRowData['answer_value'])?
-          trim($respondRowData['answer_value']) : '';
-          
-          $respondRowData = $this->Answer->filterAnswerForm($respondRowData)->getUnescaped();
-          $respondRowData['aaresult_value'] = ''; // resposta com resultado anual
-      
-          //Verificação de segurança se é uma alternativa válida da questão
-          $alternativeRow = $this->Alternative->isQuestionAlternative(
-              $respondRowData['alternative_id'], $respondQuestionId
-          );
-          if (!$alternativeRow) {
-              throw new Exception($this->_messagesError['alternativeError']);
-          }
-      
-          /*
-           if ($respondRowData['answer_value'] == '') {
-           $this->view->itemSuccess = false;
-           $this->view->messageError = $this->_messagesError['answerValue'];
-           return;
-           }
-           */
-          $this->view->respondRowData['answer_value'] = "";
-      
-          $setExecutionProgress = false;
-      
-          $respondRowData['answer_date'] = date('Y-m-d');
-          $respondRowData['end_time'] = date('H:i:s');
-          $respondRowData['user_id'] =  $this->enterpriseUserId;
-          $respondRowData['logged_user_id'] = $this->loggedUserId;
-          $respondRowData['qstn_id'] = $qstnId;
-      
-          if ($isAnswered['status']) {
-              $answerId = $isAnswered['objAnswered']->getAnswerId();
-              
-              if ($this->Answer->hasChange($answerId, $respondRowData, $alternativeRow)) {
-                  
-                  $answer = $this->Answer->updateAnswer($answerId, $respondRowData, $alternativeRow);
-                  $setExecutionProgress = true;
-              } else {
-                  $answer['status'] = true;
-                  $answer['row'] = $isAnswered['objAnswered'];
-              }
-          } else {
-              $answer = $this->Answer->createAnswer($respondRowData, $alternativeRow);
-              $answerId = $answer['row']->getId();
-              $setExecutionProgress = true;
-          }
-      
-          if (!$answer['status']) {
-              $this->view->itemSuccess = false;
-              $this->view->messageError = $answer['messageError'];
-              return;
-          }
-      
-          if ($setExecutionProgress) {
-              $this->Questionnaire->setExecutionProgress($qstnId, $this->enterpriseUserId);
-          }
-      
-          //Privilégio avaliação de resposta: Pontos Fortes e Pontos a melhorar
-          $this->verificaRotinasFeedback($answerId, $dataPosted);
-      
-          $this->checkForDevolutiveUpdate($competitionId, $qstnId, $block->getId());
-      
-          $this->view->respondQuestionOk = true;
-          $this->view->respondRowData = array();
-          $this->view->itemSuccess = true;
-          return;
-      }      
-      
-      public function questionarionegocioAction()
-      {
-          
-          $commentQuestions = $this->Appraiser->getQuestions();          
-          $evaluationQuestions = DbTable_QuestionChecker::getInstance()->fetchAll('QuestionTypeId = 5', 'Designation');
-      
-          $V = array(
-              'enterprise' => $this->enterpriseRow,
-              'president' => $this->enterpriseRow->getPresidentRow(),
-              'questoes' => $commentQuestions,
-              'questionsAvaliacao' => $evaluationQuestions,
-              'respostas' => $this->evaluationRow->getAnswers(),
-              'commentAnswers' => $this->evaluationRow->getCommentAnswers(),
-              'conclusao' => $this->evaluationRow->getConclusao(),
-              'scores' => $this->Appraiser->getEnterpriseScoreAppraisersData($this->enterpriseRow->getId()),
-              'verificacaoAvaliador' => $this->Appraiser->getEnterpriseScoreAppraiserAnwserAvaliatorData($this->enterpriseRow->getId()),
-              'checkerEvaluation' => $this->Appraiser->getCheckerEvaluations($this->enterpriseRow->getId())
-          );
-      
-       $this->view->currentBlockIdNegocios = Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios;
-       $blockId = $this->_getParam('block', $this->view->currentBlockIdNegocios);
-       
-       if ($blockId != $this->view->currentBlockIdNegocios) {
-           throw new Exception('access denied');
-           return;
-       }
-       
-       $this->view->qstnCurrent = $this->Questionnaire->getCurrentExecution();
-       
-       if (!$this->view->qstnCurrent) {
-           throw new Exception('Nenhum questionário ativo.');
-       }
-              
-       $this->enterpriseIdKey = $this->_getParam('enterprise-id-key',null);
-       $this->view->qstnRespondId = $this->view->qstnCurrent->getId();       
-       $this->enterpriseUserId = ($this->enterpriseIdKey)?
-       $this->Enterprise->getUserIdByIdKey($this->enterpriseIdKey):null;
-       
-       if ($this->enterpriseUserId) {
-           $ns->enterpriseUserId = $this->enterpriseUserId;
-       } else {
-           $this->enterpriseUserId = $ns->enterpriseUserId;
-       }
-       
-       //print_r($this->view->answeredByUserId);
-       
-       //print_r($this->view->qstnRespondId);
-       //print_r($this->enterpriseUserId );
-       //print_r($blockId);
+     public function questionarionegocioAction()
+     {
+
+        $programaId = $this->competitionId;
+	    $enterpriseId = $this->modelUserLocality->getUserLocalityByUserId($this->enterpriseUserId)->getEnterpriseId();
+		
+		
+		
+        $hasECAC = $this->modelECAC->hasECAC($enterpriseId,$this->competitionId);
+
+        if (!$hasECAC) { 
+            throw new Exception('access denied');
+            return;
+        }
+
+        //$this->view->subscriptionPeriodIsClosed = !$this->subscriptionPeriodIsOpen();
+        $this->view->currentBlockIdNegocios = Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios;
+        $this->view->currentBlockIdEmpreendedorismo = Zend_Registry::get('configDb')->qstn->currentBlockIdEmpreendedorismo;
+        $blockId = $this->_getParam('block', $this->view->currentBlockIdNegocios);
+
+        /*
+            Caso tente respnder um questionário, que não seja o atual.
+         */
+        if ($blockId != $this->view->currentBlockIdNegocios) { 
+            throw new Exception('access denied');
+            return;
+        }
+        
+        $this->view->qstnCurrent = $this->Questionnaire->getCurrentExecution();
+
+        if (!$this->view->qstnCurrent) {
+            throw new Exception('Nenhum questionário ativo.');
+        }
+        
+        /* @TODO verificar se o bloco passado pertence ao questionário corrente que tem q ser pego por config */
         
        
-       $this->view->answeredByUserId = $this->Questionnaire->getQuestionsAnsweredByUserId(
-       $this->view->qstnRespondId, 
-       $this->enterpriseUserId, 
-       $blockId
-      );
-       
-     // print_r($this->Questionnaire);
-       
-       $this->view->user_id = $this->enterpriseUserId;
-       $this->userLogged = Zend_Auth::getInstance()->getIdentity();
-       $this->loggedUserId = $this->userLogged->getUserId();
-       
-      $this->view->papelEmpresa = ($this->userLogged->getRoleId() == Zend_Registry::get('config')->acl->roleEnterpriseId)?'true':'false';       
-      
         //recupera do CACHE ou MODEL
         $this->view->blockQuestions = $this->Block->cacheOrModelBlockById($blockId);
         $this->view->blockCurrent = $this->Block->getDbTable()->find($blockId)->current();
+        $this->view->qstnRespondId = $this->view->qstnCurrent->getId();
+        $this->view->papelEmpresa = ($this->userLogged->getRoleId() == Zend_Registry::get('config')->acl->roleEnterpriseId)?'true':'false';
+        $this->view->user_id = $this->enterpriseUserId;
+        $this->view->user_verificador_id = $this->userLogged->getUserId();
+        $this->view->enterpriseIdKey = $this->enterpriseIdKey;
+        
+ 	
+        $this->view->answeredByUserId = $this->Questionnaire->getQuestionsAnsweredByUserId(
+            $this->view->qstnRespondId, $this->enterpriseUserId, $blockId);
+
+        $this->view->answeredByUserIdVerificador = $this->Questionnaire->getQuestionsAnsweredByUserIdVerificador(
+            $this->view->qstnRespondId, $this->userLogged->getUserId(),$this->enterpriseUserId, $blockId);
+        
+        $this->view->periodoRespostas = true;
+        if (!$this->Questionnaire->isQuestionnaireExecution($this->view->qstnRespondId)) {
+            $this->view->periodoRespostas = false;
+            $this->view->messageError = "Período de resposta do questionário inválido.";
+            return;
+        }
+
+        $UserLocality = new Model_UserLocality();
+        $this->view->enterpriseRow = $UserLocality->getUserLocalityByUserId($this->enterpriseUserId)
+            ->findParentEnterprise();
+     }
+     private function checkForDevolutiveUpdate($competitionId, $questionnaireId, $blockId)
+     {
+        $QuestionnaireTable = $this->Questionnaire->tbQuestionnaire;
+        $questionsCount = $QuestionnaireTable->getQuestionnaireTotalQuestions($questionnaireId)->getQtdTotal();
+
+        $answeredQuestionsCount = count(
+            $this->Questionnaire->getQuestionsAnsweredByUserId($questionnaireId, $this->enterpriseUserId, $blockId)
+        );
+
+        $enterpriseReport = $this->EnterpriseReport->getCurrentEnterpriseReportByEnterpriseIdKey(
+            $this->enterpriseIdKey, $competitionId
+        );
+
+        $this->view->updateDevolutive = ($questionsCount == $answeredQuestionsCount && $enterpriseReport);
+
+     }
+      
+     public function reportAction()
+    {
+        $modelReport = new Model_EnterpriseReport;
+        $V = array(
+            'report' => $modelReport->getEnterpriseReportByEnterpriseIdKey($this->enterpriseKey),
+            'enterprise' => $this->enterpriseRow,
+            'president' => $this->enterpriseRow->getPresidentRow(),
+            'scores' => $this->Appraiser->getEnterpriseScoreAppraisersData($this->enterpriseRow->getId())
+        );
+	
         $this->view->assign($V);
-      
-          if (!$this->getRequest()->isPost()) {
-              return;
-          }
-          $conclusao = $this->_getParam('conclusao', false);
-          $finalizar = $this->_getParam('finalizar', false);
-      
-         // $save = $this->Appraiser->saveCheckerEvaluation(
-           //   $commentQuestions,
-            //  $evaluationQuestions, 
-             // $this->evaluationRow,
-              //$this->_getParam('comments'),
-              //$this->_getParam('respostas'),
-              //$this->_getParam('ansAvaliacao'), 
-              //$conclusao, 
-              //$finalizar             
-          //);
-          /* Caso geração de devolitiva, redireciona */
-          if ($this->_getParam('geraDevolutiva')) {
-              if ($this->_getParam('menu-admin')) {
-                  $this->view->isViewAdmin = true;
-                  $this->_helper->_layout->setLayout('new-qstn');
-              }
-              //regerar devolutiva
-              $regerar = $this->_getParam('regerar');
-              if ($regerar) {
-                  //exclui o link da ultima devolutiva gerada
-                  $modelExec = new Model_Execution();
-                  $execution = $modelExec->getExecutionByUserAndPrograma($this->enterpriseUserId, '2015');
-                  $execution->setDevolutivePath(null);
-                  $execution->save();
-              }
-          
-          
-              $this->view->questionnaireId = $this->view->qstnRespondId;
-              $this->view->enterpriseUserId = $this->enterpriseUserId;
-              $this->_forward('index', 'devolutive', 'questionnaire');
-              return;
-          }
-          
-          if (!$this->Questionnaire->verifyQuestionnaireRolePeriod($this->view->qstnRespondId,$this->userLogged->getRoleId())) {
-              $this->view->messageError = "Você não possui permissão de acesso para o questionário escolhido.";
-              return;
-          }
-          
-          $this->view->answeredByUserId = $this->Questionnaire->getQuestionsAnsweredByUserId(
-              $this->view->qstnRespondId, $this->enterpriseUserId, $blockId
-          );                    
-          
-          $this->view->periodoRespostas = true;
-          if (!$this->Questionnaire->isQuestionnaireExecution($this->view->qstnRespondId)) {
-              $this->view->periodoRespostas = false;
-              $this->view->messageError = "Período de resposta do questionário inválido.";
-              return;
-          }
-          
-          $UserLocality = new Model_UserLocality();
-          $this->view->enterpriseRow = $UserLocality->getUserLocalityByUserId($this->enterpriseUserId)
-          ->findParentEnterprise();
-          $this->view->enterpriseIdGetParam = ($this->permissionNotEnterprise)?
-          $this->enterpriseUserId : null;
-          $this->view->permissionEvaluationOfResponse = $this->permissionEvaluationOfResponse;
-            
-      }
-      private function checkForDevolutiveUpdate($competitionId, $questionnaireId, $blockId){
-          $QuestionnaireTable = $this->Questionnaire->tbQuestionnaire;
-          $questionsCount = $QuestionnaireTable->getQuestionnaireTotalQuestions($questionnaireId)->getQtdTotal();
-      
-          $answeredQuestionsCount = count(
-              $this->Questionnaire->getQuestionsAnsweredByUserId($questionnaireId, $this->enterpriseUserId, $blockId)
-          );
-      
-          $enterpriseReport = $this->EnterpriseReport->getCurrentEnterpriseReportByEnterpriseIdKey(
-              $this->enterpriseIdKey, $competitionId
-          );
-      
-          $this->view->updateDevolutive = ($questionsCount == $answeredQuestionsCount && $enterpriseReport);
-      }
+		
     }
-      
+}

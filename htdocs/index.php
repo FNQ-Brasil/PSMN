@@ -3,7 +3,7 @@ defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
 
 defined('APPLICATION_ENV')
-    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
+    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'staging'));
 
 defined('APPLICATION_PATH_CACHE')
     || define('APPLICATION_PATH_CACHE', (getenv('APPLICATION_PATH_CACHE') ?

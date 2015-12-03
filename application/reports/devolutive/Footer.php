@@ -1,9 +1,13 @@
 <?php
 
 class Report_Devolutive_Footer extends Report_Devolutive_Page {
-	public function __construct($devolutiveReport, $devolutiveRow){
+	
+	protected $tipoPDF = null;
+	
+	public function __construct($devolutiveReport, $devolutiveRow,$tipoPDF=null){
 		parent::__construct($devolutiveReport, $devolutiveRow);
-
+		$this->tipoPDF = $tipoPDF;
+		
 		if(!$this->isCoverPage()) $this->create();
 	}
 
@@ -36,6 +40,9 @@ class Report_Devolutive_Footer extends Report_Devolutive_Page {
 		return $this->devolutiveRow->getProtocolo();
 	}
 
+    protected function getUser(){
+		return $this->devolutiveRow->getUserLogadoGerouDevolutiva();
+	}
 	protected function getCreatedAt(){
 		return $this->devolutiveRow->getProtocoloCreateAt();
 	}
@@ -48,7 +55,11 @@ class Report_Devolutive_Footer extends Report_Devolutive_Page {
 
 		$this->line(1,27,19.8,27);
 		$this->cellWithUTF8(0.9,1,$this->pageNo().'/{nb}');
-		$this->cellWithUTF8(7.2,1,"Emissão: $createdAt",0,0,'C');
+		
+		if($this->tipoPDF ==4)
+			$this->cellWithUTF8(7.2,1,"Emissão: $createdAt por " . $this->getUser(),0,0,'C');
+		else
+			$this->cellWithUTF8(7.2,1,"Emissão: $createdAt",0,0,'C');
 
 		$this->createImage();
 	}

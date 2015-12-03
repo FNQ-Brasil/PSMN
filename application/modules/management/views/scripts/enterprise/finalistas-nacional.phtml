@@ -1,14 +1,5 @@
 <?php
-
-echo'<pre>';
-print_r($this->getAllEnterprise);
-echo'</pre>';
-exit;
-
-
-$this->headScript()
-    ->appendFile($this->baseUrl('js/management/appraiser/list.js?x1'))
-;
+$this->headScript()->appendFile($this->baseUrl('js/management/appraiser/list.js?x1'));
 ?>
 <table class="table">
   <caption></caption>
@@ -40,14 +31,7 @@ $this->headScript()
 
   foreach ($this->getAllEnterprise as $index => $enterprise):
   $QtdePontosFortes = $this->getAllEnterprisePontosFortes->getQtdePontosFortes();
-  
-  print_r($this->getAllApeEvaluationVerificador->getPontosFinal());
-  
-  
-      
   $QtdePontosFortes = $this->getAllEnterprisePontosFortes->getQtdePontosFortes();
-  
- 
   $QtdPontosFortes = $QtdePontosFortes;
   
   if($QtdPontosFortes == 0)   $QtdPontosFortes = '0';
@@ -65,7 +49,7 @@ $this->headScript()
   if($QtdPontosFortes == 12)  $QtdPontosFortes = '20';
   
   $NotaAutoAvalVerificador = 100;
-  $NotaQuestVisitaVerificador = $this->getAllApeEvaluationVerificador->getPontosFinal();
+  $NotaQuestVisitaVerificador = 1; //$this->getAllApeEvaluationVerificador->getPontosFinal();
   
   $PontuacaoFinal =  (($NotaAutoAvalVerificador/5) + ($NotaQuestVisitaVerificador/1.66666) + $QtdPontosFortes);
     
@@ -76,8 +60,8 @@ $this->headScript()
 
     $businessPoints = $enterprise->getNegociosTotal();
     $generalPoints = Model_Enterprise::getGeneralPointsFor($businessPoints, $enterprise->getStatusA4(),
-      $enterprise->getPontosA4(), $enterprise->getStatusA5(), $enterprise->getPontosA5(), $enterprise->getStatusA6(),
-      $enterprise->getPontosA6(), null
+    $enterprise->getPontosA4(), $enterprise->getStatusA5(), $enterprise->getPontosA5(), $enterprise->getStatusA6(),
+    $enterprise->getPontosA6(), null
     );
 
     $verificadores = array(

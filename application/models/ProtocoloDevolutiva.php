@@ -87,6 +87,7 @@ class Model_ProtocoloDevolutiva
         // CODIGO NOVO para protocolo devolutiva
         ///////////////////////////        
         
+		
         $geraProtocolo = false;    
         
         if ($permissionEvaluationOfResponse) {
@@ -94,12 +95,16 @@ class Model_ProtocoloDevolutiva
         } else {
             $existsArchive = $this->Execution->getDevolutivePath($questionnaire_id, $user_id, $programaId);
         }
+		
+		
+	
 
         //valida se deve gerar um protocolo
         if (!$existsArchive) {
             $geraProtocolo = true;
             //gerando protocolo para devolutiva
             $protocoloDevolutiva = $this->modelProtocolo->insertProtocolo($user_id, $this->loggedUserId, $programaId );
+		 
    
             //este eh o numero de protocolo da devolutiva
             $this->Devolutive->setProtocoloIdDevolutiva($protocoloDevolutiva['lastId']);     
@@ -108,7 +113,8 @@ class Model_ProtocoloDevolutiva
             
             //este é a string protocolo que é printado na devolutiva
             $protocolo = Vtx_Util_Formatting::protocoloPSMN($this->Devolutive->getProtocoloIdDevolutiva(), $this->Devolutive->getProtocoloCreateAt());
-            $this->Devolutive->setProtocolo($protocolo);
+			
+		
             
             //pega o usuario logado que gerou a devolutiva, podendo ser o usuario, gestor ou admin
             $user = $this->modelUser->getUserById($this->loggedUserId);
@@ -120,6 +126,8 @@ class Model_ProtocoloDevolutiva
             $this->view->userLogadoGerouDevolutiva = $user->getFirstName();
 
             $geraProtocolo = true;
+			
+            $this->Devolutive->setProtocolo($protocolo);
             
         } else {
             //caso seja uma devolutiva pdf ja gerada

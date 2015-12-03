@@ -68,22 +68,36 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
      */
     public function indexAction()
     {
-        
+$this->view->sss="ssss";
        $seconds = 360; //3 minutos
        set_time_limit($seconds); 
-       $limit = $this->_getParam('limit');
-       $enterpriseProgramaIdMaiorQue = $this->_getParam('maiorque');
        
        //mpe9 / mpe9 
-       if ( isset($limit) && isset($enterpriseProgramaIdMaiorQue) ) {
-
-            /**************************************************************/
+       
+       $params = $this->_getAllParams();
+       $limit = 0;
+       $enterpriseProgramaIdMaiorQue = 0;
+       
+       if(isset($params['limit']))
+       {
+       	$limit = $this->_getParam('limit');
+       }
+       if(isset($params['maiorque']))
+       {
+       	$enterpriseProgramaIdMaiorQue = $this->_getParam('maiorque');
+       }
+        
+       if ( $limit && $enterpriseProgramaIdMaiorQue ) 
+       {
+       		
+       	/**************************************************************/
             //Ex: http://site-ambiente/questionnaire/devolutive/index/?limit=10&maiorque=96 
             $QUEM_FARA_PROCESSAMENTO = "Pontuacao_Em_Massa"; //Devolutiva_Em_Massa
             $this->Devolutive->setStartProcessamentoEmMassa(true);
             //execucao em massa de geracao devolutiva
             $this->cligrava($limit, $enterpriseProgramaIdMaiorQue, $QUEM_FARA_PROCESSAMENTO);
-            exit;
+           //
+           return; exit;
        }         
         
         
@@ -93,9 +107,13 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
          * 
          */
         
-        $this->questionnaire_id = $this->_getParam('qstn');
+       
 
-        if(!$this->questionnaire_id){
+        //if(!$this->questionnaire_id){
+       if(isset($params['limit']))
+       {
+        	$this->questionnaire_id = $this->_getParam('qstn');
+        } else {
             $this->questionnaire_id = $this->Questionnaire->getCurrentExecution()->getId();
         }
         
@@ -225,7 +243,7 @@ class Questionnaire_DevolutiveController extends Vtx_Action_Abstract
         }
         
         $this->view->messageError = 'Náo foi possível a geração da devolutiva.';
-        
+        return;
     } //end action
 
     public function verificacaoAction(){

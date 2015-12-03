@@ -106,7 +106,7 @@ $etapa = ($this->etapa == 'nacional')?'/etapa/nacional':'';
                   <?php
                     $checked = (isset($this->respostas[$questaoId]) and $this->respostas[$questaoId]['Resposta'] == 'D')? ' checked' : '';
                   ?>
-                  <input type="radio" value="D"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="option radio" data-percentage="0" />
+                  <input style="opacity: 1" type="radio" value="D"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="option radio" data-percentage="0" />
                   <label style="background: none !important;" for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="label-inline radio">
                     Não Evidenciado
                   </label>
@@ -116,7 +116,7 @@ $etapa = ($this->etapa == 'nacional')?'/etapa/nacional':'';
                   <?php
                     $checked = (isset($this->respostas[$questaoId]) and $this->respostas[$questaoId]['Resposta'] == 'A')? ' checked' : '';
                   ?>
-                  <input type="radio" value="S"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-b" class="option radio" data-percentage="50" />
+                  <input type="radio" value="A"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-b" class="option radio" data-percentage="50" />
                   <label for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-b" class="label-inline radio">
                     Levemente Evidenciado
                   </label>
@@ -126,7 +126,7 @@ $etapa = ($this->etapa == 'nacional')?'/etapa/nacional':'';
                   <?php
                     $checked = (isset($this->respostas[$questaoId]) and $this->respostas[$questaoId]['Resposta'] == 'S')? ' checked' : '';
                   ?>
-                  <input type="radio" value="A"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-c" class="option radio" data-percentage="100" />
+                  <input type="radio" value="S"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-c" class="option radio" data-percentage="100" />
                   <label for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-c" class="label-inline radio">
                     Fortemente Evidenciado
                   </label>

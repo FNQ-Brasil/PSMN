@@ -12,6 +12,8 @@ $qsts = array();
 $blocos = array();
 $criterios = array(); 
 
+ 
+
 //Questoes
 foreach ($this->questoes as $k => $questao):
     $bloco = $questao->getBloco();
@@ -159,14 +161,9 @@ endforeach;
 				style="width: 100%; height: 135px"><?php echo isset($this->conclusao)? $this->conclusao : ''; ?></textarea>
 		</div>
 		<div class="complement">
-			<input id="finalizar" type="hidden" name="finalizar" value="0" />
-			<button class="large btn-submit" type="none"
-				onclick="$('#finalizar').val('1');$('#frmAvaliacao').submit();return false;">
-				<b>Finalizar e enviar ao gestor</b>
-			</button>
 			<button class="large btn-submit" type="submit"
 				style="background-color: #7D5977; margin-right: 10px">
-				<b>Salvar e continuar depois</b>
+				<b>Salvar</b>
 			</button>
 		</div>
 	</div>

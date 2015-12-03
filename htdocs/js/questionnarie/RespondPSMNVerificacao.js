@@ -128,7 +128,7 @@ var respondModule = (function () {
             .prop('disabled', true);
 
         $.ajax({
-            url: BASE_URL + '/verificacao/questionarionegocio/',
+            url: BASE_URL + '/management/verificacao/answer/',
             type: 'get',
             cache: false,
             dataType: 'json',
@@ -137,11 +137,10 @@ var respondModule = (function () {
             if(window.formcomplete == false){
                 if( $('.questionTypeSubmitRadioChange').find(':radio:checked').size() == 30 ){
                 $url = (PAPEL_EMPRESA)?
-                    BASE_URL+'/questionnaire/respond/index/block/'+CURRENT_BLOCK_ID:
-                    BASE_URL+'/management/verificacao/questionarionegocio/block/'+CURRENT_BLOCK_ID+'/enterprise-id-key/'+ENTERPRISE_ID_KEY;
+                    BASE_URL+'/management/verificacao/questionarionegocio/block/'+CURRENT_BLOCK_ID:
+                    BASE_URL+'/management/questionnaire/not-coop-responding/block/'+CURRENT_BLOCK_ID+'/enterprise-id-key/'+ENTERPRISE_ID_KEY;
             
                 window.location.href = $url;
-                // BASE_URL + '/questionnaire/respond/index/geraDevolutiva/1/enterprise-id-key/'+ENTERPRISE_ID_KEY;
                 }
             }
             $allRadios.prop('disabled', false);
@@ -154,6 +153,7 @@ var respondModule = (function () {
 
     var $menuItems = $('.quizz a[href^=#tab]');
 
+
     return {
         quiz: {
             change: function (element, triggered) {
@@ -162,17 +162,17 @@ var respondModule = (function () {
                 $answers,
                 $checked,
                 $id,
-                $confirm = [
+               /* $confirm = [
                     'Você gostaria de avançar de questão sem salvar a reposta atual?',
                     'As informações contidas nesse formulário serão perdidas.'
-                ],
+                ],*/
                 $question,
                 $answer,
                 $complement,
                 $warnings,
                 $status = false,
                 $return = true;
-                triggered = ((triggered !== undefined) ? triggered : false);
+                triggered = true;//((triggered !== undefined) ? triggered : false);
                 if ($menuItems.length) {
                     $index = {
                         current: parseInt($menuItems.filter(function () {
@@ -185,8 +185,8 @@ var respondModule = (function () {
                         target: $('form').eq($index.target)
                     };
                     $answers = {
-                        current: $form.current.find('.answer').find(':radio'),
-                        target: $form.target.find('.answer').find(':radio')
+                        current: $form.current.find('.answer').eq(1).find(':radio'),
+                        target: $form.target.find('.answer').eq(1).find(':radio')
                     };
                     $checked = {
                         current: $answers.current.filter(function () {
@@ -210,7 +210,7 @@ var respondModule = (function () {
                                 $status = (!triggered ? confirm($confirm.join('\n')) : triggered);
                                 if ($status) {
                                     if (!triggered) {
-                                        $form.current.find('.answer').find(':radio').removeAttr('checked').end().removeClass('checked');
+                                       // $form.current.find('.answer').find(':radio').removeAttr('checked').end().removeClass('checked');
                                         if (_.contains(QUESTION_ANSWERED, $id)) {
                                             $checked.original = $answers.current.filter(function () {
                                                 return $.trim($(this).val()).toString() === QUESTION_ANSWERED_ITEMS[$id].id.toString();
@@ -277,7 +277,7 @@ var respondModule = (function () {
                     },
                     $answers = {
                         checked: {
-                            element: $this.find('.teste:radio:checked')
+                            element: $this.find(':radio:checked')
                         },
                         complement: {
                             error: {
@@ -290,11 +290,11 @@ var respondModule = (function () {
                     },
                     $scroller = $($isChrome ? 'body' : 'html'),
                     $status = true;
-                if ($answers.checked.element.length) {
-                    $answers.checked.parent = $answers.checked.element.parents('.answer');
-                    
+                if ($answers.checked.element.eq(1).length) {
+                    $answers.checked.parent = $answers.checked.element.eq(1).parents('.answer');
+
                     //$answers.complement.field.val('');
-                    $answers.complement.wrapper.find($answers.complement.error.classname).fadeOut().remove();
+                    //$answers.complement.wrapper.find($answers.complement.error.classname).fadeOut().remove();
 
                     if ($status) {
                         $.ajax(
@@ -307,7 +307,7 @@ var respondModule = (function () {
                                     'format': 'json',
                                     'question_id':  $question.id,
                                     'answer_value':  $.trim($answers.complement.field.val()),
-                                    'alternative_id': $.trim($answers.checked.element.val()),
+                                    'alternative_id': $.trim($answers.checked.element.eq(1).val()),
                                     'start_time': startDate,
                                     'enterprise-id-key': ENTERPRISE_ID_KEY
                                 },
@@ -332,10 +332,13 @@ var respondModule = (function () {
                                     data._.questions.todo = data._.questions.all.not(data._.questions.done);
                                     data._.questions.isLast = (data._.questions.answered.index() === (data._.questions.all.length - 1));
 
+									if(data._.questions.isLast){
+										 alert("Questionário de Auto Avaliação\nFinalizado com Sucesso.")
+										 window.location = "/management/appraiser/checker";
+									}
                                     if(data.updateDevolutive){
                                         var url = [
-                                            '/management/verificacao/index/geraDevolutiva/1/regerar/1',
-                                            //'/questionnaire/respond/index/geraDevolutiva/1/regerar/1',
+                                            '/management/verificacao/questionarionegocio/geraDevolutiva/1/regerar/1',
                                             '/enterprise-id-key/', ENTERPRISE_ID_KEY
                                         ].join('');
 
@@ -361,7 +364,7 @@ var respondModule = (function () {
                                         var url;
 
                                         if(PAPEL_EMPRESA){
-                                            url = '/questionnaire/report/';
+                                            url = '/management/verificacao/';
                                         } else {
                                             url = [
                                                 '/management/report/index/enterprise-id-key/',
@@ -375,9 +378,6 @@ var respondModule = (function () {
                                     } else {
                                         goToNextQuestion(data);
                                     }
-                                },
-                                error: function (data, a, b){                                	
-                                	alert(b);
                                 }
                             }
                         );
@@ -418,10 +418,14 @@ var respondModule = (function () {
 
             $overlay.hide();
 
+
+
             var $act;
+
+            
             var $listquestions = $('.inner-content ol');
             var questionsNr = $listquestions.find('li').size();
-            var questionsperPage = 4;
+            var questionsperPage = 3;
             var questionHeight = 97;
             var questionPage = 0;
             var answerEmptyPage = 3-$('#content').find('.questionTypeSubmitRadioChange :radio:checked').slice( questionPage*questionsperPage , questionPage*questionsperPage+3 ).size();
@@ -450,7 +454,7 @@ var respondModule = (function () {
                 window.formcomplete = true;
                 var urlRedirect = BASE_URL + '/questionnaire/respond/index/block/'+CURRENT_BLOCK_ID;
                 if (!PAPEL_EMPRESA) {
-                    urlRedirect = BASE_URL + '/management/verificacao/questionarionegocio/enterprise-id-key/' + ENTERPRISE_ID_KEY;
+                    urlRedirect = BASE_URL + '/management/questionnaire/not-coop-responding/enterprise-id-key/' + ENTERPRISE_ID_KEY;
                 }
                 $('.inner-content ol')
                     .after('<div id="message-quest"><a href="' + urlRedirect + '">Ir para o Questionário de Negócios.</a></div>')

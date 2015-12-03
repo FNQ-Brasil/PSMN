@@ -10,15 +10,56 @@ $criterioAnterior = '';
 $qsts = array();
 $blocos = array();
 $criterios = array(); 
-$model_apevaluationverificador = new Model_ApeEvaluationVerificador();
+$respostas = array(); 
+$avaliadorResposta = $this->verificacaoAvaliador;
+ 
+
+//echo('<pre>');
+//print_r($this->questoes);
+//echo('</pre>');	exit;
+
+
+
+//print_r($this->verificacaoAvaliador);exit;
+
+function resposta($array,$value) {
+   $filtered = false;
+   $member = "AvaliacaoPerguntaId";
+ 
+   foreach($array as $k => $v) {
+
+      if($v["AvaliacaoPerguntaId"] == $value)
+         $filtered = $v["Resposta"];
+   }
+
+    return $filtered;
+}
+
+function comentario($array,$value) {
+   $filtered = false;
+   $member = "CriterioNumber";
+
+   foreach($array as $k => $v) {
+
+      if($v["CriterioNumber"] == $value)
+         $filtered = $v["Comment"];
+   }
+
+    return $filtered;
+}
+
+
+//echo('<pre>');
+//13_r($this->verificacaoAvaliador);
+//echo('</pre>');
+//	exit;
+
 //Questoes
 foreach ($this->questoes as $k => $questao):
-    
-    
-    $questaoLetra = $questao->getQuestaoLetra();
-    
-    $bloco = $questao->getBloco();
-    $criterio = $questao->getCriterio();
+	    $questaoLetra = $questao->getQuestaoLetra();    
+	    $bloco = $questao->getBloco();
+	    $criterio = $questao->getCriterio();
+
     if ($bloco != $blocoAnterior) {
         $qsts[$bloco] = array(
             'BlockName' => Vtx_Util_PsmnAvaliacao::BlocosAvaliacao($bloco), 'Criterions' => array()
@@ -34,16 +75,10 @@ foreach ($this->questoes as $k => $questao):
     $blocoAnterior = $bloco;
     $criterioAnterior = $criterio;
   
-    endforeach;
-    
-    
+endforeach;        
 ?>
+
 <?php
-
- //print_r($this->respostas);
- //print_r($this->respostas["$blockId$criterioId$questaoLetra"]['ans']);
- //exit;
-
 ?>
 <h1 class="title"><a name="anchor"></a>VERIFICADOR - Avaliação do Relato</h1>
 <form action="" method="POST" id="frmAvaliacao" class="avaliacao">
@@ -100,6 +135,7 @@ foreach ($this->questoes as $k => $questao):
             </p>
 
             <ol class="answers">
+
         <?php
         $letras = array('A','B','C','D','E','F','G','H','I');
         $ii = 0;
@@ -107,20 +143,24 @@ foreach ($this->questoes as $k => $questao):
             ?>
           <li class="question" id="question-<?php echo $questaoId; ?>" data-weight="<?php echo $questao->getPeso(); ?>">
             <div class="texto" style="<?php echo (isset($this->questionsError[$blockId][$criterioId][$letras[$ii]])? 'background-color: #FCFC8D"' : ''); $ii++; ?>"><?php echo $questao->getQuestao(); ?></div>
-            <div class="answer-option" style="font-size: 12px; text-align: left; border-right: none; width: 473px;">
+            <div class="answer-option" style="font-size: 12px; text-align: left; border-right: none; width: 400px;">
                 <?php echo nl2br($questao->getTopico()); ?>
             </div>
           <div class="answer-option">
-		<b style=" padding-left: 5px; width: 10%; color: #7D5977"> Resposta do Verificador</b>
+		<b style="padding-left: 5px; width: 10%; color: #7D5977"> Resposta do Verificador</b>
 	  </div>
-           <div class="answer-option">
-              <?php
-              $checked = "";
-              $resposta = $model_apevaluationverificador->verificaResposta($this->enterprise->getId(),$questaoId);
-              $checked = (isset($resposta) and $resposta[$questaoId] == 'D')? ' checked="checked"' : '';  
-              ?>
-                  <input type="radio" value="1" <?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="option radio" data-percentage="0" />
-                  
+          <div class="answer-option">
+
+                  <?php
+				  $idResposta  =null;
+                  $idResposta = resposta($this->verificacaoAvaliador,$questaoId);
+                  $checked = (isset($idResposta) and $idResposta == 'D') ? ' checked' : '';
+                  ?>                                             
+                <input <?php echo $checked; ?>
+                    type="radio" data-percentage="0" class="option radio"
+                    id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a"
+                    name="ans[<?php echo $questaoId; ?>]"
+                    value="1">
                   <label style="background: none !important;" for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-a" class="label-inline radio">
                     Não Evidenciado
                   </label>
@@ -128,9 +168,11 @@ foreach ($this->questoes as $k => $questao):
                 </div>
                 <div class="answer-option">
                   <?php
-                    $checked = (isset($resposta) and $resposta[$questaoId] == 'A')? ' checked="checked"' : '';
+				   $idResposta  ='';
+                     $idResposta = resposta($this->verificacaoAvaliador,$questaoId);
+				 
+                  $checked = (!empty($idResposta) and $idResposta == 'A') ? ' checked' : '';
                   ?>
-                  
                   <input type="radio" value="2"<?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-b" class="option radio" data-percentage="50" />
                   <label for="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-b" class="label-inline radio">
                     Levemente Evidenciado
@@ -140,8 +182,9 @@ foreach ($this->questoes as $k => $questao):
                 <div class="answer-option">
                 
                   <?php
-                  
-                    $checked = (isset($resposta) and $resposta[$questaoId] == 'S')? ' checked="checked"' : '';
+				   $idResposta  ='';
+                   $idResposta = resposta($this->verificacaoAvaliador,$questaoId);
+                  $checked = (!empty($idResposta) and $idResposta == 'S') ? ' checked' : '';
                   ?>
                   <input type="radio" value="3" <?php echo $checked;?> name="ans[<?php echo $questaoId; ?>]" id="question-<?php echo $blockId; ?>-<?php echo $criterioId ; ?>-<?php echo $questaoId; ?>-c" class="option radio" data-percentage="100" />
                   
@@ -156,9 +199,7 @@ foreach ($this->questoes as $k => $questao):
                   </dl>
                 </div>              
          </li>
-        <?php endforeach; ?>
-        
-        
+        <?php endforeach; ?>                
           <li class="">
             <div class="answer-option" style="text-align: left; border-right: none; width: 473px; background-color: #fff;  font-size: 17px; font-weight: bold;
                 font-style: italic;
@@ -166,7 +207,9 @@ foreach ($this->questoes as $k => $questao):
                 width: 100%;">
                 <b style=" padding-left: 10px; width: 100%/* color: rgb(237, 118, 69);*/"> Comentários (<?php echo $criterio['CriterionValue']; ?>)</b>
                 <div class="texto" style="background-color: #fff;  width: 100%; margin-left: 0; border-right: none; ">
-                    <textarea name="comments[<?php echo "$blockId$criterioId"; ?>]" style="width: 100%; height: 90px"><?php echo  (isset($this->commentAnswers["$blockId$criterioId"]['Comment'])? $this->commentAnswers["$blockId$criterioId"]['Comment'] : ''); ?></textarea>
+                    
+                                        <textarea name="comments[<?php echo "$blockId$criterioId"; ?>]" style="width: 100%; height: 90px"><?php  $comment ='' ; $comment = comentario($this->comentarioVerificador,"$blockId$criterioId"); echo  (isset($comment)? $comment : ''); ?></textarea>
+                                        
                 </div>
             </div>
               </li>                     
@@ -179,8 +222,7 @@ foreach ($this->questoes as $k => $questao):
     </ul>
         <div class="complement">
             <input id="finalizar" type="hidden" name="finalizar" value="0" />
-            <button class="large btn-submit" type="none" onclick="$('#finalizar').val('1');$('#frmAvaliacao').submit();return false;"><b>Finalizar</b></button>  
-            <button class="large btn-submit" type="submit" style="background-color: #7D5977; margin-right: 10px"><b>Salvar e continuar depois</b></button>     
+            <button class="large btn-submit" type="submit" style="background-color: #7D5977; margin-right: 10px"><b>Salvar</b></button>     
          </div>
     </div>
 </form>

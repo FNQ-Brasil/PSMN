@@ -345,7 +345,7 @@ var registerModule = (function () {
             })
             
             $('input:radio[name="newsletter"]').on('change', function(){
-                console.log('mudou')
+                //console.log('mudou')
                 if ($(this).is(':checked') && $(this).val() == '1') {
                     //console.log('mudou 1')
                     $('#newsTypes').removeClass('disabled').find(':input').removeAttr('disabled')
@@ -650,7 +650,7 @@ var registerModule = (function () {
 
                             if (!$form.valid() || $form.data('submited')) {
                                 
-                                //console.log('valid false');
+                                console.log('valid false');
                                 return false;
                             }
                             $form.data('submited', true);

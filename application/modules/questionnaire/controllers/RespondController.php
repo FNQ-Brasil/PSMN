@@ -126,7 +126,6 @@ class Questionnaire_RespondController extends Vtx_Action_Abstract
         $this->view->currentBlockIdNegocios = Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios;
         $this->view->currentBlockIdEmpreendedorismo = Zend_Registry::get('configDb')->qstn->currentBlockIdEmpreendedorismo;
         $blockId = $this->_getParam('block', $this->view->currentBlockIdNegocios);
-
         
         /*
             Caso tente respnder um questionário, que não seja o atual.

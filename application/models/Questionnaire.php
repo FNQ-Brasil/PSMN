@@ -315,6 +315,13 @@ class Model_Questionnaire
             ->getQuestionsAnsweredByUserId($QstnId, $UserId, 'assoc', $blockId);
     }   
     
+    public function getQuestionsAnsweredByUserIdVerificador($QstnId, $UserId,$EnterpriseId, $blockId = false)
+    {
+        return DbTable_Questionnaire::getInstance()
+            ->getQuestionsAnsweredByUserIdVerificador($QstnId, $UserId,$EnterpriseId, 'assoc', $blockId);
+    }   
+
+
     public function getBlocksAutoavaliacao($QstnId)
     {
         return DbTable_Questionnaire::getInstance()

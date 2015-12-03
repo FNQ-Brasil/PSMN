@@ -1,4 +1,4 @@
-<table class="table">
+﻿<table class="table">
   <caption></caption>
   <thead>
     <tr>
@@ -7,18 +7,11 @@
       <th class="appraisers-confirm">Classificar</th>
       <th class="appraisers">Avaliadores Etapa Nacional</th>
       <th class="appraisers-cancel">Desclassificar</th>
-      <th>P. Geral<br><b style="font-family: Arial; ">+</b> Bônus</th>
-      <th>Bônus</th>
-      <th>Média<br>Relato</th>
-      <th>Prêmio</th>
-      <th>Pts.<br>Negócios</th>
-
-      <?php if ($competitionId == '2013') : ?>
-        <th>Pts.<br />Empreende.</th>
-      <?php endif; ?>
-
-      <th>Relat.<br />Interno</th>
-      <th>Devolutiva</th>
+	  <th>RA<br>Verif.</th>
+	  <th>Pontuação</br>Geral</th>
+	  <th>Questionário<br>de Auto Aval.<br>Negócios</th>
+	  <th>Questionário</br>de Visita</th>
+      <th>Critério</br>de Avaliação</th>
     </tr>
   </thead>
 <?php
@@ -36,22 +29,36 @@ if (count($this->getAllEnterprise) >= 1):
     $email = trim($enterprise->getEmailDefault());
     $phone = trim($enterprise->getPhone());
     $percent = ($enterprise->getPA() ? ($enterprise->getPA() . "%") : "");
+	
+	$raa = $enterprise->getDevolutivePath();
+	try {
+		list ($root, $pasta, $key,$arquivo) = split("/",$raa);
+		$extension_pos = strrpos($arquivo, '.');
+		$fileName = substr($arquivo, 0, $extension_pos) . 'VR' . substr($arquivo, $extension_pos);
+		$raa = "/" . $pasta . "/" .$key . "/" . $fileName;
+	
+	} catch (Excception $e) {}
+	
+	
     $appraisers = array(
       'confirm' => array(
         'status' => (($enterprise->getClassificarNacional() != null) ? $enterprise->getClassificarNacional() : false),
         'options' => array(
           'primary' => array(
             'status' => (($enterprise->getAppraiserId() != null) ? $enterprise->getAppraiserId() : 0),
+			'tipo'=>(($enterprise->getTipo() != null) ? $enterprise->getTipo() : 0),
             'field' => array(),
             'label' => false
           ),
           'secondary' => array(
             'status' => (($enterprise->getAppraiserIdSec() != null) ? $enterprise->getAppraiserIdSec() : 0),
+			'tipo'=>(($enterprise->getTipo() != null) ? $enterprise->getTipo() : 0),
             'field' => array(),
             'label' => false
           ),
           'thirdary' => array(
             'status' => (($enterprise->getAppraiserIdTer() != null) ? $enterprise->getAppraiserIdTer() : 0),
+			'tipo'=>(($enterprise->getTipo() != null) ? $enterprise->getTipo() : 0),
             'field' => array(),
             'label' => false
           )
@@ -158,57 +165,52 @@ if (count($this->getAllEnterprise) >= 1):
             <?php echo ($appraisers['cancel']['status'] ? 'checked="checked"' : ''); ?> />
         <a href="" title="Editar justificativa" class="cancel-ranking-note-edit">(editar justificativa)</a>
       </td>
-      <td class="middle">
-          <?php
-            if ($enterprise->getPontosGeral() != '-') {
-                echo number_format($enterprise->getPontosGeral()*100, 1 , ',', '.') . '%';
-            }
-        ?>
-      </td>
-      <td class="middle">
-            <?php 
-                if ($qtPf === false) {
-                    echo '0';
-                } elseif ($qtPf >= 8) {
-                    echo '20%';
-                }  elseif ($qtPf >= 5) {
-                    echo '10%';
-                } else {
-                    echo '0';
-                }
-            ?>
-      </td>
-    <td class="middle">
-        <?php echo number_format($enterprise->getMediaPontos(), 1 , ',', '.');?>
-    </td>
+	  <td class="middle">
+          <dl>
+              <dt>
+                  <?php if ($raa): ?>
+                      <a href="<?php echo $raa; ?>" title="Baixar RAA" class="report" target="_blank">Baixar RAA</a>
+                  <?php endif; ?>
+              </dt>
 
-      <td class="middle"><span><?php echo str_replace('Microempreendedora', 'Microemp.', $enterprise->getDescriptionEca()); ?></span></td>
-
-      <td class="middle"><span><?php echo number_format($enterprise->getNegociosTotal(), 1);?></span></td>
-      
-      <?php if ($competitionId == '2013') : ?>
-        <td class="middle"><span><?php echo $enterprise->getPontosEmpreendedorismo();?></span></td>
-      <?php endif; ?>
+          </dl>
+        </td>
+		<td class="middle">
+		<dl>
+			<dt>
+			<?php            
+				 echo $enterprise->getPontuacaoFinal();           
+			  ?>                 
+			</dt>
+		</dl>
+		</td>
+		<td class="middle">
+	<dl>
+		<dt>
+        <?php echo $enterprise->getNotaAutoAvalVerificador(); ?>                    
+        </dt>
+	</dl>
+</td>
+<td class="middle">
+	<dl>
+		<dt>		
+        <?php echo $enterprise->getNotaQuestVisitaVerificador(); ?>                    
+        </dt>
+	</dl>
+</td>
+<td class="middle">
+	<dl>
+		<dt>
+         <?php echo $enterprise->getQtdPontosFortes(); ?>
         
-     <td class="middle">
-        <dl>
-          <dt>
-            <a href="<?php echo $this->baseUrl("management/appraiser/internal-report/enterprise-id-key/{$enterprise->getIdKey()}/competition-id/{$competitionId}"); ?>#report" target="_blank" title="Relatório Interno" class="download-raa" target="blank">Interno</a>
-          </dt>
-        </dl>
-      </td>
-      <td class="middle">
-        <dl>
-        	<dt>
-                <?php if ($raa): ?>
-                    <a href="<?php echo $raa; ?>" title="Baixar RAA" class="report">Baixar RAA</a>
-                <?php endif; ?>
-                </dt>
-            <?php if ($permissionRespondAll): ?>
-              <dd class="survey"><?php echo ($percent ? $percent : '-'); ?></dd>
-            <?php endif; ?>
-        </dl>
-      </td>
+        </dt>
+	</dl>
+</td>   
+		
+		
+		
+		
+		
  
     </tr>
     <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
@@ -226,5 +228,6 @@ if (count($this->getAllEnterprise) >= 1):
   </tbody>
 <?php
 endif;
+
 ?>
 </table>

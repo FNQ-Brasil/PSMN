@@ -13,7 +13,8 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         'CreationDate','EmailDefault', 'Cnae',
         'Phone', 'EmployeesQuantity',
         'CategoriaId' => 'E.CategorySectorId',
-        'Telefone' => 'Phone', 'AnnualRevenue', 'Site','CompanyHistory'
+        'Telefone' => 'Phone', 'AnnualRevenue', 'Site','CompanyHistory','StateRegistration','Dap','RegisterMinistryFisher','OcbRegister','Nirf','FarmSize'
+		
     );
 
     protected $menosCamposEnterprise = array('IdKey',
@@ -206,14 +207,15 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         }
 
         if ($questionnaireId) {
+            
             $query->joinLeft(
                 array('EXE' => 'Execution'),
                 'USL.UserId = EXE.UserId AND EXE.QuestionnaireId = '.$questionnaireId
                 .' AND EXE.ProgramaId = '.$competitionId,
-                array('DevolutivePath','EvaluationPath','FinalScore')
+               array('DevolutivePath','EvaluationPath','FinalScore')
             );
         }
-
+        
         if (isset($filter['regional_id']) and $filter['regional_id']) {
             $regionalId = $filter['regional_id'];
             $query->join(
@@ -240,7 +242,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 $filter['devolutiva'] = null;
                 break;
         }
-
+       
         if (isset($filter['candidatura']) and $filter['candidatura']) {
             switch ($filter['candidatura']) {
                 case 'C': //'candidatas'
@@ -381,7 +383,6 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 break;
             case 'candidatas-nacional':
                 $query = $this->_queryCandidatasNacional($query, $queryBeg, $filter, $competitionId);
-                $orderBy = null;
                 break;
         }
 
@@ -402,8 +403,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
 //         echo $query->__toString(); die;
 
         
-        
-        
+      
         $retorno = $this->fetch($query, $fetch);
         
         return $retorno;
@@ -433,7 +433,8 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             $operator = $onlyWinners ? '>' : '=';
             $eprJoinCondition .= "and (EPR.ClassificadoOuro + EPR.ClassificadoPrata + EPR.ClassificadoBronze) $operator 0";
         }
-
+        exit;
+        
         $query = $this->select()
             ->setIntegrityCheck(false)
             ->from(array('E' => $this->_name), array('Id','IdKey','FantasyName','Cnpj'))
@@ -448,7 +449,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             ->joinInner(array('ECAC' => 'EnterpriseCategoryAwardCompetition'), $ecacJoinCondition, null)
             ->joinInner(array('AE' => 'AddressEnterprise'), 'AE.StateId = S.Id and AE.EnterpriseId = E.Id', null)
             ->joinInner(array('EPR' => 'EnterpriseProgramaRank'), $eprJoinCondition, $eprJoinColumns)
-            ->joinInner(array('ECA' => 'EnterpriseCategoryAward'), 'ECA.Id = E.CategoryAwardId', $ecaJoinColumns)
+            ->joinInner(array('ECA' => 'EnterpriseCategoryAward'), 'ECA.Id = E.CategoryAwardId', $ecaJoinColumns)            
             ->joinLeft(array('EXE' => 'Execution'), $exeJoinCondition, array('DevolutivePath'))
             ->joinLeft(array('EP' => 'ExecutionPontuacao'), 'EP.ExecutionId = EXE.Id', array('NegociosTotal'))
             ->joinLeft(array('CE' => 'CheckerEnterprise'), $ceJoinCondition, array('QtdePontosFortes'))
@@ -541,6 +542,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         $this->appendQueryFilters($query, $loggedUserId, $filter);
 
         $query->where('EXE.DevolutivePath IS NOT NULL');
+		
 
         $query->group('E.Id');
 
@@ -772,6 +774,15 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             $query->where('E.EmployeesQuantity = ?', $clean_employees_quantity);
         }
 
+		 if(in_array('appraiser_id', array_keys($filter)) && $filter['appraiser_id'] != ''){
+			 $appraiser_id= $filter['appraiser_id'] ; 
+			 $query->where('APE1.UserId = ?', $appraiser_id);
+			 $query->ORwhere('APE2.UserId = ?', $appraiser_id);
+			 $query->ORwhere('APE3.UserId = ?', $appraiser_id);
+
+		 }
+
+
         if(in_array('faixa', array_keys($filter)) && $filter['faixa'] != ''){
             $range = Vtx_Util_Array::faixaIdadePSMN($filter['faixa']);
             $start = preg_replace('/[^0-9]/', '', $range[1]);
@@ -851,7 +862,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
     private function setDefaultFiltersValue($filter){
         $attrNames = array('annual_revenue','category_sector_id','education_id','category_award_id','regional_id',
             'metier_id','state_id','city_id','neighborhood_id','status','category_award_id','verified_subscription',
-            'coop_name','cnpj','president_name','cpf','employees_quantity','faixa', 'competition_id');
+            'coop_name','cnpj','president_name','cpf','employees_quantity','faixa', 'competition_id','appraiser_id');
 
         foreach($attrNames as $attrName){
             if(!isset($filter[$attrName])){
@@ -890,15 +901,26 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 'Pontos' => 'ApE.Pontos',
                 'PontosSec' => 'ApESec.Pontos',
                 'PontosTer' => 'ApETer.Pontos',
+                'Tipo' => 'ApE.AppraiserTypeId',
+                'TipoSec' => 'ApESec.AppraiserTypeId',
+                'TipoTer' => 'ApETer.AppraiserTypeId',
                 'EXE.DevolutivePath','EXE.EvaluationPath', 'EXE.FinalScore',
                 'FirstNameAvaliadorTer'=>'UTer.FirstName','LoginAvaliadorTer'=>'UTer.Login',
                 'FirstNameAvaliadorSec'=>'USec.FirstName','LoginAvaliadorSec'=>'USec.Login',
                 'FirstNameAvaliadorPri'=>'U.FirstName','LoginAvaliadorPri'=>'U.Login',
-                'NegociosTotal' => 'EP.NegociosTotal',
-                'EXE.DevolutivePath', 'EXE.EvaluationPath', 'EXE.FinalScore',
+                'NegociosTotal' => 'EP.NegociosTotal',               
                 'EPR.MotivoDesclassificadoNacional',
                 'EPR.ClassificarNacional',
                 'EPR.DesclassificarNacional',
+				'EnterpriseId' => 'ApE.EnterpriseId',
+				'PontuacaoFinal' => 'PontuacaoFinal',
+				'NotaAutoAvalVerificador' => 'NotaAutoAvalVerificador',
+				'NotaQuestVisitaVerificador' => 'NotaQuestVisitaVerificador',
+				'QtdPontosFortes' => 'QtdPontosFortes',
+				
+				'PontosVerificador_estadual' => 'PontosVerificador_estadual',
+				'NegociosTotal_estadual' => 'NegociosTotal_estadual',
+				'MediaPontos_estadual' => 'MediaPontos_estadual',
             ));
         if ($queryBeg) {
             $query->columns(array('PontosEmpreendedorismo'=>new Zend_Db_Expr("($queryBeg)")));
@@ -917,8 +939,6 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             */
             ->where("EXE.ProgramaId = ?", $competitionId)
             ->where('EPR.ClassificadoOuro = 1')
-            ->order('1 DESC')
-            ->order('2 DESC')
         ;
 
         return $query;
@@ -973,7 +993,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
 
     protected function _queryAvaliadores($query, $filter, $competitionId, $tipoRelatorio)
     {
-        $avaliadoresNumero = array(1, 2, 3);
+		$avaliadoresNumero = array(1, 2, 3);
         if (
         in_array(
             $tipoRelatorio,
@@ -1155,6 +1175,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             ->columns(array(
                 'PontosGeral' => $this->_sqlPontosGeral(),
                 'MediaPontos' => $this->_sqlMediaGeral(),
+				'TotalPrimeiraFase' => $this->_sqlTotalPrimeiraFase(),
                 'IdKey','SocialName','FantasyName',
                 'DiagnosticoEligibility','Cnpj','S.Uf',
                 'CpfUser'=>'P.Cpf', 'E.EmailDefault', 'Phone',
@@ -1192,8 +1213,8 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         )
             ->where("(ApESec.Status is not null or ApETer.Status is not null or ApE.Status is not null)")
             ->where("EXE.ProgramaId = ?", $competitionId)
+            ->order('TotalPrimeiraFase DESC')
             ->order('1 DESC')
-            ->order('2 DESC')
         ;
         return $query;
     }
@@ -1203,6 +1224,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         $query
             ->reset(Zend_Db_Select::COLUMNS)
             ->columns(array(
+			    'PontosVerificador' =>  $this->_sqlPontosVerificador(),
                 'PontosGeral' => $this->_sqlPontosGeral($comBonus = true),
                 'MediaPontos' => $this->_sqlMediaGeral(),
                 'IdKey', 'SocialName', 'FantasyName',
@@ -1231,7 +1253,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 'FirstNameAvaliadorSec'=>'USec.FirstName','LoginAvaliadorSec'=>'USec.Login',
                 'FirstNameAvaliadorPri'=>'U.FirstName','LoginAvaliadorPri'=>'U.Login',
                 'NegociosTotal' => 'EP.NegociosTotal',
-                'EXE.DevolutivePath', 'EXE.EvaluationPath', 'EXE.FinalScore',
+                'EnterpriseId' => 'ApE.EnterpriseId',
                 /*
                 'RegionalCity'=>'Rcity.Description',
                 'RegionalState'=>'Rstate.Description'
@@ -1289,8 +1311,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 'FirstNameAvaliadorTer'=>'UTer.FirstName','LoginAvaliadorTer'=>'UTer.Login',
                 'FirstNameAvaliadorSec'=>'USec.FirstName','LoginAvaliadorSec'=>'USec.Login',
                 'FirstNameAvaliadorPri'=>'U.FirstName','LoginAvaliadorPri'=>'U.Login',
-                'NegociosTotal' => 'EP.NegociosTotal',
-                'EXE.DevolutivePath', 'EXE.EvaluationPath', 'EXE.FinalScore',
+                'NegociosTotal' => 'EP.NegociosTotal'
             ));
         if ($queryBeg) {
             $query->columns(array('PontosEmpreendedorismo'=>new Zend_Db_Expr("($queryBeg)")));
@@ -1457,27 +1478,38 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
 
     public function getEnterpriseByUserEmailDefault($login, $email)
     {
+					
+
         $query = $this->select()
             ->setIntegrityCheck(false)
             ->from(
-                array('E' => $this->_name),
-                array('EmailDefault')
+			 array('U' => 'User')
+              ///  array('E' => $this->_name),
+               // array('EmailDefault')
             )
-            ->join(
+           /* ->join(
                 array('UL' => 'UserLocality'), 'UL.EnterpriseId = E.Id', null
             )
             ->join(
                 array('P' => 'President'), 'P.EnterpriseId = E.Id',
                 array('Email')
-            )
-            ->join(
+            )*/
+           /* ->join(
                 array('U' => 'User'), 'U.Id = UL.UserId', array('Id', 'FirstName', 'Login')
-            )
-            ->where("U.Login = ?", $login)
-            ->where("P.Email = ?", $email)
-        ;
-
+            )*/
+			
+			->where("U.Email = ?", $email);
+			//->where ("U.Cpf = ?",str_replace("-","",str_replace(".","",$login)));
+			//->where ("U.Login = '" . $login ."' OR U.Cpf = '" . str_replace("-","",str_replace(".","",$login)) . "'");		
+           // ->where("U.Login = ?", $login)
+          
+			
+			
+      //	var_dump($query);exit;
+ 
         $objResult = $this->fetchRow($query);
+		
+	
         return $objResult;
     }
 
@@ -1670,7 +1702,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 'CheckerConclusao' => 'CE.Conclusao',
                 'CheckerConclusaoDate' => 'CE.ConclusaoDate',
                 'FirstNameChecker' => 'CheckerUsr.FirstName',
-                'LoginChecker' => 'CheckerUsr.Login'
+                'LoginChecker' => 'CheckerUsr.Login',                                
             ))
             ->where("EXA.ProgramaId = ?", $competitionId);
         #echo '<!-- '.$query->__toString().' -->'; echo '<pre>'; echo $query; die;
@@ -1739,13 +1771,13 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
     {
         return new Zend_Db_Expr(
             "((case
-                when `ApE`.`Pontos` is not null then `ApE`.`Pontos`
+                when (`ApE`.`Status` = 'C' and `ApE`.`Pontos` is not null) then `ApE`.`Pontos`
                 else 0
             end) + (case
-                when `ApESec`.`Pontos` is not null then `ApESec`.`Pontos`
+                when (`ApESec`.`Status` = 'C' and `ApESec`.`Pontos` is not null) then `ApESec`.`Pontos`
                 else 0
             end) + (case
-                when `ApETer`.`Pontos` is not null then `ApETer`.`Pontos`
+                when (`ApETer`.`Status` = 'C' and `ApETer`.`Pontos` is not null) then `ApETer`.`Pontos`
                 else 0
             end)) / ((CASE
                 WHEN (`ApE`.`Status` = 'C') THEN 1
@@ -1760,6 +1792,42 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         );
     }
 
+
+	protected function _sqlPontosVerificador()
+	{
+		return new Zend_Db_Expr(
+		"(SELECT  `APEV`.PontosFinal FROM `AppraiserEnterprise` AS `APEN` INNER JOIN `ApeEvaluationVerificador` AS `APEV` ON APEN.Id = APEV.AppraiserEnterpriseId WHERE (APEN.EnterpriseId = `ApE`.`EnterpriseId` and `APEN`.UserId = `CE`.`UserId`) order by `APEV`.PontosFinal desc limit 1) * 0.6  +
+
+(SELECT sum(MTQ.QuestionWeight * AL.ScoreLevel / 100) / 8 as ThemeScore  FROM `ManagementTheme` AS `MT` INNER JOIN `ManagementThemeQuestion` AS `MTQ` ON MTQ.ManagementThemeId = MT.Id INNER JOIN `Question` AS `Q` ON Q.Id = MTQ.QuestionId INNER JOIN `Alternative` AS `AL` ON AL.QuestionId = Q.Id INNER JOIN `AnswerVerificador` AS `AN` ON AN.AlternativeId = AL.Id  INNER JOIN `Criterion` AS `C` ON C.Id = Q.CriterionId  INNER JOIN `Block` AS `B` ON B.Id = C.BlockId  INNER JOIN `Questionnaire` ON Questionnaire.id = B.QuestionnaireId WHERE (Questionnaire.Id = 52) AND (AN.EnterpriseId = USL.UserId)) * 0.2 +
+
+(case when (CE.QtdePontosFortes > 0 and CE.QtdePontosFortes < 9) then CE.QtdePontosFortes * 2 when (CE.QtdePontosFortes = 9) then 17 when (CE.QtdePontosFortes = 10) then 18 when (CE.QtdePontosFortes = 11) then 19 when (CE.QtdePontosFortes = 12) then 20 else 0 end)
+"
+		);
+	}
+	protected function _sqlTotalPrimeiraFase()
+	{
+		return new Zend_Db_Expr(
+			"((((case
+				when (`ApE`.`Status` = 'C' and `ApE`.`Pontos` is not null) then `ApE`.`Pontos`
+				else 0
+			end) + (case
+				when (`ApESec`.`Status` = 'C' and `ApESec`.`Pontos` is not null) then `ApESec`.`Pontos`
+				else 0
+			end) + (case
+				when (`ApETer`.`Status` = 'C' and `ApETer`.`Pontos` is not null) then `ApETer`.`Pontos`
+				else 0
+			end)) / ((CASE
+				WHEN (`ApE`.`Status` = 'C') THEN 1
+				ELSE 0
+			END) + (CASE
+				WHEN (`ApESec`.`Status` = 'C') THEN 1
+				ELSE 0
+			END) + (CASE
+				WHEN (`ApETer`.`Status` = 'C') THEN 1
+				ELSE 0
+			END)) + `EP`.`NegociosTotal`) /2)"
+		);
+	}
     private function groupByStringFor($groupBy)
     {
         $groupByString = '';
@@ -1812,8 +1880,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         return $this->fetchRow($query);
     }
     
-    public function getEnterpriseCheckerEnterprisePontosFortes($enterpriseId, $competitionId) {
-        
+    public function getEnterpriseCheckerEnterprisePontosFortes($enterpriseId, $competitionId) {       
         
         $configDb = Zend_Registry::get('configDb');
     
@@ -1828,6 +1895,13 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         ));
         return $this->fetchRow($query);
     }
-    
-    
+	
+	public function setTempVal($id,$col,$val){
+		$row = $this->fetchRow($this->select()->where('Id = ?', $id));
+		// Change the value of one or more columns
+		$row->$col = $val;
+		 
+		// UPDATE the row in the database with new values
+		$row->save();
+	}
 }

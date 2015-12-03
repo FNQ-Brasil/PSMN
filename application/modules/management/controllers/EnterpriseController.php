@@ -53,8 +53,8 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         //$this->pointsRanking = new Model_PointsRanking();
     }
 
-    public function indexAction() {
-        
+    public function indexAction() {        
+
         if (!isset($this->tipoRelatorio)) {
             $this->tipoRelatorio = 'inscricoes';
         }
@@ -70,10 +70,12 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $modelEnterpriseCategoryAward = new Model_EnterpriseCategoryAward;
         $enterprise = new Model_Enterprise();
         $ApeEvaluationVerificador = new Model_ApeEvaluationVerificador();
-                
+        
+				
+				
+				
         $format = $this->_getParam('format');
         $this->view->getAllEducations = $this->Education->getAll();
-       
         if ($format == 'csv') {
             //$this->view->getAllPosition = $this->modelPosition->getAll();
             $this->_dorelatorio();
@@ -89,6 +91,14 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->view->urlParaGerarCsv = $this->_construirUrlParaCsv();
 
         $this->view->getAllEnterpriseCategoryAward = $modelEnterpriseCategoryAward->getAll();
+		
+ 
+		
+		//finalistas estaduais
+		$this->view->getAllApeEvaluationVerificador = $ApeEvaluationVerificador->getAll();
+		//$this->view->getAllAnswerVerificador = $modelAnswerVerificador->getAllScore();
+ 
+		
         $this->view->getAllRegiao = $Regiao->getAll();
         $this->view->getAllMetier = $model_Metier->getAll();
 
@@ -120,7 +130,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
 
         $this->orderBy = isset($this->orderBy) ? $this->orderBy : null;
         $orderBy = $this->view->orderBy = $this->_getParam('orderBy', $this->orderBy);
-
+		
         $filter['appraiser_id'] = isset($filter['appraiser_id']) ? $filter['appraiser_id'] : null;
         $filter['incluir_join_pontuacao'] = isset($this->incluirJoinPontuacao) ? $this->incluirJoinPontuacao : '0';
         $filter['incluir_join_regional'] = isset($this->incluirJoinRegionalForce) ?($this->incluirJoinRegionalForce) : (isset($this->incluirJoinRegional)?$this->incluirJoinRegional : '0') ;
@@ -145,7 +155,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
             return;
         }
 
-        $groupBy = in_array($this->tipoRelatorio, array('inscricoes', 'ranking', 'classificadas','finalistas')) ? 'enterprise_id' : null;
+        $groupBy = in_array($this->tipoRelatorio, array('inscricoes', 'ranking', 'classificadas','finalistas','candidatas-nacional')) ? 'enterprise_id' : null;
 
         $this->regionalId = $regionalId;
         $this->filter = $filter;
@@ -155,7 +165,6 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $fetchReturn = isset($this->fetchReturnForce) ? $this->fetchReturnForce : (isset($this->fetchReturn) ? $this->fetchReturn : 'paginator' );
 
         if($this->tipoRelatorio != 'inscricoes' || $format == 'csv'){
-           
             
             $this->view->getAllEnterprise = $this->Enterprise->getAllByColAE(
                 $this->paramsBuscaServiceArea[0], 
@@ -165,8 +174,6 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
                 $format, $fetchReturn, 
                 $this->tipoRelatorio, $groupBy
             );
-            
-            
             
         } else {
             $loggedUserId = $this->userAuth->getUserId();
@@ -251,12 +258,13 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
     }
 
     public function candidatasNacionalAction() {
-        $this->incluirJoinRegionalForce = false;
+		$this->incluirJoinRegionalForce = false;
         $filter = $this->_getParam('filter', null);
         $filter['devolutiva'] = '2';
         $this->filterAdditional = $filter;
         $this->incluirJoinPontuacao = '1';
-        $this->orderBy = 'NegociosTotal DESC';
+        //$this->orderBy = 'PontosVerificador_estadual, NegociosTotal_estadual, MediaPontos_estadual DESC';
+        $this->orderBy = 'PontuacaoFinal DESC';
         $this->temAvaliador = true;
         $this->showAppraisersFilter = true;
         $this->view->isRanking = true;
@@ -283,7 +291,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $filter['devolutiva'] = '2';
         $this->filterAdditional = $filter;
         $this->incluirJoinPontuacao = '1';
-        $this->orderBy = 'NegociosTotal DESC';
+        $this->orderBy = 'NegociosTotal, MediaPontos DESC';        
         $this->temAvaliador = true;
         $this->view->isRanking = true;
         $this->tipoRelatorio = 'classificadas';
@@ -334,25 +342,48 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
     }
 
     public function finalistasAction() {
+		
+        $filter = $this->_getParam('filter', null);
         $this->incluirJoinRegionalForce = true;
         $filter = $this->_getParam('filter', null);
         $filter['devolutiva'] = '2';
         $this->filterAdditional = $filter;
         $this->incluirJoinPontuacao = '1';
-        $this->orderBy = 'NegociosTotal DESC';
+        $this->orderBy = 'PontosVerificador, NegociosTotal, MediaPontos DESC';
         $this->temAvaliador = true;
         $this->view->isRanking = true;
         $this->tipoRelatorio = 'finalistas';
         $this->showAppraisersFilter = false;
-        $this->view->getAllApeEvaluationVerificador = $this->ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData(1, null);
-                
-        $this->_helper->viewRenderer->setRender('index');        
+                        
+        $enterprise_id = $this->_getParam('enterprise_id', array());        
+        
+        $userId = $this->userAuth->getUserId();
+        
+        $this->_helper->viewRenderer->setRender('index');
         
         self::indexAction();
-
+        
         $format = $this->_getParam('format');
         if (!$format) {
             return;
+        }        
+ 
+        if(isset($filter['competition_id'])) {
+            
+            foreach($this->view->getAllEnterprise as $key => $value)
+            {
+                 
+                $IdEnterprise = $value['AppraiserId'];
+                $CompetitionId = $filter['competition_id'];
+                
+                //print_r($IdEnterprise);
+                //exit;
+            }
+           
+           // $this->view->getEnterpriseScoreAppraiserAnwserVerificadorData = $this->ApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData($IdEnterprise, $filter['competition_id']);
+                    
+        //print_r($this->view->getEnterpriseScoreAppraiserAnwserVerificadorData->getPontosFinal());
+        
         }
     }
 
@@ -384,10 +415,10 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
                $CompetitionId = $filter['competition_id'];
 
                $QtdePontosFortes = $this->ApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId);
-               $PontosFinal = $this->view->getAllApeEvaluationVerificador->getPontosFinal();
+               //$PontosFinal = $this->view->getAllApeEvaluationVerificador->getPontosFinal();
 
                $this->view->getAllEnterprisePontosFortes = $QtdePontosFortes;
-               $this->view->getAllEnterprisePontosFinal = $PontosFinal;
+               //$this->view->getAllEnterprisePontosFinal = $PontosFinal;
            }
         } else {
             $this->view->getAllEnterprise = array();

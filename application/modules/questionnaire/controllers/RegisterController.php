@@ -456,9 +456,7 @@ class Questionnaire_RegisterController extends Vtx_Action_Abstract
             //var_dump('cnae: ',$modelCNAE->searchCNAE($fullTextSearch));
             $this->view->result = $modelCNAE->searchCNAE($fullTextSearch);
         }
-
-        return true;
-        
+        return true;        
     }
 
     public function verifyAction()

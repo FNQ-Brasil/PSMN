@@ -23,8 +23,9 @@ if (count($this->getAllEnterprise) >= 1):
 <?php
     $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();
   foreach ($this->getAllEnterprise as $index => $enterprise) :
-    //$ra = $enterprise->getEvaluationPathAvaliador();
-    $ra = '';//$enterprise->getDevolutivePath();
+  
+    //$raa = $enterprise->getEvaluationPathAvaliador();
+    //$ra = '';//$enterprise->getDevolutivePath();
     $raa = $enterprise->getDevolutivePath();
     $avaliador1 = $enterprise->getAppraiserId();
     $avaliador2 = $enterprise->getAppraiserIdSec();

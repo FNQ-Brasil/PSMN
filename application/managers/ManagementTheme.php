@@ -11,8 +11,8 @@ class Manager_ManagementTheme {
         $this->ManagementTheme = new Model_ManagementTheme();
     }
 
-    public function createScoreByThemeGraphic($questionnaireId, $userId, $filepath){
-        $graphDefinitions = $this->getScoreByThemeGraphicDefinitions($questionnaireId, $userId);
+    public function createScoreByThemeGraphic($questionnaireId, $userId, $filepath,$verificador = false){
+        $graphDefinitions = $this->getScoreByThemeGraphicDefinitions($questionnaireId, $userId,$verificador);
 
         $graph = new RadarGraph(600, 300);
 
@@ -44,8 +44,8 @@ class Manager_ManagementTheme {
         return $graph->Stroke($filepath);
     }
 
-    protected function getScoreByThemeGraphicDefinitions($questionnaireId, $userId){
-        $scoreByTheme = $this->ManagementTheme->getScoreByTheme($questionnaireId, $userId);
+    protected function getScoreByThemeGraphicDefinitions($questionnaireId, $userId,$verificador = false){
+        $scoreByTheme = $this->ManagementTheme->getScoreByTheme($questionnaireId, $userId,$verificador);
 
         $themeNames = array();
         $themeScores = array();

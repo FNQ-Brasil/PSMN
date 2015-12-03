@@ -1,4 +1,15 @@
+
+<?php 
+if ($this->userAuth()->getRoleId() == $this->configRegistry()->acl->roleVerificadorId) {}
+$this->headScript()->captureStart() ?>
+
+var QSTN_ID = <?php echo $this->questionnaireId; ?>;
+var ENTERPRISE_ID_KEY = '<?php echo $this->enterpriseIdKey; ?>';
+var ADMIN_MENU = <?php echo $this->request()->getParam('menu-admin', 0); ?>;
+
+<?php $this->headScript()->captureEnd() ?>
 <?php $userIdLogged = Zend_Auth::getInstance()->getIdentity()->getUserId();  ?>
+
 <?php
 if (count($this->getAllEnterprise) >= 1):
     foreach ($this->getAllEnterprise  as $key=>$enterprise_one){
@@ -6,6 +17,13 @@ if (count($this->getAllEnterprise) >= 1):
         
     }
 ?>
+
+<script>
+function sleep() {
+  window.location.reload();
+}
+</script>
+
 <table class="table">
   <caption></caption>
   <thead>
@@ -20,9 +38,7 @@ if (count($this->getAllEnterprise) >= 1):
       <th>Verificar <br>Critério <br>de Avaliação</th>
       <th>Gerar <br>Relatório <br>de Avaliação</th>
       <th>Status</th>
-      <?php
-      if($avaliacaoStatusTopo != "N" && $avaliacaoStatusTopo != "I"): ?><th>Enviar <br>ao Gestor</th>
-          <?php endif; ?> 
+      <th>Enviar <br>ao Gestor</th>
       
     </tr>
   </thead>
@@ -33,7 +49,9 @@ if (count($this->getAllEnterprise) >= 1):
 
   foreach ($this->getAllEnterprise as $index => $enterprise) :
  
-    
+  //print_r($enterprise);
+    //$teste = include APPLICATION_PATH . '/modules/management/views/scripts/devolutiveVerificador/index.phtml';
+     
     $raa = $enterprise->getDevolutivePath();
     $scoreGestao = '';//$enterprise->getProgressGestao();
     $fantasyName = $enterprise->getFantasyName();
@@ -56,9 +74,14 @@ if (count($this->getAllEnterprise) >= 1):
     $verificarquestionarioNegocio = $this->baseUrl('/management/verificacao/questionarionegocio/enterprise-id-key/' 
         . $enterprise->getIdKey(). '/block/'. Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios);
     
-    $GerarRelatorio = $this->baseUrl();
-    $EnviarGestor = $this->baseUrl();
-    $this->headScript()->appendFile($this->baseUrl('js/management/devolutive_verificacao.js'))
+    $GerarRelatorio = $this->baseUrl('/management/devolutive-verificador/index/enterprise-id-key/' 
+        . $enterprise->getIdKey());
+    
+    //$enterprise->getDevolutivePath();
+    
+    
+    $EnviarGestor = $this->baseUrl('/management/appraiser/gestor/enterprise-id-key/' 
+        . $enterprise->getIdKey());
 ?>
     <tr class="<?php echo ((($index % 2) == 0) ? 'odd' : 'even'); ?>" data-idkey="<?php echo $enterprise->getIdKey(); ?>">
       <td>
@@ -87,7 +110,9 @@ if (count($this->getAllEnterprise) >= 1):
       <td class="middle">
         <dl>
           <dt>
-            <a href="<?php echo $this->baseUrl("management/verificacao/report/enterprise-id-key/{$enterprise->getIdKey()}"); ?>#report" title="Relatório Interno" class="download-raa" target="blank">Interno</a>
+            <a href="<?php echo $this->baseUrl("management/verificacao/report/enterprise-id-key/{$enterprise->getIdKey()}");?>#report" title="Relatório Interno" class="download-raa" target="blank">Interno</a>
+
+            
           </dt>
         </dl>
       </td>
@@ -117,34 +142,41 @@ if (count($this->getAllEnterprise) >= 1):
             </dt>
         </dl>
       </td>
-
-      <td class="middle">
-        <dl>
-            <dt>
-                <a onclick="generateDevolutive(<?php echo Zend_Registry::get('configDb')->qstn->currentBlockIdNegocios; ?>,'<?php echo $enterprise->getIdKey(); ?>')" title="Gerar Relatório de Avaliação" 
-                   class="answer-survey" >Gerar relatório de Avaliação</a>
-            </dt>
-        </dl>
-      </td>      
-      <td style="padding:5px;">
-          <?php
+                <?php
                   
             //$avaliacao_results = Vtx_Util_PsmnAvaliacao::statusReport($avaliacaoStatus);
-           if($avaliacaoStatus == "N"){
-               $avaliacaoStatus = "0%";
-               }  else if($avaliacaoStatus == "I"){
-               $avaliacaoStatus = "50%";    
-               }else
-               {
-               $avaliacaoStatus = "100%";        
-               }
-              echo $avaliacaoStatus;
-            
+			
+			// RETORNA STATUS DO PREENCHIMENTO DOS QUESTIONARIOS DO VERIFICADOR
+			switch ($avaliacaoStatus){
+				case "I": $avaliacaoStatus = "25%"; break;
+				
+				case "II": $avaliacaoStatus = "50%"; break;
+				
+				case "III": $avaliacaoStatus = "75%"; break;
+				
+				case "IIII": $avaliacaoStatus = "100%"; break;
+				
+				default: $avaliacaoStatus = "0%"; break;
+			}
             
           ?>
+
+      <td class="middle">
+      <?php
+       if($avaliacaoStatus == "75%"):
+      ?>
+        <dl>
+            <dt>
+                <a href="<?php echo $GerarRelatorio; ?>" title="Gerar Relatório de Avaliação" onClick="javascript:setTimeout(sleep,5000);" class="answer-survey" target="_blank"  >Gerar relatório de Avaliação</a>
+            </dt>
+        </dl>
+       <?php endif; ?>  
+      </td>      
+      <td style="padding:5px;">
+    <?php echo $avaliacaoStatus; ?>  
       </td>
       <?php
-       if($avaliacaoStatus != "0%" && $avaliacaoStatus != "50%"):
+       if($avaliacaoStatus == "100%"):
       ?>
       <td class="middle">
         <dl>

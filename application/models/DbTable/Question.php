@@ -136,6 +136,27 @@ class DbTable_Question extends Vtx_Db_Table_Abstract
         
         return $this->fetchAll($query)->count();
     }
+	
+	public function isAnsweredByVerificadorId($questionId,$userId,$enterpriseId)
+    {
+        $query = $this->select()
+            ->setIntegrityCheck(false)
+            ->from(
+                array('ANS' => 'AnswerVerificador'),
+                array('AnswerId' => 'Id')
+            )
+            ->join(
+                array('ALT' => 'Alternative'), 'ALT.Id = ANS.AlternativeId',
+                array('AlternativeId' => 'Id')
+            )
+            ->join(
+                array('QST' => 'Question'), 'QST.Id = ALT.QuestionId')
+            ->where('ANS.UserId = ?', $userId)
+			 ->where('ANS.EnterpriseId = ?', $enterpriseId)
+            ->where('QST.Id = ?', $questionId);
+        
+        return $this->fetchAll($query)->count();
+    }
 
     public function isAnswered($questionId)
     {
@@ -173,6 +194,29 @@ class DbTable_Question extends Vtx_Db_Table_Abstract
             ->join(
                 array('QST' => 'Question'), 'QST.Id = ALT.QuestionId')
             ->where('ANS.UserId = ?', $userId)
+            ->where('QST.Id = ?', $questionId);
+        
+        return $this->fetchRow($query);
+    }
+	
+	public function getAnswerVerificador($questionId,$userId,$enterpriseId) 
+    {
+        $query = $this->select()
+            ->setIntegrityCheck(false)
+            ->from(
+                array('ANS' => 'AnswerVerificador'),
+                array('AnswerId' => 'Id', 'AnswerValue')
+            )
+            ->joinLeft(
+                array('ALT' => 'Alternative'), 'ALT.Id = ANS.AlternativeId',
+                array('AlternativeId' => 'Id',
+                      'AlternativeTypeId'
+                )
+            )
+            ->join(
+                array('QST' => 'Question'), 'QST.Id = ALT.QuestionId')
+            ->where('ANS.UserId = ?', $userId)
+			->where('ANS.EnterpriseId = ?', $enterpriseId)
             ->where('QST.Id = ?', $questionId);
         
         return $this->fetchRow($query);

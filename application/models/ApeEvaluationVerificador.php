@@ -25,23 +25,20 @@ class Model_ApeEvaluationVerificador
         return $this->DbApeEvaluationVerificador;
     }
     
-function getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $competitionId = null)
+function getRespostaRelatoAutoAvaliacao($enterpriseId, $competitionId = null, $UserId)
     {
         if (!$competitionId) {
             $competitionId = Zend_Registry::get('configDb')->competitionId;
         }
-        return $this->DbApeEvaluationVerificador->getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $competitionId);
+        return $this->DbApeEvaluationVerificador->getRespostaRelatoAutoAvaliacao($enterpriseId, $competitionId, $UserId);
     }
     
     public function verificaResposta($enterpriseId,$perguntaId, $competitionId = null){
         if (!$competitionId) {
             $competitionId = Zend_Registry::get('configDb')->competitionId;
             
-        }
-        
-        return $this->DbApeEvaluationVerificador->verificaResposta($enterpriseId, $perguntaId,$competitionId);
-        
-        
+        }        
+        return $this->DbApeEvaluationVerificador->verificaResposta($enterpriseId, $perguntaId,$competitionId);                
     }
     
     
@@ -53,12 +50,16 @@ function getEnterpriseScoreAppraiserAnwserVerificadorData($enterpriseId, $compet
         
         return  $this->DbApeEvaluationVerificador->verificaRespostaCriterio($enterpriseId, $perguntaId,$competitionId);
         
-        
     }
 
-  function getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId)
+  public function getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId)
   {
       return $this->DbApeEvaluationVerificador->getEnterpriseCheckerEnterprisePontosFortes($IdEntrepriseNacional, $CompetitionId);      
   }
-
+  
+  public function getAll($where = null, $order = null, $count = null, $offset = null)
+    {
+        return $this->DbApeEvaluationVerificador->fetchAll($where, $order, $count, $offset);
+    }
+ 
 }

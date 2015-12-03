@@ -8,11 +8,9 @@
  */
 class Model_Execution
 {
-
     private $tbUser = "";
     private $tbExecution = "";
     private $userSalt = "";
-    
     
     function __construct() {
         $this->tbExecution = new DbTable_Execution();
@@ -39,8 +37,7 @@ class Model_Execution
      * 
      */
     public function getExecutionByUserAndPrograma($userId, $programaId)
-    {
-        
+    {        
         /**
          * coluna ProgramaId comentado
          */
@@ -61,9 +58,10 @@ class Model_Execution
     
     public function initExecution($questionnaireId, $userId)
     {
-        $execution = $this->getExecutionByUserAndQuestionnaire($questionnaireId, $userId);
+       $execution = $this->getExecutionByUserAndQuestionnaire($questionnaireId, $userId);
         $programaId = Zend_Registry::get('configDb')->competitionId;
                 
+
         if(!$execution) {
             $executionNew = DbTable_Execution::getInstance()->createRow()
                 ->setUserId($userId)

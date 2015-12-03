@@ -13,7 +13,7 @@ class Report_Devolutive_Introduction extends Report_Devolutive_Page {
 		$this->setFontToNormal();
 
 		$this->writeFormatted("Prezada Empresária,\n\n");
-		$this->writeFormatted("Este relatório é decorrência de sua participação no Prêmio SEBRAE Mulher de Negócios (PSMN) - ciclo 2015 -, realizado pelo Serviço Brasileiro de Apoio às Micro e Pequenas Empresas (SEBRAE), Federação das Associações de Mulheres de Negócios e Profissionais do Brasil (BPW) e Secretaria de Políticas para as Mulheres (SPM), com o apoio técnico da Fundação Nacional da Qualidade (FNQ). ");
+		$this->writeFormatted("Estesss relatório é decorrência de sua participação no Prêmio SEBRAE Mulher de Negócios (PSMN) - ciclo 2015 -, realizado pelo Serviço Brasileiro de Apoio às Micro e Pequenas Empresas (SEBRAE), Federação das Associações de Mulheres de Negócios e Profissionais do Brasil (BPW) e Secretaria de Políticas para as Mulheres (SPM), com o apoio técnico da Fundação Nacional da Qualidade (FNQ). ");
 
 		$this->setFontToBold();
 

@@ -1,9 +1,57 @@
 <?php
-$addressEnterprise = $this->enterprise->findAddressEnterprise()->current();
-$enterpriseState = $addressEnterprise->findParentState();
+
 
 $addressEnterprise = $this->enterprise->findAddressEnterprise()->current();
 $enterpriseState = $addressEnterprise->findParentState();
+
+ $executionPontuacaoManager = new Manager_ExecutionPontuacao();
+ $Appraiser = new Model_Appraiser; 
+ $enterpriseId = new Model_Enterprise();
+ $enterpriseUserid = $enterpriseId->getUserIdByIdKey($this->enterprise->getIdKey());
+ 
+ $checkerId = (isset($this->scores) and $this->scores->getCheckerId() != null) ? $this->scores->getCheckerId() : 0;
+try {
+    $NotaAutoAvalVerificador  = $executionPontuacaoManager->calculateExecutionScore(52,$enterpriseUserid,true);
+} catch (InvalidArgumentException $e) {
+    $NotaAutoAvalVerificador = 0;
+}
+
+try {
+$scoreVisita =$Appraiser->getEnterpriseScoreAppraiserAnwserVerificadorData($this->enterprise->getId(),$checkerId);
+} catch (InvalidArgumentException $e) {
+	$scoreVisita = 0;
+}
+
+
+
+if($scoreVisita->count() > 0)
+  	$NotaQuestVisitaVerificador =  $scoreVisita[0]->getPontosFinal();
+else
+  	$NotaQuestVisitaVerificador = 0;
+	
+	
+ 
+try {
+$QtdPontosFortes = $this->scores->getQtdePontosFortes();
+ 
+ } catch (InvalidArgumentException $e) {
+	$QtdPontosFortes = 0;
+}
+
+  if($QtdPontosFortes == 0)   $QtdPontosFortes = 0; 
+  if($QtdPontosFortes == 1)   $QtdPontosFortes = 2; 
+  if($QtdPontosFortes == 2)   $QtdPontosFortes = 4; 
+  if($QtdPontosFortes == 3)   $QtdPontosFortes = 6; 
+  if($QtdPontosFortes == 4)   $QtdPontosFortes = 8; 
+  if($QtdPontosFortes == 5)   $QtdPontosFortes = 10; 
+  if($QtdPontosFortes == 6)   $QtdPontosFortes = 12; 
+  if($QtdPontosFortes == 7)   $QtdPontosFortes = 14; 
+  if($QtdPontosFortes == 8)   $QtdPontosFortes = 16; 
+  if($QtdPontosFortes == 9)   $QtdPontosFortes = 17; 
+  if($QtdPontosFortes == 10)  $QtdPontosFortes = 18; 
+  if($QtdPontosFortes == 11)  $QtdPontosFortes = 19; 
+  if($QtdPontosFortes == 12)  $QtdPontosFortes = 20; 
+  $PontuacaoFinal =  (($NotaAutoAvalVerificador * 0.2) + ($NotaQuestVisitaVerificador * 0.6) + $QtdPontosFortes);  
 
 $blocoAnterior = ''; 
 $criterioAnterior = '';
@@ -29,10 +77,29 @@ foreach ($this->questoes as $k => $questao):
     $blocoAnterior = $bloco;
     $criterioAnterior = $criterio;
 endforeach;
+ 
+function comentario($array,$value) {
+   $filtered = false;
+   $member = "CriterioNumber";
+
+   foreach($array as $v) {
+
+      if($v["CriterioNumber"] == $value)
+         $filtered = $v["Comment"];
+   }
+
+    return $filtered;
+}
+
 
 ?>
-
-
+ 
+ <style>
+ p{
+	 word-wrap: break-word!important;
+	   width: 722px!important;
+ }
+ </style>
 <a title="Imprimir" style="margin-right: 16px; position: absolute; right: 0" href="#" id="verRelato" onclick="window.print(); return false;"><span>Imprimir</span></a>
 
 <br>
@@ -53,43 +120,60 @@ include realpath(dirname(__FILE__) . '/../appraiser/enterprise-scores.phtml');
              <span class="label-value"><?php echo $verificador; ?> <b style="font-size: 10px">(<?php echo $score->getLoginChecker(); ?>)</b></span>
            </div>
 
-           <div class="list-table-20">
-             <label class="label-control">Bônus</label>
+           <div class="list-table-20" style="width:130px">
+             <label class="label-control">Pontuação Geral</label>
              <span class="label-value">
                  
-               <?php
-                $qtPf = $score->getQtdePontosFortes(); // isset()
-               if ($score->getCheckerStatus() == 'C'): ?>
-                   <?php 
-                        if (!$qtPf) {
-                            echo '-';
-                        } elseif ($qtPf >= 8) {
-                            echo '20%';
-                        }  elseif ($qtPf >= 5) {
-                            echo '10%';
-                        }
-                    ?>
-               <?php elseif ($score->getCheckerStatus() == 'I'): ?>
-                 Iniciado
-               <?php elseif ($score->getCheckerStatus() == 'N'): ?>
-                 <Strong>Não iniciado</Strong>
-               <?php endif; ?>
+             <?php            
+             echo number_format($PontuacaoFinal, 1 , ',', '.');            
+          ?>  
+
              </span>
            </div>
+           
+            <div class="list-table-20" style="width:130px">
+             <label class="label-control">Questionário<br/>de Auto Aval.</br>Negócios</label>
+             <span class="label-value">
+                 
+             <?php            
+             echo number_format($NotaAutoAvalVerificador , 1 , ',', '.');            
+          ?>  
+
+             </span>
+           </div>
+           
+            <div class="list-table-20" style="width:130px">
+             <label class="label-control">Questionário</br>de Visita</label>
+             <span class="label-value">
+                 
+             <?php            
+             echo number_format( $NotaQuestVisitaVerificador, 1 , ',', '.');            
+          ?>  
+
+             </span>
+           </div>
+           
+            <div class="list-table-20" style="width:130px;margin-right:0;">
+             <label class="label-control">Critério</br>de Avaliação</label>
+             <span class="label-value">
+                 
+             <?php            
+             echo number_format( $QtdPontosFortes, 1 , ',', '.');            
+          ?>  
+
+             </span>
+           </div>
+ 
 
            <div class="list-table-20" style="margin-bottom: 16px;
             margin-right: 5px;
             width: 427px;margin-right: 5px; width: 427px;">
              <label class="label-control">Comentários gerais</label>
-             <span class="label-value">
-                 <?php echo ($score->getCheckerConclusaoDate())? ("(".$score->getCheckerConclusaoDate() . ")") : ''; ?>
-               <?php echo $this->escape($score->getCheckerConclusao()); ?>
-             </span>
            </div>
        </li>
         <?php if ($score->getCheckerStatus() == 'C'): ?>
        <li>
-        <h2 class="title" style="font: italic bold 18px 'Lato';"><a name="anchor"></a>Comentários</h2>
+ 
 
 
     <div id="frmAvaliacao" class="avaliacao">
@@ -99,11 +183,11 @@ include realpath(dirname(__FILE__) . '/../appraiser/enterprise-scores.phtml');
         <ul class="root">
     <?php foreach ($qsts as $blockId => $bloco): ?>
 
-          <li class="macro ">
+          <li class="macro " style="max-width: 834px;">
             <span class="title topic" style="display: inline; border: none; visibility: hidden; height: 1px;">
             </span>
 
-            <ul>
+            <ul style="float: left;">
             <?php foreach ( $qsts[$blockId]['Criterions'] as $criterioId => $criterio): ?>
               <li class="micro ">
                   <p class="title" style="color: #555; border: none; padding: 0; margin: 0">
@@ -113,8 +197,8 @@ include realpath(dirname(__FILE__) . '/../appraiser/enterprise-scores.phtml');
                     </b>
                   </p>
                   <p style="font: 14px 'Lato'; color:#999; margin-left: 50px; padding-bottom: 20px">
-                    <?php if (isset($this->commentAnswers["$blockId$criterioId"]['Comment'])): ?>
-                         <?php echo $this->escape($this->commentAnswers["$blockId$criterioId"]['Comment']); ?>
+                    <?php $comment ='' ; $comment = comentario($this->commentAnswers,"$blockId$criterioId"); if (isset($comment)): ?>
+                         <?php echo $this->escape($comment); ?>
                      <?php endif; ?>
                   </p>
               </li>
@@ -190,11 +274,22 @@ include realpath(dirname(__FILE__) . '/../appraiser/enterprise-scores.phtml');
 
 
 
-
-
+		<?php if($score->getCheckerConclusaoDate()){?>
+           <div class="list-table-20" style="margin-bottom: 16px;
+            margin-right: 5px;
+            width: 800px;margin-right: 5px;">
+             <label class="label-control">Comentário do Verificador</label>
+             <span class="label-value">
+                 <?php echo ($score->getCheckerConclusaoDate())? ("(".$score->getCheckerConclusaoDate() . ")") : ''; ?>
+               <?php echo $this->escape($score->getCheckerConclusao()); ?>
+             </span>
+           </div>
+           
+          <?php } ?>
     <!-- Relato -->
     
     <div class="inner-content">
+     <label class="label-control">Relato da Candidata</label>
         <ul id="avaliacaoRelato2">
             <li style="float: left; min-height: 100px; width: auto; height: 100px; overflow: hidden;  border-right: 3px solid #F5F6F7;">
                 <?php

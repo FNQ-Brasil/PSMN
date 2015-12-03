@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 $this->headScript()
     ->appendFile($this->baseUrl('js/user/edit.js'))
     ->prependFile($this->baseUrl('js/validation/lib/jquery.metadata.js'))
@@ -13,8 +13,10 @@ include realpath(dirname(__FILE__) . '/../menus/admin.phtml');
     
     <h1 class="title">
         Usuários
+<p>
+'Antes de cadastrar um novo usuário, por favor realize uma busca pelo CPF através do menu Listagem'
     </h1>
-<!--a title="Voltar" id="back" href="<?php echo $this->baseUrl('/management/user/'); ?>">Voltar</a-->
+   <!--a title="Voltar" id="back" href="<?php echo $this->baseUrl('/management/user/'); ?>">Voltar</a-->
     <?php if (isset($this->messageError)):?>
         <?php if ($this->messageError):?>
             <div class="notice error">

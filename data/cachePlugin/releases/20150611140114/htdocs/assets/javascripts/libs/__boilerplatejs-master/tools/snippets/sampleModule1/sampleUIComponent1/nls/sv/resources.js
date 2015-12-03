@@ -1,3 +1,0 @@
-define({
-        "title": "min titel"
-});

@@ -6,10 +6,12 @@ class Report_Devolutive_Score extends Report_Devolutive_CandidateDataPage {
 	protected $managementThemeModel;
 	protected $executionPontuacaoManager;
 	protected $HREF = ' ';
+	protected $verificador = false;
 
-	public function __construct($devolutiveReport,$devolutiveRow){
+	public function __construct($devolutiveReport,$devolutiveRow,$verificador = false){
 		parent::__construct($devolutiveReport,$devolutiveRow);
 
+		$this->verificador =  $verificador;
 		$this->initializeInstanceVariables();
 
 		$this->addPage();
@@ -39,8 +41,9 @@ class Report_Devolutive_Score extends Report_Devolutive_CandidateDataPage {
 	}
 
 	protected function createGraphImage(){
-		$filepath = $this->getGraphImagePath(); // APPLICATION_PATH.'/../htdocs/devolutives/graphictest.png';
-		$this->managementThemeManager->createScoreByThemeGraphic($this->getQuestionnaireId(), $this->getUserId(), $filepath);
+		$filepath = $this->getGraphImagePath();
+		@unlink($filepath); // APPLICATION_PATH.'/../htdocs/devolutives/graphictest.png';
+		$this->managementThemeManager->createScoreByThemeGraphic($this->getQuestionnaireId(), $this->getUserId(), $filepath,$this->verificador);
 		return $filepath;
 	}
 
@@ -70,7 +73,7 @@ class Report_Devolutive_Score extends Report_Devolutive_CandidateDataPage {
 		$dataTableRows = array();
 
 		foreach($this->getScoreByTheme() as $theme){
-			$score = number_format($theme->getThemeScore(), 2);
+			$score = number_format($theme->getThemeScore(), 1);
 			$dataTableRows[] = array($theme->getThemeName(), $score);
 		}
 
@@ -78,21 +81,21 @@ class Report_Devolutive_Score extends Report_Devolutive_CandidateDataPage {
 	}
 
 	protected function getScoreByTheme(){
-		return $this->managementThemeModel->getScoreByTheme($this->getQuestionnaireId(), $this->getUserId());
+		return $this->managementThemeModel->getScoreByTheme($this->getQuestionnaireId(), $this->getUserId(),$this->verificador);
 	}
 
 	protected function createTotalScore(){
 		$this->setFontToDataTableHeader();
 		$this->cellWithUTF8(9.5, 1, 'TOTAL', 1, 0, 'C');
 
-		$finalScore = number_format($this->getFinalScore(), 2);
+		$finalScore = number_format($this->getFinalScore(), 1);
 
 		$this->setFontToDataTableBody();
 		$this->cellWithUTF8(9.5, 1, $finalScore, 1, 1, 'C');
 	}
 
 	protected function getFinalScore(){
-		return $this->executionPontuacaoManager->calculateExecutionScore($this->getQuestionnaireId(), $this->getUserId());
+		return $this->executionPontuacaoManager->calculateExecutionScore($this->getQuestionnaireId(), $this->getUserId(),$this->verificador);
 	}
 
 	protected function setFontToDataTableHeader(){
