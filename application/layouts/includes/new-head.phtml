@@ -14,7 +14,7 @@ $profiler = $db->getProfiler();
         $longestQuery = null;
         $queries = $profiler->getQueryProfiles();
 
-        $content = "Executed $totalQueries database queries in $queryTime seconds<br />\n";
+        $content = ""; //"Executed $totalQueries database queries in $queryTime seconds<br />\n";
 
         if ($queries !== false) { // loop over each query issued
             foreach ($queries as $query) {
@@ -25,8 +25,8 @@ $profiler = $db->getProfiler();
                 }
             }
 
-            $content .= "Longest query time: $longestTime."
-                       ." <a href=\"#\" onclick=\"return false\" title=\"$longestQuery\">Mouseover for query</a><br />\n";
+//             $content .= "Longest query time: $longestTime."
+//                        ." <a href=\"#\" onclick=\"return false\" title=\"$longestQuery\">Mouseover for query</a><br />\n";
         }
 
         // Log $content here, or append it to the response body
