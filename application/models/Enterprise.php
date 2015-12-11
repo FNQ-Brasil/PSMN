@@ -382,7 +382,7 @@ class Model_Enterprise {
                     $valuesAddress, $colAddress, $questionnaireId, 'select', $filter, $orderBy, $format, $tipoRelatorio,
                     $groupBy
             );
-
+//echo $query;
             return Zend_Paginator::factory($query)
                             ->setItemCountPerPage($count ? $count : null)
                             ->setCurrentPageNumber($offset ? $offset : 1);

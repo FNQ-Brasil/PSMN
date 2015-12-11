@@ -356,11 +356,15 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 $query = $this->_queryReportDigitador($query, $competitionId);
                 $orderBy = null;
                 break;
-            case 'classificadas-nacional':
+           // case 'classificadas-nacional':
             case 'classificadas':
                 $query = $this->_queryClassificadas($query, $queryBeg , $filter, $competitionId);
                 $orderBy = null;
                 break;
+            case 'classificadas-nacional':
+            	$query = $this->_queryClassificadasNacional($query, $queryBeg , $filter, $competitionId);
+            	$orderBy = null;
+            	break;
             case 'finalistas':
                 $query = $this->_queryFinalistas($query, $queryBeg, $filter, $competitionId);
                 $orderBy = null;
@@ -1219,6 +1223,67 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
         return $query;
     }
 
+    protected function _queryClassificadasNacional($query, $queryBeg, $filter, $competitionId)
+    {
+    	$query
+            ->reset(Zend_Db_Select::COLUMNS)
+            ->columns(array(
+			    'PontosVerificador' =>  $this->_sqlPontosVerificador(),
+                'PontosGeral' => $this->_sqlPontosGeral($comBonus = true),
+                'MediaPontos' => $this->_sqlMediaGeral(),
+                'IdKey', 'SocialName', 'FantasyName',
+                'DiagnosticoEligibility', 'Cnpj','S.Uf',
+                'CpfUser'=>'P.Cpf', 'E.EmailDefault', 'Phone',
+                'PA' => 'EXA.Progress',
+                'EPR.MotivoDesclassificadoVerificacao','EPR.Classificar','EPR.Desclassificar','EPR.Justificativa',
+                'EPR.ClassificadoVerificacao', 'EPR.DesclassificadoVerificacao',
+                'EPR.DesclassificadoFinal','EPR.MotivoDesclassificadoFinal',
+                'EPR.ClassificadoOuro','EPR.ClassificadoPrata','EPR.ClassificadoBronze',
+                'DescriptionEca' => 'ECA.Description',
+                'AppraiserId' => 'ApE.UserId',
+                'AppraiserIdSec' => 'ApESec.UserId',
+                'AppraiserIdTer' => 'ApETer.UserId',
+                'AppraiserStatus'=>'ApE.Status',
+                'AppraiserStatusSec' => 'ApESec.Status',
+                'AppraiserStatusTer' => 'ApETer.Status',
+                'Pontos' => 'ApE.Pontos',
+                'PontosSec' => 'ApESec.Pontos',
+                'PontosTer' => 'ApETer.Pontos',
+                'Pontos' => 'ApE.Pontos',
+                'PontosSec' => 'ApESec.Pontos',
+                'PontosTer' => 'ApETer.Pontos',
+                'EXE.DevolutivePath','EXE.EvaluationPath', 'EXE.FinalScore',
+                'FirstNameAvaliadorTer'=>'UTer.FirstName','LoginAvaliadorTer'=>'UTer.Login',
+                'FirstNameAvaliadorSec'=>'USec.FirstName','LoginAvaliadorSec'=>'USec.Login',
+                'FirstNameAvaliadorPri'=>'U.FirstName','LoginAvaliadorPri'=>'U.Login',
+                'NegociosTotal' => 'EP.NegociosTotal',
+                'EnterpriseId' => 'ApE.EnterpriseId',
+                /*
+                'RegionalCity'=>'Rcity.Description',
+                'RegionalState'=>'Rstate.Description'
+                */
+            ));
+        if($queryBeg) {
+            $query->columns(array('PontosEmpreendedorismo'=>new Zend_Db_Expr("($queryBeg)")));
+        }
+        //->columns(array('Regional' =>new Zend_Db_Expr($queryRegional)))
+        $query->join(array('CE' => 'CheckerEnterprise'),
+            'CE.EnterpriseId = E.Id AND CE.CheckerTypeId = 1 AND CE.ProgramaId ='.$competitionId,
+            array('CheckerId' => 'UserId', 'CheckerStatus' => 'Status', 'QtdePontosFortes')
+        )
+            ->joinleft(
+                array('CheckerUsr' => 'User'), 'CheckerUsr.Id = CE.UserId',
+                array('FirstNameChecker' => 'FirstName', 'LoginChecker' => 'Login')
+            )
+            ->where("(ApESec.Status is not null or ApETer.Status is not null or ApE.Status is not null)")
+            ->where("EXE.ProgramaId = ?", $competitionId)
+            ->order('1 DESC')
+            ->order('2 DESC')
+        ;
+ //echo $query;
+    	return $query;
+    }
+    
     protected function _queryFinalistas($query, $queryBeg, $filter, $competitionId)
     {
         $query
@@ -1276,7 +1341,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             ->order('1 DESC')
             ->order('2 DESC')
         ;
-
+//echo "final. ".$query;
         return $query;
     }
 
@@ -1332,6 +1397,7 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             ->order('1 DESC')
             ->order('2 DESC')
         ;
+//echo "final.nac. ".$query;
         return $query;
     }
 
