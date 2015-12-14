@@ -40,7 +40,6 @@ $autotest = new Model_AnswerVerificador();
 $enterpriseId = new Model_Enterprise();
 $executionPontuacaoManager = new Manager_ExecutionPontuacao();
 $Appraiser = new Model_Appraiser;
-$executionPontuacaoManager = new Manager_ExecutionPontuacao();
 
   foreach ($this->getAllEnterprise as $index => $enterprise):
   
@@ -125,8 +124,8 @@ $executionPontuacaoManager = new Manager_ExecutionPontuacao();
 // 	else
 // 		$NotaQuestVisitaVerificador = 0;
 	$mediaRelato = $enterprise->getMediaPontos();
-	
-	$PontuacaoFinal =  (($NotaAutoAvalVerificador * 0.2) + ($mediaRelato * 0.6) + $QtdPontosFortes);
+	$PontuacaoFinal = $enterprise->getPontosVerificador();
+	//$PontuacaoFinal =  (($NotaAutoAvalVerificador * 0.2) + ($mediaRelato * 0.6) + $QtdPontosFortes);
 	
     if (isset($this->allCheckers)):
 if(($score->count() > 0 and $score[0]->EnterpriseId == $enterpriseUserid) and $verificadores['confirm']['options']['primary']['status'] != 0){

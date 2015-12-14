@@ -1225,10 +1225,13 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
 
     protected function _queryClassificadasNacional($query, $queryBeg, $filter, $competitionId)
     {
+    	//$themeScoreExpr = new Zend_Db_Expr("sum(MTQ.QuestionWeight * AL.ScoreLevel / 100) as ThemeScore");
+    	//$questionnaireId = 52;
+    	
     	$query
             ->reset(Zend_Db_Select::COLUMNS)
             ->columns(array(
-			    'PontosVerificador' =>  $this->_sqlPontosVerificador(),
+			    'PontosVerificador' =>  $this->_sqlPontosVerificadorNac(),
                 'PontosGeral' => $this->_sqlPontosGeral($comBonus = true),
                 'MediaPontos' => $this->_sqlMediaGeral(),
                 'IdKey', 'SocialName', 'FantasyName',
@@ -1258,18 +1261,20 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
                 'FirstNameAvaliadorPri'=>'U.FirstName','LoginAvaliadorPri'=>'U.Login',
                 'NegociosTotal' => 'EP.NegociosTotal',
                 'EnterpriseId' => 'ApE.EnterpriseId',
-                /*
-                'RegionalCity'=>'Rcity.Description',
-                'RegionalState'=>'Rstate.Description'
-                */
+            	//'TotalSSS' => new Zend_Db_Expr("E.PontosVerificador * 0.2"), 
             ));
         if($queryBeg) {
-            $query->columns(array('PontosEmpreendedorismo'=>new Zend_Db_Expr("($queryBeg)")));
+            $query->columns(array('PontosEmpreendedorismo'=> new Zend_Db_Expr("($queryBeg)")));
         }
+
+        //$query->columns(array('TotalSSS'=> new Zend_Db_Expr('PontosVerificador * 0.2') ));
+
         //->columns(array('Regional' =>new Zend_Db_Expr($queryRegional)))
         $query->join(array('CE' => 'CheckerEnterprise'),
             'CE.EnterpriseId = E.Id AND CE.CheckerTypeId = 1 AND CE.ProgramaId ='.$competitionId,
-            array('CheckerId' => 'UserId', 'CheckerStatus' => 'Status', 'QtdePontosFortes')
+            array('CheckerId' => 'UserId', 'CheckerStatus' => 'Status', 'QtdePontosFortes',
+            		'PontosFortesCalc' => $this->_sqlPontosPortes('QtdePontosFortes')
+            )
         )
             ->joinleft(
                 array('CheckerUsr' => 'User'), 'CheckerUsr.Id = CE.UserId',
@@ -1277,10 +1282,10 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
             )
             ->where("(ApESec.Status is not null or ApETer.Status is not null or ApE.Status is not null)")
             ->where("EXE.ProgramaId = ?", $competitionId)
-            ->order('1 DESC')
-            ->order('2 DESC')
+            ->order('PontosVerificador DESC' )
+           // ->order('2 DESC')
         ;
- //echo $query;
+// echo $query;
     	return $query;
     }
     
@@ -1870,6 +1875,49 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
 "
 		);
 	}
+	
+	protected function _sqlPontosVerificadorNac()
+	{
+		return new Zend_Db_Expr(
+				"(SELECT sum(MTQ.QuestionWeight * AL.ScoreLevel / 100) / 8 as ThemeScore  FROM `ManagementTheme` AS `MT` 
+				INNER JOIN `ManagementThemeQuestion` AS `MTQ` ON MTQ.ManagementThemeId = MT.Id 
+				INNER JOIN `Question` AS `Q` ON Q.Id = MTQ.QuestionId 
+				INNER JOIN `Alternative` AS `AL` ON AL.QuestionId = Q.Id 
+				INNER JOIN `AnswerVerificador` AS `AN` ON AN.AlternativeId = AL.Id  
+				INNER JOIN `Criterion` AS `C` ON C.Id = Q.CriterionId  
+				INNER JOIN `Block` AS `B` ON B.Id = C.BlockId  
+				INNER JOIN `Questionnaire` ON Questionnaire.id = B.QuestionnaireId 
+				WHERE (Questionnaire.Id = 52) AND (AN.EnterpriseId = USL.UserId)) *0.2 + 
+				(case when (CE.QtdePontosFortes > 0 and CE.QtdePontosFortes < 9) then CE.QtdePontosFortes * 2 
+				when (CE.QtdePontosFortes = 9) then 17 when (CE.QtdePontosFortes = 10) then 18 
+				when (CE.QtdePontosFortes = 11) then 19 when (CE.QtdePontosFortes = 12) then 20 else 0 end) + 
+				((case
+                when (`ApE`.`Status` = 'C' and `ApE`.`Pontos` is not null) then `ApE`.`Pontos`
+                else 0
+            end) + (case
+                when (`ApESec`.`Status` = 'C' and `ApESec`.`Pontos` is not null) then `ApESec`.`Pontos`
+                else 0
+            end) + (case
+                when (`ApETer`.`Status` = 'C' and `ApETer`.`Pontos` is not null) then `ApETer`.`Pontos`
+                else 0
+            end)) / ((CASE
+                WHEN (`ApE`.`Status` = 'C') THEN 1
+                ELSE 0
+            END) + (CASE
+                WHEN (`ApESec`.`Status` = 'C') THEN 1
+                ELSE 0
+            END) + (CASE
+                WHEN (`ApETer`.`Status` = 'C') THEN 1
+                ELSE 0
+            END)) * 0.6"
+		);
+	}
+
+	protected function _sqlPontosPortes($pontos)
+	{
+		return new Zend_Db_Expr($pontos * 2);
+	}
+	
 	protected function _sqlTotalPrimeiraFase()
 	{
 		return new Zend_Db_Expr(
