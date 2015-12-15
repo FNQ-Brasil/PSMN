@@ -1225,8 +1225,6 @@ class DbTable_Enterprise extends Vtx_Db_Table_Abstract
 
     protected function _queryClassificadasNacional($query, $queryBeg, $filter, $competitionId)
     {
-    	//$themeScoreExpr = new Zend_Db_Expr("sum(MTQ.QuestionWeight * AL.ScoreLevel / 100) as ThemeScore");
-    	//$questionnaireId = 52;
     	
     	$query
             ->reset(Zend_Db_Select::COLUMNS)
