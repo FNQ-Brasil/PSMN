@@ -12,7 +12,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
     protected $modelQuestionnaire;
     protected $ApeEvaluationVerificador;
 
-    public function init() {
+    public function init() { 
         $this->_helper->getHelper('ajaxContext')
                 ->addActionContext('do-premio-eligibility', array('json'))
                 ->addActionContext('comunicacao', array('json'))
@@ -27,7 +27,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
                 ->addActionContext('do-desclassificar-finalista', array('json'))
                 ->addActionContext('verify', array('json'))
                 ->initContext();
-
+       
         $this->modelCompetition = new Model_Competition;
         $this->Enterprise = new Model_Enterprise();
         $this->Eligibility = new Model_Eligibility;
@@ -49,7 +49,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $this->roleAppraiserId = Zend_Registry::get('config')->acl->roleAppraiserId;
         $this->roleVerificadorId = Zend_Registry::get('config')->acl->roleVerificadorId;
         $this->showAppraisersFilter = false;
-        $this->competitionId = Zend_Registry::get('configDb')->competitionId;
+        $this->competitionId = Zend_Registry::get('configDb')->competitionId; 
         //$this->pointsRanking = new Model_PointsRanking();
     }
 
@@ -70,10 +70,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $modelEnterpriseCategoryAward = new Model_EnterpriseCategoryAward;
         $enterprise = new Model_Enterprise();
         $ApeEvaluationVerificador = new Model_ApeEvaluationVerificador();
-        
-				
-				
-				
+	
         $format = $this->_getParam('format');
         $this->view->getAllEducations = $this->Education->getAll();
         if ($format == 'csv') {
@@ -154,8 +151,8 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         if (!$format) {
             return;
         }
-
-        $groupBy = in_array($this->tipoRelatorio, array('inscricoes', 'ranking', 'classificadas','finalistas','candidatas-nacional')) ? 'enterprise_id' : null;
+        
+        $groupBy = in_array($this->tipoRelatorio, array('inscricoes', 'ranking', 'classificadas','finalistas','candidatas-nacional', 'classificadas-nacional')) ? 'enterprise_id' : null;
 
         $this->regionalId = $regionalId;
         $this->filter = $filter;
@@ -164,7 +161,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
                 array(0 => null, 1 => null);
         $fetchReturn = isset($this->fetchReturnForce) ? $this->fetchReturnForce : (isset($this->fetchReturn) ? $this->fetchReturn : 'paginator' );
 
-        if($this->tipoRelatorio != 'inscricoes' || $format == 'csv'){
+        if($this->tipoRelatorio != 'inscricoes' || $format == 'csv'){ 
             
             $this->view->getAllEnterprise = $this->Enterprise->getAllByColAE(
                 $this->paramsBuscaServiceArea[0], 
@@ -181,7 +178,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         }
 
         $this->view->modelEntCategoryAward = new Model_EnterpriseCategoryAwardCompetition();
-                
+        
     }
 
     /**
@@ -207,7 +204,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
                     )
                 ))
                 ->addActionContext($getActionName, array('csv'))
-                ->initContext();
+                ->initContext(); 
     }
 
     public function filesAction() {
@@ -330,7 +327,7 @@ class Management_EnterpriseController extends Vtx_Action_Abstract {
         $format = $this->_getParam('format');
         if (!$format) {
             return;
-        }
+        } 
         //verificadores
         unset($this->filter['cpf']);
 

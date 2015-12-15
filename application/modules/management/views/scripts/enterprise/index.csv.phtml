@@ -23,7 +23,10 @@ if ($this->request()->getActionName() == 'candidatas-nacional') {
     include 'candidatas-nacional.csv.phtml';
     return;
 }
-
+if ($this->request()->getActionName() == 'classificadas-nacional') {
+	include 'classificadas-nacional.csv.phtml';
+	return;
+}
 $competitionId = (isset($this->filter['competition_id']))? $this->filter['competition_id'] : $this->competitionId;
 
 /**
