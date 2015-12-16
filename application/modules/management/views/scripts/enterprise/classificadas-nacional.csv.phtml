@@ -65,7 +65,7 @@ if (count($this->getAllEnterprise) >= 1) :
         $pontosGeral = (($enterprise->getPontosGeral() != null) ? $enterprise->getPontosGeral() : '--');
         $NotaAutoAvalVerificador  = $executionPontuacaoManager->calculateExecutionScore(52,$enterpriseUserid,true);
 
-        $mediaRelato = $enterprise->getMediaPontos();
+        $mediaRelato = number_format($enterprise->getMediaPontos(), 1 , ',', '.');
         $QtdPontosFortes = $enterprise->getQtdePontosFortes();
         
         if($QtdPontosFortes == 0)   $QtdPontosFortes = 0;
