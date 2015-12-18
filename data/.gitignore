@@ -1,4 +1,4 @@
-/logs/*.log
+/logs/*_log
 /cacheFS/zend*
 /cacheAcl/zend*
 /session/sess*
