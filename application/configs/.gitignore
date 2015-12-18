@@ -1,2 +1,4 @@
-/application.ini.bkp
-/deploy/
+/application.ini
+/config.ini
+/email_definitions.ini
+
